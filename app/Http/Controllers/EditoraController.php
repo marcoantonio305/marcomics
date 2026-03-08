@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Editora;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class EditoraController extends Controller
 {
@@ -12,7 +13,11 @@ class EditoraController extends Controller
      */
     public function index()
     {
-        //
+        $editoras = Editora::all();
+        return Inertia::render('editoras/index', [
+            'editoras' => $editoras,
+            'titulo' => 'Lista de editoras'
+        ]);
     }
 
     /**
@@ -20,7 +25,7 @@ class EditoraController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('editoras/create');
     }
 
     /**
@@ -28,7 +33,12 @@ class EditoraController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'nombre' => 'required|max:255',
+        ]);
+
+        Editora::create($validated);
+        return redirect()->route('editoras.index');
     }
 
     /**
@@ -60,6 +70,7 @@ class EditoraController extends Controller
      */
     public function destroy(Editora $editora)
     {
-        //
+        $editora->delete();
+        return redirect()->route('editoras.index');
     }
 }

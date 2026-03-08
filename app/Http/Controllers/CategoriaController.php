@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Categoria;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class CategoriaController extends Controller
 {
@@ -12,7 +13,11 @@ class CategoriaController extends Controller
      */
     public function index()
     {
-        //
+        $categorias = Categoria::all();
+        return Inertia::render('categorias/index', [
+            'categorias' => $categorias,
+            'titulo' => 'Lista de categorías'
+        ]);
     }
 
     /**
@@ -20,7 +25,7 @@ class CategoriaController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('categorias/create');
     }
 
     /**
@@ -28,7 +33,12 @@ class CategoriaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'nombre' => 'required|max:255',
+        ]);
+
+        Categoria::create($validated);
+        return redirect()->route('categorias.index');
     }
 
     /**
@@ -60,6 +70,7 @@ class CategoriaController extends Controller
      */
     public function destroy(Categoria $categoria)
     {
-        //
+        $categoria->delete();
+        return redirect()->route('categorias.index');
     }
 }

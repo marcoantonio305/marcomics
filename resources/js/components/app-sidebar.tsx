@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { BookOpen, FolderGit2, LayoutGrid } from 'lucide-react';
+import { BookOpen, FolderGit2, LayoutDashboard, LayoutGrid, LayoutIcon, Library, Pencil, PlusSquare, SquareActivity } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -26,6 +26,21 @@ const mainNavItems: NavItem[] = [
         title: 'Comics',
         href: '/comics',
         icon: BookOpen,
+    },
+    {
+        title: 'Autores',
+        href: '/autors',
+        icon: Pencil,
+    },
+    {
+        title: 'Categorías',
+        href: '/categorias',
+        icon: PlusSquare,
+    },
+    {
+        title: 'Editoras',
+        href: '/editoras',
+        icon: Library,
     },
 ];
 

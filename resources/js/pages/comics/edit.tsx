@@ -1,6 +1,6 @@
 import { useForm } from '@inertiajs/react';
-import React from 'react';
 import { Breadcrumb } from '@/components/ui/breadcrumb';
+import React from 'react';
 import AppLayout from '@/layouts/app-layout';
 
 interface Autor {
@@ -19,55 +19,72 @@ interface Comic {
     precio: number,
     lanzamiento: string,
     descripcion: string,
-    autors: Autor[];
+    autors: Autor[];      
     categorias: Categoria[];
 }
 
 interface Props {
-    comic?: Comic;
+    comic: Comic;
     todos_los_autores: Autor[];
     todas_las_categorias: Categoria[];
 }
 
-export default function Create({comic, todos_los_autores, todas_las_categorias}:Props) {
-    const { data, setData, post, errors } = useForm({
-        titulo: '',
-        precio: '',
-        lanzamiento: '',
-        descripcion: '',
-        autors_ids: [] as number[],
-        categorias_ids: [] as number[],
+export default function Edit({ comic, todos_los_autores, todas_las_categorias }: Props) {
+    
+    const { data, setData, put, errors } = useForm({
+        titulo: comic.titulo || '',
+        precio: comic.precio || '',
+        lanzamiento: comic.lanzamiento || '',
+        descripcion: comic.descripcion || '',
+        // Cargamos los IDs actuales para que no salgan vacíos al entrar
+        autors_ids: comic.autors ? comic.autors.map(a => a.id) : [],
+        categorias_ids: comic.categorias ? comic.categorias.map(c => c.id) : [],
     });
+
     const submit = (e: React.FormEvent) => {
-        e.preventDefault()
-        post('/comics')
-    }
+        e.preventDefault();
+        put(`/comics/${comic.id}`);
+    };
+
     return (
         <AppLayout>
-        <div className="p-8 max-w-xl">
-            <h1 className="text-2xl font-bold mb-4">Añadir nuevo nómic</h1>
-            <form onSubmit={submit} className='space-y-4'>
-                <div className='flex flex-col gap-2'>
-                    <label htmlFor='titulo' className='text-sm font-medium'>Título</label>
-                    <input id="titulo" type="text" className='rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700'
-                        value={data.titulo} onChange={e => setData('titulo', e.target.value)}></input>
-                </div>
-                <div className='flex flex-col gap-2'>
-                    <label htmlFor='precio' className='text-sm font-medium'>Precio</label>
-                    <input id="precio" type="number" className='rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700'
-                        step={'0.01'} value={data.precio} onChange={e => setData('precio', e.target.value)}></input>
-                </div>
-                <div className='flex flex-col gap-2'>
-                    <label htmlFor='lanzamiento' className='text-sm font-medium'>Fecha de lanzamiento</label>
-                    <input id="lanzamiento" type="date" className='rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700'
-                        value={data.lanzamiento} onChange={e => setData('lanzamiento', e.target.value)}></input>
-                </div>
-                <div className='flex flex-col gap-2'>
-                    <label htmlFor='descripcion' className='text-sm font-medium'>Descripción</label>
-                    <textarea id="descripcion" className='rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700'
-                        value={data.descripcion} onChange={e => setData('descripcion', e.target.value)}></textarea>
-                </div>
-                <div className='form-control w-full'>
+            <div className="p-8 max-w-xl mx-auto">
+                <h1 className="text-2xl font-bold mb-6 text-primary">Editar: {comic.titulo}</h1>
+                
+                <form onSubmit={submit} className='space-y-4 bg-base-100 p-6 rounded-xl shadow-md border border-base-300'>
+                    
+                
+                    <div className='flex flex-col gap-1'>
+                        <label className='text-sm font-semibold'>Título</label>
+                        <input type="text" className='input input-bordered w-full'
+                            value={data.titulo} onChange={e => setData('titulo', e.target.value)} />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        
+                        <div className='flex flex-col gap-1'>
+                            <label className='text-sm font-semibold'>Precio (€)</label>
+                            <input type="number" step="0.01" className='input input-bordered w-full'
+                                value={data.precio} onChange={e => setData('precio', e.target.value)} />
+                        </div>
+
+                        
+                        <div className='flex flex-col gap-1'>
+                            <label className='text-sm font-semibold'>Lanzamiento</label>
+                            <input type="date" className='input input-bordered w-full'
+                                value={data.lanzamiento} onChange={e => setData('lanzamiento', e.target.value)} />
+                        </div>
+                    </div>
+
+                    
+                    <div className='flex flex-col gap-1'>
+                        <label className='text-sm font-semibold'>Descripción</label>
+                        <textarea className='textarea textarea-bordered h-24'
+                            value={data.descripcion} onChange={e => setData('descripcion', e.target.value)} />
+                    </div>
+
+                    
+                    <div className='form-control w-full'>
                         <label className='label font-bold text-sm'>Autores</label>
                         <select className='select select-bordered w-full' value=""
                             onChange={e => {
@@ -115,13 +132,10 @@ export default function Create({comic, todos_los_autores, todas_las_categorias}:
                             ))}
                         </div>
                     </div>
-                <div className="md:col-span-2 mt-4">
-                    <button type='submit' className='w-full md:w-auto rounded-md bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600'>
-                        Añadir cómic
-                    </button>
-                </div>
-            </form>
-        </div>
+
+                    <button type='submit' className='btn btn-primary w-full mt-4'>Actualizar Cómic</button>
+                </form>
+            </div>
         </AppLayout>
-    )
+    );
 }

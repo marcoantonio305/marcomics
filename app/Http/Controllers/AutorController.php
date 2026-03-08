@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Autor;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class AutorController extends Controller
 {
@@ -12,7 +13,11 @@ class AutorController extends Controller
      */
     public function index()
     {
-        //
+        $autors = Autor::all();
+        return Inertia::render('autors/index', [
+            'autors' => $autors,
+            'titulo' => 'Lista de autores registrados'
+        ]);
     }
 
     /**
@@ -20,7 +25,7 @@ class AutorController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('autors/create');
     }
 
     /**
@@ -28,7 +33,12 @@ class AutorController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'nombre' => 'required|max:255',
+        ]);
+
+        Autor::create($validated);
+        return redirect()->route('autors.index');
     }
 
     /**
@@ -60,6 +70,7 @@ class AutorController extends Controller
      */
     public function destroy(Autor $autor)
     {
-        //
+        $autor->delete();
+        return redirect()->route('autors.index');
     }
 }
