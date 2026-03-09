@@ -3,6 +3,11 @@ import { Link, router } from '@inertiajs/react';
 
 import AppLayout from '@/layouts/app-layout';
 
+interface Editora {
+    id: number;
+    nombre: string;
+}
+
 interface Autor {
     id: number;
     nombre: string;
@@ -21,6 +26,7 @@ interface Comic {
     descripcion: string;
     autors: Autor[];
     categorias: Categoria[];
+    editora?: Editora
 }
 
 interface Props {
@@ -42,6 +48,7 @@ export default function Index({ comics, titulo} : Props) {
                                 <th>Título</th>
                                 <th>Precio</th>
                                 <th>Lanzamiento</th>
+                                <th>Editora</th>
                                 <th>Descripción</th>
                                 <th>Autores</th>
                                 <th>Categorías</th>
@@ -56,6 +63,7 @@ export default function Index({ comics, titulo} : Props) {
                                         <td className="font-bold"><Link href={`/comics/${comic.id}`} className="link link-primary no-underline hover:underline transition-colors">{comic.titulo}</Link></td>
                                         <td className="font-mono">{comic.precio}€</td>
                                         <td>{new Date(comic.lanzamiento).toLocaleDateString()}</td>
+                                        <td>{comic.editora?.nombre || 'Sin editora'}</td>
                                         <td className="max-w-xs truncate">{comic.descripcion}</td>
                                         <td>
     <div className='flex flex-wrap gap-1'>
@@ -111,6 +119,11 @@ export default function Index({ comics, titulo} : Props) {
             Añadir Cómic
             </Link>
         </div>
+        <div className="mt-4">
+                        <Link href="dashboard" className="btn btn-success">
+                            Volver al dashboard
+                        </Link>
+                    </div>
     </div>
     </AppLayout>
     );

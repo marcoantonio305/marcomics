@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Autor;
 use App\Models\Categoria;
 use App\Models\Comic;
+use App\Models\Editora;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -17,7 +18,7 @@ class ComicController extends Controller
     {
         $comics = Comic::all();
         return Inertia::render('comics/index', [
-            'comics' => Comic::with('categorias', 'autors')->get(),
+            'comics' => Comic::with('categorias', 'autors', 'editora')->get(),
             'titulo' => 'Catálogo de cómics'
         ]);
     }
@@ -28,8 +29,9 @@ class ComicController extends Controller
     public function create()
     {
         return Inertia::render('comics/create', [
-            'todos_los_autores' => Autor::all(),                
+            'todos_los_autores' => Autor::all(),
         'todas_las_categorias' => Categoria::all(),
+        'todas_las_editoras' => Editora::all(),
         ]);
     }
 
@@ -46,6 +48,7 @@ class ComicController extends Controller
             // validar de que sean array si vamos a usar en sync
             'autors_ids' => 'array',
         'categorias_ids' => 'array',
+        'editora_id' => 'exists:editoras,id'
         ]);
 
         $comic = Comic::create($validated);
@@ -75,6 +78,7 @@ class ComicController extends Controller
             'comic' => $comic->load(['autors', 'categorias']),
             'todos_los_autores' => Autor::all(),
         'todas_las_categorias' => Categoria::all(),
+        'todas_las_editoras' => Editora::all()
         ]);
     }
 
@@ -87,7 +91,10 @@ class ComicController extends Controller
             'titulo' => 'required|max:255',
             'precio' => 'required|numeric|min:0',
             'lanzamiento' => 'required|date',
-            'descripcion' => 'required|max:2000'
+            'descripcion' => 'required|max:2000',
+        'editora_id' => 'exists:editoras,id',
+        'autors_ids' => 'array',
+        'categorias_ids' => 'array'
         ]);
 
         $comic->update($validated);

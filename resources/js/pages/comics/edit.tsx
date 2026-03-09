@@ -13,6 +13,11 @@ interface Categoria {
     nombre: string;
 }
 
+interface Editora {
+    id: number;
+    nombre: string;
+}
+
 interface Comic {
     id: number,
     titulo: string,
@@ -21,15 +26,17 @@ interface Comic {
     descripcion: string,
     autors: Autor[];      
     categorias: Categoria[];
+    editora_id: number
 }
 
 interface Props {
     comic: Comic;
     todos_los_autores: Autor[];
     todas_las_categorias: Categoria[];
+    todas_las_editoras: Editora[]
 }
 
-export default function Edit({ comic, todos_los_autores, todas_las_categorias }: Props) {
+export default function Edit({ comic, todos_los_autores, todas_las_categorias, todas_las_editoras }: Props) {
     
     const { data, setData, put, errors } = useForm({
         titulo: comic.titulo || '',
@@ -39,6 +46,7 @@ export default function Edit({ comic, todos_los_autores, todas_las_categorias }:
         // Cargamos los IDs actuales para que no salgan vacíos al entrar
         autors_ids: comic.autors ? comic.autors.map(a => a.id) : [],
         categorias_ids: comic.categorias ? comic.categorias.map(c => c.id) : [],
+        editora_id: comic.editora_id || ''
     });
 
     const submit = (e: React.FormEvent) => {
@@ -131,6 +139,19 @@ export default function Edit({ comic, todos_los_autores, todas_las_categorias }:
                                 </div>
                             ))}
                         </div>
+                    </div>
+
+                    <div className='form-control w-full'>
+                        <label className='label font-bold text-sm'>Editora</label>
+                        <select className='select select-bordered w-full' value={data.editora_id}
+                            onChange={e => {
+                                    setData('editora_id', e.target.value);
+                            }}>
+                            <option value="" disabled>Selecciona la editora...</option>
+                            {todas_las_editoras.map(edit => (
+                                <option key={edit.id} value={edit.id}>{edit.nombre}</option>
+                            ))}
+                        </select>
                     </div>
 
                     <button type='submit' className='btn btn-primary w-full mt-4'>Actualizar Cómic</button>

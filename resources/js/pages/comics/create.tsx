@@ -13,6 +13,11 @@ interface Categoria {
     nombre: string;
 }
 
+interface Editora {
+    id: number;
+    nombre: string;
+}
+
 interface Comic {
     id: number,
     titulo: string,
@@ -21,15 +26,17 @@ interface Comic {
     descripcion: string,
     autors: Autor[];
     categorias: Categoria[];
+    editora_id: number
 }
 
 interface Props {
     comic?: Comic;
     todos_los_autores: Autor[];
     todas_las_categorias: Categoria[];
+    todas_las_editoras: Editora[];
 }
 
-export default function Create({comic, todos_los_autores, todas_las_categorias}:Props) {
+export default function Create({comic, todos_los_autores, todas_las_categorias, todas_las_editoras}:Props) {
     const { data, setData, post, errors } = useForm({
         titulo: '',
         precio: '',
@@ -37,6 +44,7 @@ export default function Create({comic, todos_los_autores, todas_las_categorias}:
         descripcion: '',
         autors_ids: [] as number[],
         categorias_ids: [] as number[],
+        editora_id: ''
     });
     const submit = (e: React.FormEvent) => {
         e.preventDefault()
@@ -115,6 +123,20 @@ export default function Create({comic, todos_los_autores, todas_las_categorias}:
                             ))}
                         </div>
                     </div>
+
+                    <div className='form-control w-full'>
+                        <label className='label font-bold text-sm'>Editora</label>
+                        <select className='select select-bordered w-full' value={data.editora_id}
+                            onChange={e => {
+                                    setData('editora_id', e.target.value);
+                            }}>
+                            <option value="" disabled>Selecciona la editora...</option>
+                            {todas_las_editoras.map(edit => (
+                                <option key={edit.id} value={edit.id}>{edit.nombre}</option>
+                            ))}
+                        </select>
+                    </div>
+
                 <div className="md:col-span-2 mt-4">
                     <button type='submit' className='w-full md:w-auto rounded-md bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600'>
                         Añadir cómic

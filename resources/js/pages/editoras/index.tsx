@@ -47,6 +47,11 @@ export default function Index({ editoras }: Props) {
                     Añadir Editora
                 </Link>
             </div>
+            <div className="mt-4">
+                            <Link href="dashboard" className="btn btn-success">
+                                Volver al dashboard
+                            </Link>
+                        </div>
         </div>
         </AppLayout>
     );
