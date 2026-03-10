@@ -62,7 +62,7 @@ export default function Index({ comics, titulo} : Props) {
                                     <tr key={comic.id} className="hover">
                                         <td className="font-bold"><Link href={`/comics/${comic.id}`} className="link link-primary no-underline hover:underline transition-colors">{comic.titulo}</Link></td>
                                         <td className="font-mono">{comic.precio}€</td>
-                                        <td>{new Date(comic.lanzamiento).toLocaleDateString()}</td>
+                                        <td>{comic.lanzamiento}</td>
                                         <td>{comic.editora?.nombre || 'Sin editora'}</td>
                                         <td className="max-w-xs truncate">{comic.descripcion}</td>
                                         <td>

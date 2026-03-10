@@ -58,4 +58,7 @@ class User extends Authenticatable
         return $this->belongsTo(Rol::class);
     }
     
+    public function historialCompra() {
+        return $this->hasOne(HistorialCompra::class);
+    }
 }

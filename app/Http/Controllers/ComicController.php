@@ -65,7 +65,7 @@ class ComicController extends Controller
     public function show(Comic $comic)
     {
         return Inertia::render('comics/show', [
-            'comic' => $comic->load('categorias')
+            'comic' => $comic->load('categorias', 'autors', 'editora')
         ]);
     }
 

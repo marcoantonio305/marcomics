@@ -4,6 +4,7 @@ use App\Http\Controllers\AutorController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ComicController;
 use App\Http\Controllers\EditoraController;
+use App\Http\Controllers\HistorialCompraController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
@@ -36,6 +37,11 @@ Route::delete('/categorias/{categoria}', [CategoriaController::class, 'destroy']
 Route::get('/editoras', [EditoraController::class, 'index'])->name('editoras.index');
 Route::get('/editoras/create', [EditoraController::class, 'create'])->name('editoras.create');
 Route::post('/editoras', [EditoraController::class, 'store'])->name('editoras.store');
-Route::delete('/editoras/{categoria}', [EditoraController::class, 'destroy'])->name('editoras.destroy');
+Route::delete('/editoras/{editora}', [EditoraController::class, 'destroy'])->name('editoras.destroy');
+
+Route::get('/historialCompras', [HistorialCompraController::class, 'index'])->name('historialCompras.index');
+Route::get('/historialCompras/create', [HistorialCompraController::class, 'create'])->name('historialCompras.create');
+Route::post('/historialCompras', [HistorialCompraController::class, 'store'])->name('historialCompras.store');
+Route::delete('/historialCompras/{hisotialCompra}', [HistorialCompraController::class, 'destroy'])->name('historialCompras.destroy');
 
 require __DIR__.'/settings.php';

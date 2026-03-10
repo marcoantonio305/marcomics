@@ -38,4 +38,8 @@ class Comic extends Model
     public function autors() {
         return $this->belongsToMany(Autor::class);
     }
+
+    public function compras() {
+        return $this->belongsToMany(Compra::class);
+    }
 }
