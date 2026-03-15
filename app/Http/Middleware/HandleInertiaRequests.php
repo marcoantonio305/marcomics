@@ -38,6 +38,7 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'name' => config('app.name'),
+            'categorias' => \App\Models\Categoria::all(), //coge todas las categorías de la base de datos y lo envia al frontend de React, permitiendo que se pueda usar en el usePage().prop que pusimos en el layout
             'auth' => [
                 'user' => $request->user(),
             ],

@@ -46,7 +46,10 @@ class CategoriaController extends Controller
      */
     public function show(Categoria $categoria)
     {
-        //
+        $categoria->load(['comics.autors']);
+        return Inertia::render('categorias/show', [
+            'categoria' => $categoria,
+        ]);
     }
 
     /**

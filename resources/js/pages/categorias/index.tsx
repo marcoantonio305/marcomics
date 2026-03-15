@@ -3,13 +3,13 @@ import { Link, router } from '@inertiajs/react';
 import appLayout from '@/layouts/app-layout';
 import AppLayout from '@/layouts/app-layout';
 
-interface Categoría {
+interface Categoria {
     id: number;
     nombre: string;
 }
 
 interface Props {
-    categorias: Categoría[];
+    categorias: Categoria[];
 }
 
 export default function Index({ categorias }: Props) {
@@ -23,7 +23,7 @@ export default function Index({ categorias }: Props) {
                     <div className="space-y-2">
                         {categorias.map((categoria) => (
                             <div key={categoria.id} className="flex items-center justify-between gap-2">
-                                <span className="text-xl font-bold text-primary">{categoria.nombre}</span>
+                                <Link href={`/categorias/${categoria.id}`} className="link link-primary no-underline hover:underline transition-colors"><span className="text-xl font-bold text-primary">{categoria.nombre}</span></Link>
                                 <button
                                     onClick={() => {
                                         if (confirm('¿Estás seguro de querer eliminar este categoria?')) {

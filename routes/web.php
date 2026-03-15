@@ -5,12 +5,22 @@ use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ComicController;
 use App\Http\Controllers\EditoraController;
 use App\Http\Controllers\HistorialCompraController;
+use App\Models\Categoria;
+use App\Models\Comic;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 use Laravel\Fortify\Features;
 
 Route::inertia('/', 'welcome', [
     'canRegister' => Features::enabled(Features::registration()),
 ])->name('home');
+
+Route::get('/inicio', function () {
+    return Inertia::render('inicio', [
+        'categorias' => Categoria::all(),
+        'comics' => Comic::with(['categorias', 'autors'])->latest()->take(12)->get(),
+    ]);
+})->name('inicio');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
@@ -32,6 +42,7 @@ Route::delete('/autors/{autor}', [AutorController::class, 'destroy'])->name('aut
 Route::get('/categorias', [CategoriaController::class, 'index'])->name('categorias.index');
 Route::get('/categorias/create', [CategoriaController::class, 'create'])->name('categorias.create');
 Route::post('/categorias', [CategoriaController::class, 'store'])->name('categorias.store');
+Route::get('/categorias/{categoria}', [CategoriaController::class, 'show'])->name('categorias.show'); //Ruta para mostrar todos los comics de una categoría
 Route::delete('/categorias/{categoria}', [CategoriaController::class, 'destroy'])->name('categorias.destroy');
 
 Route::get('/editoras', [EditoraController::class, 'index'])->name('editoras.index');
@@ -43,5 +54,7 @@ Route::get('/historialCompras', [HistorialCompraController::class, 'index'])->na
 Route::get('/historialCompras/create', [HistorialCompraController::class, 'create'])->name('historialCompras.create');
 Route::post('/historialCompras', [HistorialCompraController::class, 'store'])->name('historialCompras.store');
 Route::delete('/historialCompras/{hisotialCompra}', [HistorialCompraController::class, 'destroy'])->name('historialCompras.destroy');
+
+
 
 require __DIR__.'/settings.php';
