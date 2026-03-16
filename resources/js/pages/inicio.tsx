@@ -21,6 +21,7 @@ interface Comic {
     descripcion: string;
     autors: Autor[];
     categorias: Categoria[];
+    imagen: string
 }
 
 

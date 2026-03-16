@@ -25,7 +25,8 @@ interface Comic {
     descripcion: string;
     autors: Autor[];
     categorias: Categoria[];
-    editora?: Editora
+    editora?: Editora,
+    imagen: string
 }
 
 interface Props {
@@ -36,9 +37,14 @@ interface Props {
 export default function Show({ comic} : Props) {
     return (
         <AppLayout>
-    <div className="div-8">
+    <div className="div-8 ml-5">
             <h1 className="text-4xl font-bold mb-6 text-primary">{comic.titulo}</h1>
         <div className="card bg-base-100 shadow-xl border border-base-300">
+            <img 
+    src={`/storage/${comic.imagen}`} 
+    alt={comic.titulo} 
+    className="w-50 h-66 object-cover"
+/>
             <p><span className='text-xl font-bold mb-6 text-primary'>Titulo: </span><span className='mb-6'>{comic.titulo}</span></p>
             <p><span className='text-xl font-bold mb-6 text-primary'>Precio: </span><span className='mb-6'>{comic.precio}</span></p>
             <p><span className='text-xl font-bold mb-6 text-primary'>Lanzamiento: </span><span className='mb-6'>{comic.lanzamiento}</span></p>

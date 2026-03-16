@@ -18,6 +18,7 @@ interface Editora {
     nombre: string;
 }
 
+// representa lo que viene del servidor
 interface Comic {
     id: number,
     titulo: string,
@@ -26,7 +27,21 @@ interface Comic {
     descripcion: string,
     autors: Autor[];
     categorias: Categoria[];
-    editora_id: number
+    editora_id: number,
+    imagen: string | null
+}
+
+//representa lo que el formulario va a manejar
+interface FormDataType {
+    _method: string,
+    titulo: string,
+    precio: string | number,
+    lanzamiento: string,
+    descripcion: string,
+    autors_ids: number[];
+    categorias_ids: number[];
+    editora_id: string | number,
+    imagen: File | null
 }
 
 interface Props {
@@ -37,14 +52,16 @@ interface Props {
 }
 
 export default function Create({comic, todos_los_autores, todas_las_categorias, todas_las_editoras}:Props) {
-    const { data, setData, post, errors } = useForm({
+    const { data, setData, post, errors } = useForm<FormDataType>({
+        _method: 'post',
         titulo: '',
         precio: '',
         lanzamiento: '',
         descripcion: '',
         autors_ids: [] as number[],
         categorias_ids: [] as number[],
-        editora_id: ''
+        editora_id: '',
+        imagen: null
     });
     const submit = (e: React.FormEvent) => {
         e.preventDefault()
@@ -136,6 +153,18 @@ export default function Create({comic, todos_los_autores, todas_las_categorias, 
                             ))}
                         </select>
                     </div>
+
+                    <div className="flex flex-col gap-2">
+    <label htmlFor="imagen" className="font-bold">Portada del Cómic</label>
+    <input 
+        type="file" 
+        id="imagen"
+        className="border p-2"
+        // 3. Así se captura el archivo en Inertia
+        onChange={e => setData('imagen', e.target.files ? e.target.files[0] : null)} 
+    />
+    {errors.imagen && <div className="text-red-500">{errors.imagen}</div>}
+</div>
 
                 <div className="md:col-span-2 mt-4">
                     <button type='submit' className='w-full md:w-auto rounded-md bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600'>

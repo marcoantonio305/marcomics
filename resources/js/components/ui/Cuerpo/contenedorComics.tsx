@@ -26,7 +26,8 @@ interface Comic {
     descripcion: string;
     autors: Autor[];
     categorias: Categoria[];
-    editora?: Editora
+    editora?: Editora,
+    imagen: string
 }
 
 interface Props {
@@ -41,7 +42,7 @@ export default function ContenedorComics({categoria}:Props) {
                 {listaComics.length > 0 ? (
                     listaComics.map(comic => (
                     <div key={comic.id} className='flex flex-col gap-2'>
-                        <img alt="Imagen" />
+                        <Link href={`/comics/${comic.id}`}><img className="w-32 h-48" src={comic.imagen ? `/storage/${comic.imagen}` : '/img/default-comic.png'} alt="Imagen" /></Link>
                         <h2>{comic.titulo}</h2>
                         {comic.autors?.length > 0 ? (
                             <p>

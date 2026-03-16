@@ -7,6 +7,7 @@ use App\Models\Categoria;
 use App\Models\Comic;
 use App\Models\Editora;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class ComicController extends Controller
@@ -50,12 +51,17 @@ class ComicController extends Controller
         'categorias_ids' => 'array',
         'editora_id' => 'exists:editoras,id'
         ]);
+        if ($request->hasFile('imagen')) {
+            $rutaImagen = $request->file('imagen')->store('images', 'public');
+            $validated['imagen'] = $rutaImagen;
+        }
 
         $comic = Comic::create($validated);
         
 
         $comic->categorias()->sync($request->categorias_ids);
         $comic->autors()->sync($request->autors_ids);
+
         return redirect()->route('comics.index');
     }
 
@@ -97,6 +103,14 @@ class ComicController extends Controller
         'categorias_ids' => 'array'
         ]);
 
+        if ($request->hasFile('imagen')) {
+            if ($comic->imagen) {
+            Storage::disk('public')->delete($comic->imagen);
+        }
+            $rutaImagen = $request->file('imagen')->store('images', 'public');
+            $validated['imagen'] = $rutaImagen;
+        }
+
         $comic->update($validated);
 
         $comic->autors()->sync($request->autors_ids);
@@ -110,6 +124,13 @@ class ComicController extends Controller
      */
     public function destroy(Comic $comic)
     {
+        $comic->autors()->detach();
+    $comic->categorias()->detach();
+
+    if ($comic->imagen) {
+        \Illuminate\Support\Facades\Storage::disk('public')->delete($comic->imagen);
+    }
+    
         $comic->delete();
         return redirect()->route('comics.index');
     }

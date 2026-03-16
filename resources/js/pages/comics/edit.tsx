@@ -17,7 +17,7 @@ interface Editora {
     id: number;
     nombre: string;
 }
-
+// representa lo que viene del servidor
 interface Comic {
     id: number,
     titulo: string,
@@ -26,7 +26,21 @@ interface Comic {
     descripcion: string,
     autors: Autor[];      
     categorias: Categoria[];
-    editora_id: number
+    editora_id: number,
+    imagen: string | null
+}
+
+//representa lo que el formulario va a manejar
+interface FormDataType {
+    _method: string,
+    titulo: string,
+    precio: string | number,
+    lanzamiento: string,
+    descripcion: string,
+    autors_ids: number[];
+    categorias_ids: number[];
+    editora_id: string | number,
+    imagen: File | null
 }
 
 interface Props {
@@ -36,9 +50,11 @@ interface Props {
     todas_las_editoras: Editora[]
 }
 
+//Sincronización de contratos para que TypeScript no se queje: separación de modelos (lectura y escritura), method spoofing (enviar petición como post pero se le añade un campo oculto llamado _method:post) y sincronización de los campos multi-select (antes el servidor recibía objetos, pero solo necesitaba numbers/id en el formulario, por lo que se ha modificado los nombre en la interfaza autors_ids y categorias_ids)
 export default function Edit({ comic, todos_los_autores, todas_las_categorias, todas_las_editoras }: Props) {
     
-    const { data, setData, put, errors } = useForm({
+    const { data, setData, put, errors, post } = useForm<FormDataType>({
+        _method: 'put',
         titulo: comic.titulo || '',
         precio: comic.precio || '',
         lanzamiento: comic.lanzamiento || '',
@@ -46,12 +62,14 @@ export default function Edit({ comic, todos_los_autores, todas_las_categorias, t
         // Cargamos los IDs actuales para que no salgan vacíos al entrar
         autors_ids: comic.autors ? comic.autors.map(a => a.id) : [],
         categorias_ids: comic.categorias ? comic.categorias.map(c => c.id) : [],
-        editora_id: comic.editora_id || ''
+        editora_id: comic.editora_id || '',
+        imagen: null
     });
 
+    //Se pone post porque el protocolo HTTP estándar no soporta el envío de archivos mediante el método PUT
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
-        put(`/comics/${comic.id}`);
+        post(`/comics/${comic.id}`);
     };
 
     return (
@@ -153,6 +171,18 @@ export default function Edit({ comic, todos_los_autores, todas_las_categorias, t
                             ))}
                         </select>
                     </div>
+
+                    <div className="flex flex-col gap-2">
+    <label htmlFor="imagen" className="font-bold">Portada del Cómic</label>
+    <input 
+        type="file" 
+        id="imagen"
+        className="border p-2"
+        // 3. Así se captura el archivo en Inertia
+        onChange={e => setData('imagen', e.target.files ? e.target.files[0] : null)} 
+    />
+    {errors.imagen && <div className="text-red-500">{errors.imagen}</div>}
+</div>
 
                     <button type='submit' className='btn btn-primary w-full mt-4'>Actualizar Cómic</button>
                 </form>
