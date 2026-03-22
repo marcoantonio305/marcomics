@@ -51,7 +51,7 @@ interface Props {
     todas_las_editoras: Editora[];
 }
 
-export default function Create({comic, todos_los_autores, todas_las_categorias, todas_las_editoras}:Props) {
+export default function Create({todos_los_autores, todas_las_categorias, todas_las_editoras}:Props) {
     const { data, setData, post, errors } = useForm<FormDataType>({
         _method: 'post',
         titulo: '',

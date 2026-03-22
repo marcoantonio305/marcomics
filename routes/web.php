@@ -44,6 +44,8 @@ Route::get('/categorias/create', [CategoriaController::class, 'create'])->name('
 Route::post('/categorias', [CategoriaController::class, 'store'])->name('categorias.store');
 Route::get('/categorias/{categoria}', [CategoriaController::class, 'show'])->name('categorias.show'); //Ruta para mostrar todos los comics de una categoría
 Route::delete('/categorias/{categoria}', [CategoriaController::class, 'destroy'])->name('categorias.destroy');
+Route::get('/categorias/{categoria}/edit', [CategoriaController::class, 'edit'])->name('categorias.edit');
+Route::put('/categorias/{categoria}', [CategoriaController::class, 'update'])->name('categorias.update');
 
 Route::get('/editoras', [EditoraController::class, 'index'])->name('editoras.index');
 Route::get('/editoras/create', [EditoraController::class, 'create'])->name('editoras.create');

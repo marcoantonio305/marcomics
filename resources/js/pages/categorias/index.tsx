@@ -22,8 +22,10 @@ export default function Index({ categorias }: Props) {
                 {categorias.length > 0 ? (
                     <div className="space-y-2">
                         {categorias.map((categoria) => (
-                            <div key={categoria.id} className="flex items-center justify-between gap-2">
+                            <div key={categoria.id} className="flex flex-rows-1 items-center justify-between">
                                 <Link href={`/categorias/${categoria.id}`} className="link link-primary no-underline hover:underline transition-colors"><span className="text-xl font-bold text-primary">{categoria.nombre}</span></Link>
+                                <div>
+                                <Link href={`/categorias/${categoria.id}/edit`} className="btn btn-ghost btn-xs text-info">Editar</Link>
                                 <button
                                     onClick={() => {
                                         if (confirm('¿Estás seguro de querer eliminar este categoria?')) {
@@ -34,6 +36,7 @@ export default function Index({ categorias }: Props) {
                                 >
                                     Eliminar
                                 </button>
+                                </div>
                             </div>
                         ))}
                     </div>

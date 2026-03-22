@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Categoria;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class CategoriaController extends Controller
@@ -35,7 +36,14 @@ class CategoriaController extends Controller
     {
         $validated = $request->validate([
             'nombre' => 'required|max:255',
+            'imagen' => 'nullable|image|max:2048'
         ]);
+
+        if ($request->hasFile('imagen')) {
+            $rutaImagen = $request->file('imagen')->store('images', 'public');
+            $validated['imagen'] = $rutaImagen;
+        }
+
 
         Categoria::create($validated);
         return redirect()->route('categorias.index');
@@ -57,7 +65,9 @@ class CategoriaController extends Controller
      */
     public function edit(Categoria $categoria)
     {
-        //
+        return Inertia::render('categorias/edit', [
+            'categoria' => $categoria,
+        ]);
     }
 
     /**
@@ -65,7 +75,21 @@ class CategoriaController extends Controller
      */
     public function update(Request $request, Categoria $categoria)
     {
-        //
+        $validated = $request->validate([
+            'nombre' => 'required|max:255',
+            'imagen' => 'nullable|image|max:2048'
+        ]);
+
+        if ($request->hasFile('imagen')) {
+            if ($categoria->imagen) {
+            Storage::disk('public')->delete($categoria->imagen);
+        }
+            $rutaImagen = $request->file('imagen')->store('images', 'public');
+            $validated['imagen'] = $rutaImagen;
+        }
+
+        $categoria->update($validated);
+        return redirect()->route('categorias.index');
     }
 
     /**

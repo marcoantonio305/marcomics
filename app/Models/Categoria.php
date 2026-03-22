@@ -8,6 +8,7 @@ class Categoria extends Model
 {
     protected $fillable = [
         'nombre',
+        'imagen'
     ];
     public function comics() {
         return $this->belongsToMany(Comic::class);

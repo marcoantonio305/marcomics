@@ -15,6 +15,7 @@ interface Autor {
 interface Categoria {
     id: number;
     nombre: string;
+    imagen?: string;
     comics?: Comic[];
 }
 
@@ -40,6 +41,7 @@ export default function Show({categoria}:Props) {
         <AppLayout>
         <div className='p-8 flex flex-col'>
             <h1 className='text-4xl font-black '>{categoria.nombre}</h1>
+            <img className="w-64 h-96 object-cover mt-4" src={categoria.imagen ? `/storage/${categoria.imagen}` : '/img/default-category.png'} alt="Imagen de categoría" />
             <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6'>
                 {listaComics.length > 0 ? (
                     listaComics.map(comic => (
