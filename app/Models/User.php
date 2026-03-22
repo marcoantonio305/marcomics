@@ -61,4 +61,9 @@ class User extends Authenticatable
     public function historialCompra() {
         return $this->hasOne(HistorialCompra::class);
     }
+    
+    public function postChats()
+    {
+        return $this->hasMany(PostChat::class);
+    }
 }

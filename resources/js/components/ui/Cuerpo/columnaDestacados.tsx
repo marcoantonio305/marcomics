@@ -41,7 +41,7 @@ export default function ColumnaDestacados({coleccion1, coleccion2, coleccion3}:P
     </Link>
 </div>
 <div className="flex flex-col bg-[#B4B4C7]"> 
-    <Link href={`/categorias/${coleccion1?.id}`} className="flex flex-col group">
+    <Link href={`/categorias/${coleccion2?.id}`} className="flex flex-col group">
         
         <div className="h-44 flex justify-center items-center p-4">
             <img 

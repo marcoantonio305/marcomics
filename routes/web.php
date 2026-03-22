@@ -5,6 +5,7 @@ use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ComicController;
 use App\Http\Controllers\EditoraController;
 use App\Http\Controllers\HistorialCompraController;
+use App\Http\Controllers\PostChatController;
 use App\Models\Categoria;
 use App\Models\Comic;
 use Illuminate\Support\Facades\Route;
@@ -19,8 +20,13 @@ Route::get('/inicio', function () {
     return Inertia::render('inicio', [
         'categorias' => Categoria::all(),
         'comics' => Comic::with(['categorias', 'autors'])->latest()->take(12)->get(),
+        'chat' => \App\Models\Chat::where('nombre_clave', 'general')->first(),
+        'postChats' => \App\Models\PostChat::with('user')->whereHas('chat', function($q){
+            $q->where('nombre_clave', 'general');
+        })->latest()->take(10)->get()->reverse()->values(),
     ]);
 })->name('inicio');
+
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
@@ -55,7 +61,10 @@ Route::delete('/editoras/{editora}', [EditoraController::class, 'destroy'])->nam
 Route::get('/historialCompras', [HistorialCompraController::class, 'index'])->name('historialCompras.index');
 Route::get('/historialCompras/create', [HistorialCompraController::class, 'create'])->name('historialCompras.create');
 Route::post('/historialCompras', [HistorialCompraController::class, 'store'])->name('historialCompras.store');
-Route::delete('/historialCompras/{hisotialCompra}', [HistorialCompraController::class, 'destroy'])->name('historialCompras.destroy');
+Route::delete('/historialCompras/{historialCompra}', [HistorialCompraController::class, 'destroy'])->name('historialCompras.destroy');
+
+Route::get('/postChats', [PostChatController::class, 'index'])->name('chat.index');
+Route::post('/postChats/create', [PostChatController::class, 'store'])->name('post_chats.store');
 
 
 
