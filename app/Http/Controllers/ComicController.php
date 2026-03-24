@@ -15,12 +15,19 @@ class ComicController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $comics = Comic::all();
+        $search = $request->input('search');
+        $comics = Comic::query()
+        ->when($search, function ($query, $search) {
+            $query->where('titulo', 'ILIKE', "%{$search}%");
+        })
+                ->with(['categorias', 'autors', 'editora'])
+                ->get();
+        
         return Inertia::render('comics/index', [
-            'comics' => Comic::with('categorias', 'autors', 'editora')->get(),
-            'titulo' => 'Catálogo de cómics'
+            'comics' => $comics,
+            'titulo' => $search ? 'Resultados para: ' . $search : 'Catálogo de cómics',
         ]);
     }
 
@@ -133,5 +140,28 @@ class ComicController extends Controller
     
         $comic->delete();
         return redirect()->route('comics.index');
+    }
+
+
+    public function buscador(Request $request)
+    {
+        $term = $request->input('term');
+
+        if (!$term || strlen($term) < 2) {
+        return response()->json(['comics' => [], 'categorias' => []]);
+    }
+
+        $comics = Comic::where('titulo', 'ILIKE', "%{$term}%")
+            ->limit(7)
+            ->get(['id', 'imagen', 'titulo']);
+
+        $categorias = Categoria::where('nombre', 'ILIKE', "%{$term}%")
+            ->limit(3)
+            ->get(['id', 'nombre', 'imagen']);
+
+        return response()->json([
+            'comics' => $comics,
+            'categorias' => $categorias
+        ]);
     }
 }

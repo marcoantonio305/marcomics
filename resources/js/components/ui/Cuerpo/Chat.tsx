@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
-import { useForm, usePage } from "@inertiajs/react";
+import { useForm, usePage, router } from "@inertiajs/react";
+import { useEcho } from '@laravel/echo-react'; //Para conectarnos al reverb de app.tsx
 
 interface Chat {
     id: number;
@@ -30,12 +31,39 @@ export default function Chat({ chat, postChats }: Props) {
     //scroll automático
     const scrollRef = useRef<HTMLDivElement>(null);
 
+    
+useEcho(
+    `chat.${chat?.id}`,            // El nombre del canal
+    '.mensaje.enviado',            // El nombre del evento
+    (e: any) => {                  // Lo que hace cuando recibe el mensaje
+        console.log("¡Evento recibido!", e);
+        router.reload({ only: ['postChats'] });
+    },
+    [chat?.id]                     // Se actualiza si cambia el chat
+);
+
     const { data, setData, post, processing, reset } = useForm({
         mensaje: "",
-        chat_id: chat.id,
+        chat_id: chat?.id,
         user_id: auth?.user?.id,
         mencionado_id: null,
     });
+
+    // Escuchar el canal de WebSocket, para así poder recibir mensajes en tiempo real
+    useEffect(() => {
+    if (chat?.id && (window as any).Echo) {
+        // Escuchamos el "apodo" que pusimos en el backend con un punto delante
+        (window as any).Echo.private(`chat.${chat.id}`)
+            .listen('.mensaje.enviado', (e: any) => {
+                console.log("¡Evento recibido!", e);
+                router.reload({ only: ['postChats'] });
+            });
+
+        return () => {
+            (window as any).Echo.leave(`chat.${chat.id}`);
+        };
+    }
+}, [chat?.id]);
 
     //baja el scroll cuando hay mensajes nuevos
     useEffect(() => {
@@ -48,16 +76,19 @@ export default function Chat({ chat, postChats }: Props) {
         e.preventDefault();
         if (!data.mensaje.trim()) return; //para no enviar mensaje vacíos
         post("/postChats/create", {
-            onSuccess: () => reset(),
+            preserveScroll: true, // PAra evitar que la página se desplace tras enviar el mensaje
+            onSuccess: () => reset(), // BElimina el input solo si el mensaje se envio correctamente
         });
     };
+
+    if (!chat) return <div className="p-4 text-gray-500">Cargando chat...</div>;
 
     return (
         <div className="flex flex-col h-full border border-black bg-white overflow-hidden">
             <div className="flex-1 overflow-y-auto p-4" ref={scrollRef}>
                 {chat.id === 1 ? <h2 className="text-2xl font-bold mb-4">Chat General</h2> : "No se ha encontrado el chat"}
                 <div className="flex flex-col gap-4">
-                    {postChats.length > 0 ? (
+                    {postChats && postChats.length > 0 ? (
                         postChats.map((postChat) => (
                             <div key={postChat.id} className="bg-white text-blue p-3 rounded shadow-sm border border-gray-100">
                                 <div className="flex items-center gap-2 mb-1">

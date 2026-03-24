@@ -66,6 +66,6 @@ Route::delete('/historialCompras/{historialCompra}', [HistorialCompraController:
 Route::get('/postChats', [PostChatController::class, 'index'])->name('chat.index');
 Route::post('/postChats/create', [PostChatController::class, 'store'])->name('post_chats.store');
 
-
+Route::get('/api/buscador', [ComicController::class, 'buscador'])->name('api.buscador');
 
 require __DIR__.'/settings.php';

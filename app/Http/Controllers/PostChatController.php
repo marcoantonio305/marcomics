@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\MessageSent;
 use App\Models\Chat;
 use App\Models\PostChat;
 use Illuminate\Http\Request;
@@ -56,12 +57,14 @@ return Inertia::render('inicio', [
             'mencionado_id' => 'nullable|exists:users,id'
         ]);
 
-        PostChat::create([
+        $postChat = PostChat::create([
             'user_id' => Auth::user()->id,
             'chat_id' => $validated['chat_id'],
             'mensaje' => $validated['mensaje'],
             'mencionado_id' => $validated['mencionado_id'] ?? null
         ]);
+
+        broadcast(new MessageSent($postChat)); //Dispara el evento de MessageSent
 
         return back()->with('success', 'Mensaje enviado.');
     }

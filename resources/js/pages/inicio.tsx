@@ -52,7 +52,7 @@ interface Props {
     postChats: PostChat[];
 }
 
-export default function Inicio({ categorias = [], comics = [], chat, postChats }: Props) {
+export default function Inicio({ categorias = [], comics = [], chat, postChats = [] }: Props) {
     const categoriaSuperheroes = categorias.find(categoria => categoria.nombre.toLocaleLowerCase() === 'superhéroes');
     const categoriaManga = categorias.find(categoria => categoria.nombre.toLocaleLowerCase() === 'manga');
 
@@ -89,7 +89,7 @@ export default function Inicio({ categorias = [], comics = [], chat, postChats }
                 <aside className="sticky top-4 w-80">
                     <ColumnaDestacados coleccion1={coleccion1} coleccion2={coleccion2} coleccion3={coleccion3}></ColumnaDestacados>
                     <div className="h-[500px] mt-6 flex flex-col">
-                        <Chat chat={chat} postChats={postChats} />
+                        {chat && <Chat chat={chat} postChats={postChats} />}
                     </div>
                 </aside>
             </div>

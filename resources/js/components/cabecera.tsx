@@ -1,5 +1,6 @@
 import { Icono } from "./ui/Cabecera/icono"
 import { BotonCategoriaCabecera } from "./ui/Cabecera/botonCategoriaCabecera"
+import Buscador from "./ui/Cabecera/Buscador";
 
 interface Categoria {
     id: number;
@@ -31,7 +32,9 @@ export function Cabecera({categorias = []}:Props) {
     {indie && <BotonCategoriaCabecera nombre={indie.nombre} href={`/categorias/${indie.id}`} />}
     {europeo && <BotonCategoriaCabecera nombre={europeo.nombre} href={`/categorias/${europeo.id}`} />}
     {infantil && <BotonCategoriaCabecera nombre={infantil.nombre} href={`/categorias/${infantil.id}`} />}
+    <Buscador />
             </div>
+            
         </header>
     )
 }
