@@ -65,6 +65,10 @@ export default function Inicio({ categorias = [], comics = [], chat, postChats =
     const comic2 = comics.find(comic => comic.id === 15);
     const comic3 = comics.find(comic => comic.id === 16);
     const comic4 = comics.find(comic => comic.id === 17);
+    const comic5 = comics.find(comic => comic.id === 18);
+    const comic6 = comics.find(comic => comic.id === 19);
+    const comic7 = comics.find(comic => comic.id === 20);
+    const comic8 = comics.find(comic => comic.id === 21);
 
     return (
         <AppLayout>
@@ -76,6 +80,8 @@ export default function Inicio({ categorias = [], comics = [], chat, postChats =
                             {comic0 && <ComicIndividual comic={comic0} />}
                             {comic1 && <ComicIndividual comic={comic1} />}
                             {comic2 && <ComicIndividual comic={comic2} />}
+                            {comic7 && <ComicIndividual comic={comic7} />}
+                            {comic8 && <ComicIndividual comic={comic8} />}
                         </div>
                     </div>
                     <div className="flex flex-col">
@@ -83,6 +89,8 @@ export default function Inicio({ categorias = [], comics = [], chat, postChats =
                         <div className="flex flex-row gap-4">
                             {comic3 && <ComicIndividual comic={comic3} />}
                             {comic4 && <ComicIndividual comic={comic4} />}
+                            {comic5 && <ComicIndividual comic={comic5} />}
+                            {comic6 && <ComicIndividual comic={comic6} />}
                         </div>
                     </div>
                 </div>
