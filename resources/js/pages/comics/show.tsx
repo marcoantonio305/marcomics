@@ -1,6 +1,8 @@
 import React from 'react';
-import { Link, router } from '@inertiajs/react';
+import { Link, router, useForm } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
+import { Button } from '@/components/ui/button';
+import BotonBiblioteca from '@/components/ui/Cuerpo/BotonBiblioteca';
 
 interface Editora {
     id: number;
@@ -35,6 +37,7 @@ interface Props {
 }
 
 export default function Show({ comic} : Props) {
+    
     return (
         <AppLayout>
     <div className="div-8 ml-5">
@@ -74,6 +77,7 @@ export default function Show({ comic} : Props) {
         )}
                 </span></p>
             </div>
+            <BotonBiblioteca comic_id={comic.id}></BotonBiblioteca>
             <Link href={`/comics`} className='btn btn-ghost btn-secondary'>Volver al index</Link>
     </div>
     </AppLayout>

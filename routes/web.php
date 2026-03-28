@@ -1,11 +1,13 @@
 <?php
 
 use App\Http\Controllers\AutorController;
+use App\Http\Controllers\BibliotecaController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ComicController;
 use App\Http\Controllers\EditoraController;
 use App\Http\Controllers\HistorialCompraController;
 use App\Http\Controllers\PostChatController;
+use App\Http\Controllers\UserController;
 use App\Models\Categoria;
 use App\Models\Comic;
 use Illuminate\Support\Facades\Route;
@@ -67,5 +69,9 @@ Route::get('/postChats', [PostChatController::class, 'index'])->name('chat.index
 Route::post('/postChats/create', [PostChatController::class, 'store'])->name('post_chats.store');
 
 Route::get('/api/buscador', [ComicController::class, 'buscador'])->name('api.buscador');
+
+Route::get('/users/{user}', [UserController::class, 'show'])->name('user.show');
+Route::delete('/comics/{comic}/biblioteca', [BibliotecaController::class, 'destroy'])->name('biblioteca_comic.destroy');
+Route::post('/comics/{comic}/biblioteca', [BibliotecaController::class, 'store'])->name('biblioteca_comic.store');
 
 require __DIR__.'/settings.php';

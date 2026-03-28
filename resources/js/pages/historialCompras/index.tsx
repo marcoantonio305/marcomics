@@ -48,7 +48,7 @@ export default function Index({ historialCompras}: Props) {
                                 {historialCompras.length > 0 ? (
                                     historialCompras.map((hisCom) => (
                                         <tr key={hisCom.id} className="hover">
-                                            <td className="font-bold"><Link href={`/historialCompras/${hisCom}`} className="link link-primary no-underline hover:underline transition-colors">{comic.titulo}</Link></td>
+                                            <td className="font-bold"><Link href={`/historialCompras/${hisCom}`} className="link link-primary no-underline hover:underline transition-colors"></Link></td>
                                             <td className="font-mono">{hisCom.id}€</td>
                                             <td>{hisCom.user?.name}</td>
                                             <td>{hisCom.compra?.id}</td>

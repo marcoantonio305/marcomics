@@ -3,7 +3,7 @@ import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import type { BreadcrumbItem } from '@/types';
-import { BookOpen, Pencil, PlusSquare, Library} from 'lucide-react';
+import { BookOpen, Pencil, PlusSquare, Library, PlayIcon, User} from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -23,6 +23,16 @@ export default function Dashboard() {
 
                     <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
 
+                    <Link
+                        href="/inicio"
+                        className="group flex flex-col items-center text-center transition-transform hover:scale-105"
+                    >
+                        <div className="mb-4 flex h-24 w-24 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 group-hover:bg-blue-50 dark:bg-neutral-800 dark:ring-neutral-700">
+                            <PlayIcon className="size-12 text-yellow-600" />
+                        </div>
+                        <h3 className="text-md font-semibold text-gray-900 dark:text-white">Inicio</h3>
+                        <p className="text-sm text-gray-500">El index de la página</p>
+                    </Link>
                     <Link
                         href="/comics"
                         className="group flex flex-col items-center text-center transition-transform hover:scale-105"
@@ -62,6 +72,16 @@ export default function Dashboard() {
                         </div>
                         <h3 className="text-md font-semibold text-gray-900 dark:text-white">Editoras</h3>
                         <p className="text-sm text-gray-500">Gestión de los editoras.</p>
+                    </Link>
+                    <Link
+                        href="/users"
+                        className="group flex flex-col items-center text-center transition-transform hover:scale-105"
+                    >
+                        <div className="mb-4 flex h-24 w-24 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 group-hover:bg-blue-50 dark:bg-neutral-800 dark:ring-neutral-700">
+                            <User className="size-12 text-red-600" />
+                        </div>
+                        <h3 className="text-md font-semibold text-gray-900 dark:text-white">Usuarios</h3>
+                        <p className="text-sm text-gray-500">Gestión de los usuarios.</p>
                     </Link>
                 </div>
 
