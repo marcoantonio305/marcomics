@@ -1,6 +1,7 @@
 import { Icono } from "./ui/Cabecera/icono"
 import { BotonCategoriaCabecera } from "./ui/Cabecera/botonCategoriaCabecera"
 import Buscador from "./ui/Cabecera/Buscador";
+import ParteLogin from "./ui/Cabecera/ParteLogin";
 
 interface Categoria {
     id: number;
@@ -24,6 +25,7 @@ export function Cabecera({categorias = []}:Props) {
                 <div className="flex-[3] flex items-center border-r-2">
                     <Icono></Icono>
                 </div>
+                <div className="ms-auto"><ParteLogin /></div>
             </div>
             <div className="flex w-full h-12">
                 {marvel && (<BotonCategoriaCabecera nombre={marvel.nombre} href={`/categorias/${marvel.id}`} />)}

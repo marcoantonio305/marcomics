@@ -14,9 +14,16 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
 
-Route::inertia('/', 'welcome', [
-    'canRegister' => Features::enabled(Features::registration()),
-])->name('home');
+//Route::inertia('/', 'welcome', [
+//'canRegister' => Features::enabled(Features::registration()),
+//])->name('home');
+
+Route::get('/', function () {
+    return Inertia::render('inicio', [
+        'comics' => \App\Models\Comic::with(['autors', 'categorias'])->get(), 
+        'canRegister' => Laravel\Fortify\Features::enabled(Laravel\Fortify\Features::registration()),
+    ]);
+})->name('home');
 
 Route::get('/inicio', function () {
     return Inertia::render('inicio', [
@@ -70,8 +77,11 @@ Route::post('/postChats/create', [PostChatController::class, 'store'])->name('po
 
 Route::get('/api/buscador', [ComicController::class, 'buscador'])->name('api.buscador');
 
+Route::get('/users', [UserController::class, 'index'])->name('users.index');
 Route::get('/users/{user}', [UserController::class, 'show'])->name('user.show');
 Route::delete('/comics/{comic}/biblioteca', [BibliotecaController::class, 'destroy'])->name('biblioteca_comic.destroy');
 Route::post('/comics/{comic}/biblioteca', [BibliotecaController::class, 'store'])->name('biblioteca_comic.store');
+Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+Route::patch('/users/{user}', [UserController::class, 'update'])->name('users.update');
 
 require __DIR__.'/settings.php';

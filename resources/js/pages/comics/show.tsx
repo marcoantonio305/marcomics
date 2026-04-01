@@ -77,8 +77,10 @@ export default function Show({ comic} : Props) {
         )}
                 </span></p>
             </div>
+            <Link href={`/comics/${comic.id}/edit`} className='btn btn-secondary mr-4'>Editar comic</Link>
+            <Link href={`/comics/${comic.id}/delete`} className='btn btn-warning mr-4'>Eliminar comic</Link>
             <BotonBiblioteca comic_id={comic.id}></BotonBiblioteca>
-            <Link href={`/comics`} className='btn btn-ghost btn-secondary'>Volver al index</Link>
+            <Link href={`/comics`} className='btn btn-secondary mr-4 ml-4'>Volver al index</Link>
     </div>
     </AppLayout>
     );

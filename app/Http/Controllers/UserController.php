@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class UserController extends Controller
@@ -13,7 +15,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        return Inertia::render('users/index', [
+            'users' => User::with('rol')->get(),
+        ]);
     }
 
     /**
@@ -48,7 +52,13 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        if (Auth::id() != $id) {
+            abort(403, 'No tienes permiso para editar este usuario.');
+        }
+
+        return Inertia::render('users/edit', [
+            'user' => User::findOrFail($id),
+        ]);
     }
 
     /**
@@ -56,7 +66,28 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $user = User::findOrFail($id);
+        if (Auth::id() != $id) {
+            abort(403, 'No tienes permiso para editar este usuario.');
+        }
+
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'biografia' => 'nullable|string',
+            'foto_perfil' => 'nullable|image|max:2048',
+        ]);
+
+        if ($request->hasFile('foto_perfil')) {
+            if ($user->foto_perfil) {
+                Storage::disk('public')->delete($user->foto_perfil);
+            }
+            $path = $request->file('foto_perfil')->store('fotos_perfil', 'public');
+            $data['foto_perfil'] = $path;
+        }
+
+        $user->update($data);
+
+        return redirect()->route('user.show', $user)->with('success', 'Perfil actualizado correctamente.');
     }
 
     /**

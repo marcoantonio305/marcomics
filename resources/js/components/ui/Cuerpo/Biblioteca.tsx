@@ -1,4 +1,5 @@
 import AppLayout from "@/layouts/app-layout";
+import { Link } from "@inertiajs/react";
 import React from "react";
 
 interface User {
@@ -28,8 +29,10 @@ export default function Biblioteca({ user }: Props) {
             <div className="flex flex-wrap gap-6">
                 {user.comics.map((comic) => (
                     <div key={comic.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-                        <img src={comic.imagen ? `/storage/${comic.imagen}` : '/img/default-comic.png'} alt={comic.titulo} className="w-32 h-48 object-cover transition-transform duration-300 group-hover:scale-105" />
-                            <h2 className="text-xl font-bold mb-2">{comic.titulo}</h2>
+                        <Link href={`/comics/${comic.id}`}>
+                            <img src={comic.imagen ? `/storage/${comic.imagen}` : '/img/default-comic.png'} alt={comic.titulo} className="w-32 h-48 object-cover transition-transform duration-300 group-hover:scale-105" />
+                        </Link>
+                        <h2 className="text-xl font-bold mb-2">{comic.titulo}</h2>
                     </div>
                 ))}
             </div>
