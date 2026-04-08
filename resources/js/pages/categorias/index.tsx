@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, router } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import appLayout from '@/layouts/app-layout';
 import AppLayout from '@/layouts/app-layout';
 
@@ -13,6 +13,7 @@ interface Props {
 }
 
 export default function Index({ categorias }: Props) {
+    const {auth} = usePage().props as any;
     return (
         <AppLayout>
         <div className="div-8">
@@ -46,14 +47,18 @@ export default function Index({ categorias }: Props) {
             </div>
 
             <div className="mt-4">
+                {auth.user?.rol_id !== 3 && (
                 <Link href="/categorias/create" className="btn btn-primary">
                     Añadir Categoría
                 </Link>
+                )}
             </div>
             <div className="mt-4">
+                {auth.user?.rol_id !== 3 && (
                             <Link href="dashboard" className="btn btn-success">
                                 Volver al dashboard
                             </Link>
+                        )}
                         </div>
         </div>
         </AppLayout>

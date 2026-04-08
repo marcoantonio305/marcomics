@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, router, useForm } from '@inertiajs/react';
+import { Link, router, useForm, usePage } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import { Button } from '@/components/ui/button';
 import BotonBiblioteca from '@/components/ui/Cuerpo/BotonBiblioteca';
@@ -37,7 +37,7 @@ interface Props {
 }
 
 export default function Show({ comic} : Props) {
-    
+    const {auth} = usePage().props as any;
     return (
         <AppLayout>
     <div className="div-8 ml-5">
@@ -77,10 +77,22 @@ export default function Show({ comic} : Props) {
         )}
                 </span></p>
             </div>
+            {auth.user?.rol_id !== 3 && (
             <Link href={`/comics/${comic.id}/edit`} className='btn btn-secondary mr-4'>Editar comic</Link>
-            <Link href={`/comics/${comic.id}/delete`} className='btn btn-warning mr-4'>Eliminar comic</Link>
-            <BotonBiblioteca comic_id={comic.id}></BotonBiblioteca>
+            )}
+            {auth.user?.rol_id !== 3 && (
+            <button 
+        onClick={() => router.delete(`/comics/${comic.id}`)} 
+        className='btn btn-warning mr-4' 
+    >
+        Eliminar comic
+    </button>
+            )}
+            {auth.user?.rol_id !== 3 && (
             <Link href={`/comics`} className='btn btn-secondary mr-4 ml-4'>Volver al index</Link>
+            )}
+            <BotonBiblioteca comic_id={comic.id}></BotonBiblioteca>
+            
     </div>
     </AppLayout>
     );

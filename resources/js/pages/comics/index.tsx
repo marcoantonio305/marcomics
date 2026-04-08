@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, router } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 
 import AppLayout from '@/layouts/app-layout';
 
@@ -35,6 +35,7 @@ interface Props {
 }
 
 export default function Index({ comics, titulo} : Props) {
+    const {auth} = usePage().props as any;
     return (
         <AppLayout>
     <div className="div-8">
@@ -93,12 +94,16 @@ export default function Index({ comics, titulo} : Props) {
 </td>
                                         <td className="text-center">
                                             <div className="flex justify-center gap-2">
-                                                <Link href={`/comics/${comic.id}/edit`} className="btn btn-ghost btn-xs text-info">Editar</Link>
-                                                <button onClick={()=> {
-                                                    if (confirm('¿Estás seguro de querer eliminar este cómic?')) {
-                                                        router.delete(`/comics/${comic.id}`)
-                                                    }
-                                                }} className="btn btn-ghost btn-xs text-error">Eliminar</button>
+                                                {auth.user?.rol_id !== 3 && (
+                                                    <>
+                                                        <Link href={`/comics/${comic.id}/edit`} className="btn btn-ghost btn-xs text-info">Editar</Link>
+                                                        <button onClick={()=> {
+                                                            if (confirm('¿Estás seguro de querer eliminar este cómic?')) {
+                                                                router.delete(`/comics/${comic.id}`)
+                                                            }
+                                                        }} className="btn btn-ghost btn-xs text-error">Eliminar</button>
+                                                    </>
+                                                )}
                                             </div>
                                         </td>
                                     </tr>
@@ -115,14 +120,18 @@ export default function Index({ comics, titulo} : Props) {
                 </div>
             </div>
         <div>
-            <Link href="/comics/create" className='btn btn-primary'>
-            Añadir Cómic
-            </Link>
+            {auth.user?.rol_id !== 3 && (
+                <Link href="/comics/create" className='btn btn-primary'>
+                    Añadir Cómic
+                </Link>
+            )}
         </div>
         <div className="mt-4">
+            {auth.user?.rol_id !== 3 && (
                         <Link href="dashboard" className="btn btn-success">
                             Volver al dashboard
                         </Link>
+                    )}
                     </div>
     </div>
     </AppLayout>

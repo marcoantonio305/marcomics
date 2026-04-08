@@ -42,6 +42,14 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
+            // Mensajes de notificaciones
+            'flash' => [
+    'success' => fn () => $request->session()->get('success'),
+    'error' => fn () => $request->session()->get('error'),
+],
+'carritoTotal' => number_format(collect($request->session()->get('carrito', []))->sum(function($item) {
+            return $item['precio'] * $item['cantidad'];
+        }), 2),
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
     }

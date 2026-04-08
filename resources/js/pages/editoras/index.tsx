@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, router } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import appLayout from '@/layouts/app-layout';
 import AppLayout from '@/layouts/app-layout';
 
@@ -13,6 +13,7 @@ interface Props {
 }
 
 export default function Index({ editoras }: Props) {
+    const {auth} = usePage().props as any;
     return (
         <AppLayout>
         <div className="div-8">
@@ -43,9 +44,11 @@ export default function Index({ editoras }: Props) {
             </div>
 
             <div className="mt-4">
+                {auth.user?.rol_id !== 3 && (
                 <Link href="/editoras/create" className="btn btn-primary">
                     Añadir Editora
                 </Link>
+                )}
             </div>
             <div className="mt-4">
                             <Link href="dashboard" className="btn btn-success">

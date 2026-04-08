@@ -78,4 +78,46 @@ class CompraController extends Controller
     {
         //
     }
+
+    public function anadirAlCarrito(Request $request)
+    {
+        $comic = Comic::find($request->comic_id);
+        if (!$comic) {
+            return response()->json(['error' => 'Comic no encontrado'], 404);
+        }
+
+        $carrito = session()->get('carrito', []);
+
+        if (isset($carrito[$comic->id])) {
+            $carrito[$comic->id]['cantidad'] += 1;
+        } else {
+            $carrito[$comic->id] = [
+                'id' => $comic->id,
+                'titulo' => $comic->titulo,
+                'precio' => $comic->precio,
+                'cantidad' => 1
+            ];
+        }
+        session()->put('carrito', $carrito);
+
+        return back()->with('success', 'Comic añadido al carrito');
+    }
+
+    public function eliminarDelCarrito(Request $request)
+    {
+        $comicId = $request->comic_id;
+        $carrito = session()->get('carrito', []);
+
+        if (isset($carrito[$comicId])) {
+            if ($carrito[$comicId]['cantidad'] > 1) {
+                $carrito[$comicId]['cantidad'] -= 1;
+            } else {
+                unset($carrito[$comicId]);
+            }
+            session()->put('carrito', $carrito);
+            return back()->with('success', 'Comic eliminado del carrito');
+        }
+
+        return back()->with('error', 'Comic no encontrado en el carrito');
+    }
 }

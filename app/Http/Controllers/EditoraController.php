@@ -34,7 +34,9 @@ class EditoraController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nombre' => 'required|max:255',
+            'nombre' => 'required|max:255|unique:editoras,nombre',
+        ], [
+            'nombre.unique' => 'Esa editora ya fue añadida',
         ]);
 
         Editora::create($validated);

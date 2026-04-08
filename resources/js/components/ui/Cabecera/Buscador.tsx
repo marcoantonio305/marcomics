@@ -87,7 +87,7 @@ export default function Buscador() {
                     >
                                                 <img src={`/storage/${cat.imagen}`} 
         alt={cat.nombre} 
-        className="w-10 h-14 object-cover border border-black shadow-sm" />
+        className="w-10 h-14 object-contain border border-black shadow-sm" />
                                                 <span>Categoria {cat.nombre}</span>
                     </Link>
                     ))}

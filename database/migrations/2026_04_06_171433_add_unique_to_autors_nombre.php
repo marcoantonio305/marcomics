@@ -10,19 +10,19 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
-        Schema::create('autors', function (Blueprint $table) {
-            $table->id();
-            $table->string("nombre")->unique();
-            $table->timestamps();
-        });
-    }
+{
+    Schema::table('autors', function (Blueprint $table) {
+        $table->string('nombre')->unique()->change();
+    });
+}
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('autors');
+        Schema::table('autors', function (Blueprint $table) {
+            //
+        });
     }
 };

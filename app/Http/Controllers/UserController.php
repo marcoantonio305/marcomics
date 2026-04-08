@@ -95,6 +95,21 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $user = User::findOrFail($id);
+        if (Auth::user()->rol_id != 1) {
+            abort(403, 'No tienes permiso para eliminar este usuario.');
+        }
+
+        if (Auth::id() == $id) {
+            abort(403, 'No puedes eliminar tu propia cuenta.');
+        }
+
+        if ($user->foto_perfil) {
+            Storage::disk('public')->delete($user->foto_perfil);
+        }
+
+        $user->delete();
+
+        return redirect()->route('inicio')->with('success', 'Cuenta eliminada correctamente.');
     }
 }

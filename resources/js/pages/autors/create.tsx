@@ -2,6 +2,7 @@ import { useForm } from '@inertiajs/react';
 import React from 'react';
 import { Breadcrumb } from '@/components/ui/breadcrumb';
 import AppLayout from '@/layouts/app-layout';
+import InputError from '@/components/input-error';
 
 interface Autor {
     id: number,
@@ -29,6 +30,7 @@ export default function Create({autor}:Props) {
                     <label htmlFor='nombre' className='text-sm font-medium'>Título</label>
                     <input id="nombre" type="text" className='rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700'
                         value={data.nombre} onChange={e => setData('nombre', e.target.value)}></input>
+                        <InputError message={errors.nombre} className="text-xl text-red-600" />
                 </div>
                 <div className="md:col-span-2 mt-4">
                     <button type='submit' className='w-full md:w-auto rounded-md bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600'>

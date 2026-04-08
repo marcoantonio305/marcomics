@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, router } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 
 interface Editora {
@@ -37,11 +37,25 @@ interface Props {
 
 export default function Show({categoria}:Props) {
     const listaComics = categoria.comics || [];
+    const auth = usePage().props.auth;
     return (
         <AppLayout>
         <div className='p-8 flex flex-col'>
             <h1 className='text-4xl font-black '>{categoria.nombre}</h1>
-            <img className="w-64 h-96 object-cover mt-4" src={categoria.imagen ? `/storage/${categoria.imagen}` : '/img/default-category.png'} alt="Imagen de categoría" />
+            <img className="w-64 h-96 object-contain mt-4" src={categoria.imagen ? `/storage/${categoria.imagen}` : '/img/default-category.png'} alt="Imagen de categoría" />
+            <div className="flex gap-4 mt-4">
+            {auth.user?.rol_id !== 3 && (
+                        <Link href={`/categorias/${categoria.id}/edit`} className='btn btn-secondary mr-4'>Editar categoría</Link>
+                        )}
+            {auth.user?.rol_id === 1 && (
+                <button 
+        onClick={() => router.delete(`/categorias/${categoria.id}`)} 
+        className='btn btn-warning mr-4' 
+    >
+        Eliminar
+    </button>
+            )}
+            </div>
             <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6'>
                 {listaComics.length > 0 ? (
                     listaComics.map(comic => (
