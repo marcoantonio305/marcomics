@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, router } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
+import { fechaLarga } from '@/lib/utils';
 
 interface Editora {
     id: number;
@@ -53,8 +54,8 @@ export default function ComicIndividual({comic}:Props) {
                             {autors.map(autor => autor.nombre).join(', ')}
                                 </p>
                         ) : (<p className="font-bold italic text-gray-400">Anónimo</p>)}
-                        <p>{lanzamiento}</p>
-                        <p>{precio}</p>
+                        <p>{fechaLarga(lanzamiento)}</p>
+                        <p>{precio}€</p>
                     </div>
             </div>
     )

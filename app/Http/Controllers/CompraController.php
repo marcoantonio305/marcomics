@@ -6,6 +6,7 @@ use App\Models\Comic;
 use App\Models\Compra;
 use App\Models\HistorialCompra;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class CompraController extends Controller
 {
@@ -81,17 +82,15 @@ class CompraController extends Controller
 
     public function anadirAlCarrito(Request $request)
     {
-        $comic = Comic::find($request->comic_id);
-        if (!$comic) {
-            return response()->json(['error' => 'Comic no encontrado'], 404);
-        }
+        $id = $request->comic_id;
 
         $carrito = session()->get('carrito', []);
 
-        if (isset($carrito[$comic->id])) {
-            $carrito[$comic->id]['cantidad'] += 1;
+        if (isset($carrito[$id])) {
+            $carrito[$id]['cantidad'] += 1;
         } else {
-            $carrito[$comic->id] = [
+            $comic = Comic::find($id);
+            $carrito[$id] = [
                 'id' => $comic->id,
                 'titulo' => $comic->titulo,
                 'precio' => $comic->precio,
@@ -103,21 +102,42 @@ class CompraController extends Controller
         return back()->with('success', 'Comic añadido al carrito');
     }
 
-    public function eliminarDelCarrito(Request $request)
+    public function disminuirDelCarrito(Request $request)
     {
-        $comicId = $request->comic_id;
+        $id = $request->comic_id;
         $carrito = session()->get('carrito', []);
 
-        if (isset($carrito[$comicId])) {
-            if ($carrito[$comicId]['cantidad'] > 1) {
-                $carrito[$comicId]['cantidad'] -= 1;
+        if (isset($carrito[$id])) {
+            if ($carrito[$id]['cantidad'] > 1) {
+                $carrito[$id]['cantidad'] -= 1;
             } else {
-                unset($carrito[$comicId]);
+                unset($carrito[$id]);
             }
             session()->put('carrito', $carrito);
             return back()->with('success', 'Comic eliminado del carrito');
         }
 
         return back()->with('error', 'Comic no encontrado en el carrito');
+    }
+
+    public function eliminarDelCarrito(Request $request)
+    {
+        $id = $request->comic_id;
+        $carrito = session()->get('carrito', []);
+
+        if (isset($carrito[$id])) {
+                unset($carrito[$id]);
+                session()->put('carrito', $carrito);
+            }
+
+        return back()->with('error', 'Comic no encontrado en el carrito');
+    }
+
+    public function mostrarCarrito()
+    {
+        $carrito = session()->get('carrito', []);
+        return Inertia::render('paginaCarrito', ['carrito' => $carrito,
+        'comics' => Comic::all()
+        ]);
     }
 }

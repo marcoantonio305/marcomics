@@ -19,7 +19,7 @@ export function BotonAnadirCarro({comicId}: Props) {
 
     return (
         <button onClick={anadir}
-        className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors">
+        className="btn ml-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors">
             Añadir al carrito
         </button>
     );

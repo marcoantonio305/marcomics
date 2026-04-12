@@ -16,6 +16,6 @@ export default function BotonBiblioteca({ comic_id }: { comic_id: number }) {
     }
     
     return (
-        <Button onClick={anadir} disabled={processing}>{processing ? 'Cargando...' : 'Añadir a mi colección'}</Button>
+        <button className="btn bg-orange-500 text-white hover:bg-orange-600" onClick={anadir} disabled={processing}>{processing ? 'Cargando...' : 'Añadir a mi colección'}</button>
     )
 }

@@ -108,6 +108,9 @@ Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.e
 Route::patch('/users/{user}', [UserController::class, 'update'])->name('users.update');
 
 Route::post('/carrito/anadir', [CompraController::class, 'anadirAlCarrito'])->name('carrito.anadir');
-Route::post('/carrito/eliminar', [CompraController::class, 'eliminarDelCarrito'])->name('carrito.eliminar');
+Route::post('/carrito/disminuir', [CompraController::class, 'disminuirDelCarrito'])->name('carrito.disminuir');
+Route::delete('/carrito/eliminar', [CompraController::class, 'eliminarDelCarrito'])->name('carrito.eliminar');
+
+Route::get('/carrito', [CompraController::class, 'mostrarCarrito'])->name('carrito.mostrar');
 
 require __DIR__.'/settings.php';
