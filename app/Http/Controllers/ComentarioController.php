@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comentario;
+use App\Models\Comic;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class ComentarioController extends Controller
 {
@@ -20,15 +23,29 @@ class ComentarioController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('comentarios/create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, Comic $comic)
     {
-        //
+        
+        $validated = $request->validate([
+            'contenido' => 'required|max:2000',
+                'puntuacion' => 'required|integer|min:1|max:5',
+        ]);
+
+        $usuario = Auth::id();
+
+        $comic->comentarios()->create([
+            'contenido' => $validated['contenido'],
+            'puntuacion' => $validated['puntuacion'],
+            'user_id' => $usuario,
+        ]);
+
+        return redirect()->back()->with('success', 'Comentario agregado exitosamente.');
     }
 
     /**
@@ -60,6 +77,8 @@ class ComentarioController extends Controller
      */
     public function destroy(Comentario $comentario)
     {
-        //
+        $comentario->delete();
+
+        return redirect()->back()->with('success', 'Comentario eliminado exitosamente.');
     }
 }

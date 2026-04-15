@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import BotonBiblioteca from '@/components/ui/Cuerpo/BotonBiblioteca';
 import { BotonAnadirCarro } from '@/components/ui/Cuerpo/BotonAnadirCarro';
 import { fechaLarga } from '@/lib/utils';
+import ComentariosPorComic from '@/components/ui/Cuerpo/ComentariosPorComic';
+import CajaTextoComentario from '@/components/ui/Cuerpo/CajaTextoComentario';
 
 interface Editora {
     id: number;
@@ -21,6 +23,19 @@ interface Categoria {
     nombre: string;
 }
 
+interface Comentario {
+    id: number;
+    contenido: string;
+    punctuation?: number;
+    created_at: string;
+    user: {
+        id: number;
+        name: string;
+        foto_perfil?: string;
+    };
+}
+
+
 interface Comic {
     id: number;
     titulo: string;
@@ -35,10 +50,11 @@ interface Comic {
 
 interface Props {
     comic: Comic;
+    comentarios: Comentario[];
     titulo: string;
 }
 
-export default function Show({ comic} : Props) {
+export default function Show({ comic, comentarios } : Props) {
     const {auth} = usePage().props as any;
     return (
         <AppLayout>
@@ -82,6 +98,12 @@ export default function Show({ comic} : Props) {
         )}
                 </span></p>
             </div>
+
+            <div className='flex flex-col gap-4'>
+                <ComentariosPorComic comentarios={comentarios} comic={comic}></ComentariosPorComic>
+                <CajaTextoComentario comicId={comic.id}></CajaTextoComentario>
+            </div>
+
             {auth.user?.rol_id !== 3 && (
             <Link href={`/comics/${comic.id}/edit`} className='btn btn-secondary mr-4'>Editar comic</Link>
             )}

@@ -3,6 +3,7 @@
 use App\Http\Controllers\AutorController;
 use App\Http\Controllers\BibliotecaController;
 use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\ComentarioController;
 use App\Http\Controllers\ComicController;
 use App\Http\Controllers\CompraController;
 use App\Http\Controllers\EditoraController;
@@ -87,6 +88,7 @@ Route::get('/categorias/{categoria}', [CategoriaController::class, 'show'])->nam
 Route::middleware(['auth', SoloAdmin::class])->group(function () {
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+    Route::delete('/comentarios/{comentario}', [ComentarioController::class, 'destroy'])->name('comentarios.destroy');
 });
 
 
@@ -112,5 +114,8 @@ Route::post('/carrito/disminuir', [CompraController::class, 'disminuirDelCarrito
 Route::delete('/carrito/eliminar', [CompraController::class, 'eliminarDelCarrito'])->name('carrito.eliminar');
 
 Route::get('/carrito', [CompraController::class, 'mostrarCarrito'])->name('carrito.mostrar');
+
+Route::post('/comentarios/{comic}', [ComentarioController::class, 'store'])->name('comentarios.store');
+Route::get('/comentarios/create', [ComentarioController::class, 'create'])->name('comentarios.create');
 
 require __DIR__.'/settings.php';
