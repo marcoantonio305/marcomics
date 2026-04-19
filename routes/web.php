@@ -3,6 +3,7 @@
 use App\Http\Controllers\AutorController;
 use App\Http\Controllers\BibliotecaController;
 use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\ColeccionController;
 use App\Http\Controllers\ComentarioController;
 use App\Http\Controllers\ComicController;
 use App\Http\Controllers\CompraController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Middleware\SoloAdmin;
 use App\Http\Middleware\SoloAdminYVendedor;
 use App\Models\Categoria;
+use App\Models\Coleccion;
 use App\Models\Comic;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -30,7 +32,13 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/inicio', function () {
+    $coleccionesInicio = Coleccion::where('mostrar_inicio', true)
+    ->orderBy('orden', 'asc')
+        ->with('comics.autors', 'comics.categorias') 
+        ->get();
+
     return Inertia::render('inicio', [
+        'coleccionesInicio' => $coleccionesInicio,
         'categorias' => Categoria::all(),
         'comics' => Comic::with(['categorias', 'autors'])->latest()->take(12)->get(),
         'chat' => \App\Models\Chat::where('nombre_clave', 'general')->first(),
@@ -74,22 +82,32 @@ Route::get('/editoras/create', [EditoraController::class, 'create'])->name('edit
 Route::post('/editoras', [EditoraController::class, 'store'])->name('editoras.store');
 Route::delete('/editoras/{editora}', [EditoraController::class, 'destroy'])->name('editoras.destroy');
 
-
 });
-
-Route::get('/comics/{comic}', [ComicController::class, 'show'])->name('comics.show');
-
-
-
-
-Route::get('/categorias/{categoria}', [CategoriaController::class, 'show'])->name('categorias.show'); //Ruta para mostrar todos los comics de una categoría
 
 // Solo puede visitar estas rutas el admin
 Route::middleware(['auth', SoloAdmin::class])->group(function () {
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
     Route::delete('/comentarios/{comentario}', [ComentarioController::class, 'destroy'])->name('comentarios.destroy');
+
+    Route::get('/coleccions', [ColeccionController::class, 'index'])->name('coleccions.index');
+Route::get('/coleccions/create', [ColeccionController::class, 'create'])->name('coleccions.create');
+Route::post('/coleccions', [ColeccionController::class, 'store'])->name('coleccions.store');
+Route::delete('/coleccions/{coleccion}', [ColeccionController::class, 'destroy'])->name('coleccions.destroy');
+Route::get('/coleccions/{coleccion}/edit', [ColeccionController::class, 'edit'])->name('coleccions.edit');
+Route::put('/coleccions/{coleccion}', [ColeccionController::class, 'update'])->name('coleccions.update');
+Route::post('/coleccions/{coleccion}/comics/{comic}', [ColeccionController::class, 'anadirComicAColeccion'])->name('coleccions.anadir_comic');
+Route::delete('/coleccions/{coleccion}/comics/{comic}', [ColeccionController::class, 'quitarComicDeColeccion'])->name('coleccions.quitar_comic');
+Route::post('/coleccions/{coleccion}/al-inicio', [ColeccionController::class, 'coleccionAlInicio'])->name('coleccions.al-inicio');
+Route::delete('/coleccions/{coleccion}/quitar-inicio', [ColeccionController::class, 'quitarColeccionDelInicio'])->name('coleccions.quitar-inicio');
 });
+
+Route::get('/comics/{comic}', [ComicController::class, 'show'])->name('comics.show');
+Route::get('/categorias/{categoria}', [CategoriaController::class, 'show'])->name('categorias.show'); //Ruta para mostrar todos los comics de una categoría
+Route::get('/coleccions/{coleccion}', [ColeccionController::class, 'show'])->name('coleccions.show');
+
+
+
 
 
 Route::get('/historialCompras', [HistorialCompraController::class, 'index'])->name('historialCompras.index');

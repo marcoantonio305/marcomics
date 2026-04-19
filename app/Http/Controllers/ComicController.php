@@ -79,7 +79,7 @@ class ComicController extends Controller
     {
         return Inertia::render('comics/show', [
             'comic' => $comic->load('categorias', 'autors', 'editora'),
-            'comentarios' => $comic->comentarios()->with('user:id,name')->get(),
+            'comentarios' => $comic->comentarios()->with('user')->get(),
         ]);
     }
 
@@ -132,12 +132,14 @@ class ComicController extends Controller
      */
     public function destroy(Comic $comic)
     {
-        $comic->autors()->detach();
-    $comic->categorias()->detach();
+        //$comic->comentarios()->delete();
+        
+        //$comic->autors()->detach();
+    //$comic->categorias()->detach();
 
-    if ($comic->imagen) {
-        \Illuminate\Support\Facades\Storage::disk('public')->delete($comic->imagen);
-    }
+    //if ($comic->imagen) {
+        //\Illuminate\Support\Facades\Storage::disk('public')->delete($comic->imagen);
+    //}
     
         $comic->delete();
         return redirect()->route('comics.index');
@@ -165,4 +167,5 @@ class ComicController extends Controller
             'categorias' => $categorias
         ]);
     }
+
 }

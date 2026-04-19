@@ -3,7 +3,7 @@ import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import type { BreadcrumbItem } from '@/types';
-import { BookOpen, Pencil, PlusSquare, Library, PlayIcon, User} from 'lucide-react';
+import { BookOpen, Pencil, PlusSquare, Library, PlayIcon, User, Boxes} from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -82,6 +82,16 @@ export default function Dashboard() {
                         </div>
                         <h3 className="text-md font-semibold text-gray-900 dark:text-white">Usuarios</h3>
                         <p className="text-sm text-gray-500">Gestión de los usuarios.</p>
+                    </Link>
+                    <Link
+                        href="/coleccions"
+                        className="group flex flex-col items-center text-center transition-transform hover:scale-105"
+                    >
+                        <div className="mb-4 flex h-24 w-24 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 group-hover:bg-blue-50 dark:bg-neutral-800 dark:ring-neutral-700">
+                            <Boxes className="size-12 text-orange-600" />
+                        </div>
+                        <h3 className="text-md font-semibold text-gray-900 dark:text-white">Colecciones</h3>
+                        <p className="text-sm text-gray-500">Gestión de las colecciones.</p>
                     </Link>
                 </div>
 

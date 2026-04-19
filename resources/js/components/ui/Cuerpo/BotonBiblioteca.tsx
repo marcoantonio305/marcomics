@@ -11,11 +11,11 @@ export default function BotonBiblioteca({ comic_id }: { comic_id: number }) {
         post(`/comics/${comic_id}/biblioteca`, {
             preserveScroll: true,
             onSuccess: () => {
-                alert('Comic añadido a tu biblioteca');
+                alert('Comic añadido a tu favoritos');
         }});
     }
     
     return (
-        <button className="btn bg-orange-500 text-white hover:bg-orange-600" onClick={anadir} disabled={processing}>{processing ? 'Cargando...' : 'Añadir a mi colección'}</button>
+        <button className="btn bg-orange-500 text-white hover:bg-orange-600" onClick={anadir} disabled={processing}>{processing ? 'Cargando...' : 'Añadir a favoritos'}</button>
     )
 }

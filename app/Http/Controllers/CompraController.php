@@ -77,7 +77,8 @@ class CompraController extends Controller
      */
     public function destroy(Compra $compra)
     {
-        //
+        $compra->delete();
+        return back()->with('success', 'Compra eliminada exitosamente.');
     }
 
     public function anadirAlCarrito(Request $request)

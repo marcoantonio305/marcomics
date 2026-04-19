@@ -25,7 +25,7 @@ interface Props {
 export default function Biblioteca({ user }: Props) {
     return (
         <div className="div-8">
-            <h1 className="text-3xl font-bold mb-6 text-primary">Biblioteca</h1>
+            <h1 className="text-3xl font-bold mb-6 text-primary">Favoritos</h1>
             <div className="flex flex-wrap gap-6">
                 {user.comics.map((comic) => (
                     <div key={comic.id} className="bg-white rounded-lg shadow-md overflow-hidden">

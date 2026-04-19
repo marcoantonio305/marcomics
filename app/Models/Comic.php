@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Comic extends Model
 {
+    use SoftDeletes;
     protected $fillable = [
         'titulo',
         'precio',
@@ -41,5 +43,9 @@ class Comic extends Model
 
     public function compras() {
         return $this->belongsToMany(Compra::class);
+    }
+
+    public function coleccions() {
+        return $this->belongsToMany(Coleccion::class, 'coleccion_comic');
     }
 }

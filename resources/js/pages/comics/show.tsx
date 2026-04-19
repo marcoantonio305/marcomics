@@ -68,12 +68,12 @@ export default function Show({ comic, comentarios } : Props) {
     alt={comic.titulo} 
     className="w-50 h-66 object-cover mb-5"
 />
-            <p><span className='text-3xl font-bold mb-6 text-blue-600'>Titulo: </span><span className='mb-6'>{comic.titulo}</span></p>
-            <p><span className='text-2xl font-bold mb-6 text-blue-600'>Autores: </span>
-            <span className='mb-6'>
+            <p className='mb-2 mt-3'><span className='text-3xl font-bold mb-8 mt-8 text-blue-600'>Titulo: </span><span className='mb-6 ml-4 text-xl font-bold'>{comic.titulo}</span></p>
+            <p className='mb-2'><span className='text-3xl font-bold mb-6 text-blue-600'>Autores: </span>
+            <span className='mb-6 ml-4 text-xl font-bold'>
             {comic.autors && comic.autors.length > 0 ? (
             comic.autors.map((autor) => (
-                <span key={autor.id} className='badge badge-ghost badge-sm'>
+                <span key={autor.id} className='badge badge-ghost badge-xl'>
                     {autor.nombre}  &nbsp; &nbsp;
                 </span>
             ))
@@ -81,15 +81,14 @@ export default function Show({ comic, comentarios } : Props) {
             <span className='text-gray-400 italic'>Anónimo</span>
         )}
             </span></p>
-            <p><span className='text-2xl font-bold mb-6 text-blue-600'>Precio: </span><span className='mb-6'>{comic.precio}€</span></p>
-            <p><span className='text-xl font-bold mb-6 text-blue-600'>Lanzamiento: </span><span className='mb-6'>{fechaLarga(comic.lanzamiento)}</span></p>
-            <p><span className='text-xl font-bold mb-6 text-blue-600'>Editorial: </span><span className='mb-6'>{comic.editora?.nombre || 'Sin editora'}</span></p>
-            <p><span className='text-xl font-bold mb-6 text-blue-600'>Descripción: </span><span className='mb-6'>{comic.descripcion}</span></p>
+            <p className='mb-2'><span className='text-3xl font-bold mb-8 mt-8 text-blue-600'>Precio: </span><span className='mb-6 ml-5 text-xl'>{comic.precio}€</span></p>
+            <p className='mb-2'><span className='text-3xl font-bold mb-8 mt-8 text-blue-600'>Lanzamiento: </span><span className='mb-6 ml-5 text-xl'>{fechaLarga(comic.lanzamiento)}</span></p>
+            <p className='mb-2'><span className='text-3xl font-bold mb-8 mt-8 text-blue-600'>Editorial: </span><span className='mb-6 ml-5 text-xl'>{comic.editora?.nombre || 'Sin editora'}</span></p>
             
-            <p><span className='text-xl font-bold mb-6 text-blue-600'>Categorías: </span><span className='mb-6'>
+            <p className='mb-2'><span className='text-3xl font-bold mb-8 mt-8 text-blue-600'>Categorías: </span><span className='mb-6 ml-5 text-xl'>
                 {comic.categorias && comic.categorias.length > 0 ? (
             comic.categorias.map((categoria) => (
-                <span key={categoria.id} className='badge badge-ghost badge-sm'>
+                <span key={categoria.id} className='badge badge-ghost badge-sm text-xl font-bold'>
                     {categoria.nombre} &nbsp; &nbsp;
                 </span>
             ))
@@ -97,6 +96,9 @@ export default function Show({ comic, comentarios } : Props) {
             <span className='text-gray-400 italic'>Ninguna</span>
         )}
                 </span></p>
+
+                <p className='mb-2 border border-base-300 p-4'><span className='text-3xl font-bold mb-8 mt-8 text-blue-600'>Descripción: </span><span className='mb-6 ml-5 text-xl'>{comic.descripcion}</span></p>
+
             </div>
 
             <div className='flex flex-col gap-4'>

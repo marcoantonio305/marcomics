@@ -46,9 +46,9 @@ export default function ComicIndividual({comic}:Props) {
     lanzamiento} = comic
     return (
         <div className='p-8 flex flex-col'>
-                    <div className='flex flex-col gap-2'>
+                    <div className='flex flex-col gap-2 items-center'>
                         <Link href={`/comics/${id}`}><img className="w-32 h-48 object-cover transition-transform duration-300 group-hover:scale-105" src={imagen ? `/storage/${imagen}` : '/img/default-comic.png'} alt="Imagen" /></Link>
-                        <h2>{titulo}</h2>
+                        <h2 className='font-bold'>{titulo}</h2>
                         {autors?.length > 0 ? (
                             <p>
                             {autors.map(autor => autor.nombre).join(', ')}

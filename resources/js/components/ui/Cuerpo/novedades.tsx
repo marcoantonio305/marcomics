@@ -5,12 +5,22 @@ interface Categoria {
     nombre: string
 }
 
-interface Props {
+interface Coleccion {
+    id: number;
     nombre: string;
-    href: string;
 }
 
-export function Novedades({ nombre, href}: Props) {
+interface Props {
+    nombre: string;
+    id: number;
+    tipo: 'coleccion' | 'categoria';
+}
+
+export function Novedades({ nombre, id, tipo }: Props) {
+    const href = tipo === 'coleccion' 
+        ? `/coleccions/${id}` 
+        : `/categorias/${id}`;
+
     return (
         <Link 
             href={href} 
@@ -24,7 +34,7 @@ export function Novedades({ nombre, href}: Props) {
                 hover:underline
                 flex items-center justify-center"
         >
-            Novedades {nombre}
+            {nombre}
         </Link>
     );
 }

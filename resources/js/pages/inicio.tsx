@@ -28,6 +28,14 @@ interface Comic {
     imagen: string
 }
 
+interface Coleccion {
+    id: number;
+    nombre: string;
+    mostrar_inicio: boolean;
+    orden: number;
+    comics: Comic[];
+}
+
 interface ChatData {
     id: number;
     nombre_clave: string;
@@ -50,31 +58,32 @@ interface Props {
     comics: Comic[]
     chat: ChatData;
     postChats: PostChat[];
+    coleccionesInicio: Coleccion[];
 }
 
-export default function Inicio({ categorias = [], comics = [], chat, postChats = [] }: Props) {
-    const categoriaSuperheroes = categorias.find(categoria => categoria.nombre.toLocaleLowerCase() === 'superhéroes');
-    const categoriaManga = categorias.find(categoria => categoria.nombre.toLocaleLowerCase() === 'manga');
+export default function Inicio({ categorias = [], comics = [], chat, postChats = [], coleccionesInicio = [] }: Props) {
+    //const categoriaSuperheroes = categorias.find(categoria => categoria.nombre.toLocaleLowerCase() === 'superhéroes');
+    //const categoriaManga = categorias.find(categoria => categoria.nombre.toLocaleLowerCase() === 'manga');
 
     const coleccion1 = categorias.find(categoria => categoria.nombre === 'Aventuras');
     const coleccion2 = categorias.find(categoria => categoria.nombre === 'Acción');
     const coleccion3 = categorias.find(categoria => categoria.nombre === 'Image Comics');
 
-    const comic0 = comics.find(comic => comic.id === 13);
-    const comic1 = comics.find(comic => comic.id === 14);
-    const comic2 = comics.find(comic => comic.id === 15);
-    const comic3 = comics.find(comic => comic.id === 16);
-    const comic4 = comics.find(comic => comic.id === 17);
-    const comic5 = comics.find(comic => comic.id === 18);
-    const comic6 = comics.find(comic => comic.id === 19);
-    const comic7 = comics.find(comic => comic.id === 20);
-    const comic8 = comics.find(comic => comic.id === 21);
+    //const comic0 = comics.find(comic => comic.id === 13);
+    //const comic1 = comics.find(comic => comic.id === 14);
+    //const comic2 = comics.find(comic => comic.id === 15);
+    //const comic3 = comics.find(comic => comic.id === 16);
+    //const comic4 = comics.find(comic => comic.id === 17);
+    //const comic5 = comics.find(comic => comic.id === 18);
+    //const comic6 = comics.find(comic => comic.id === 19);
+    //const comic7 = comics.find(comic => comic.id === 20);
+    //const comic8 = comics.find(comic => comic.id === 21);
 
     return (
         <AppLayout>
             <div className="flex flex-row p-4 gap-6 items-start">
                 <div className="flex-1 flex flex-col gap-8">
-                    <div className="flex flex-col">
+                        {/*
                         <Novedades nombre={categoriaSuperheroes?.nombre || ""} href={`/categorias/${categoriaSuperheroes?.id}`}></Novedades>
                         <div className="flex flex-row gap-4">
                             {comic0 && <ComicIndividual comic={comic0} />}
@@ -82,9 +91,18 @@ export default function Inicio({ categorias = [], comics = [], chat, postChats =
                             {comic2 && <ComicIndividual comic={comic2} />}
                             {comic7 && <ComicIndividual comic={comic7} />}
                             {comic8 && <ComicIndividual comic={comic8} />}
-                        </div>
-                    </div>
-                    <div className="flex flex-col">
+                        </div>*/}
+                        {coleccionesInicio.map(coleccion => (
+                            <div key={coleccion.id}>
+                                <Novedades nombre={coleccion.nombre} id={coleccion.id} tipo="coleccion"></Novedades>
+                                <div className="flex flex-row gap-4">
+                                    {coleccion.comics.map(comic => (
+                                        <ComicIndividual key={comic.id} comic={comic} />
+                                    ))}
+                                </div>
+                            </div>
+                        ))}
+                        {/*
                         <Novedades nombre={categoriaManga?.nombre || ""} href={`/categorias/${categoriaManga?.id}`}></Novedades>
                         <div className="flex flex-row gap-4">
                             {comic3 && <ComicIndividual comic={comic3} />}
@@ -92,7 +110,7 @@ export default function Inicio({ categorias = [], comics = [], chat, postChats =
                             {comic5 && <ComicIndividual comic={comic5} />}
                             {comic6 && <ComicIndividual comic={comic6} />}
                         </div>
-                    </div>
+                        */}
                 </div>
                 <aside className="sticky top-4 w-80">
                     <ColumnaDestacados coleccion1={coleccion1} coleccion2={coleccion2} coleccion3={coleccion3}></ColumnaDestacados>

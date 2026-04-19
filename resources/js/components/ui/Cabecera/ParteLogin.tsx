@@ -6,7 +6,7 @@ export default function ParteLogin() {
     const user = auth?.user;
     if (!user) {
     return (
-        <div className="flex items-center gap-3 p-2 hover:bg-white/10 rounded-lg transition-colors group">
+        <div className="flex bg-[#d00000] items-center gap-3 p-2 hover:bg-white/10 rounded-lg transition-colors group">
             <User size={35} className="text-white mt-4 mr-4 ml-4" />
             <Link href="/login"><h1 className="text-2xl hover:underline text-white font-bold mr-4 mt-4">Iniciar sesión</h1></Link>
         </div>
@@ -14,7 +14,7 @@ export default function ParteLogin() {
 }
 else {
     return (
-        <div className="w-full h-16 bg-red text-white flex items-center justify-center">
+        <div className="w-full h-16 bg-[#d00000] text-white flex items-center justify-center">
             {(auth.user.foto_perfil) ? (
                 <img 
             src={`/storage/${auth.user.foto_perfil}`} 

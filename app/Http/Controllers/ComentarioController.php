@@ -37,12 +37,12 @@ class ComentarioController extends Controller
                 'puntuacion' => 'required|integer|min:1|max:5',
         ]);
 
-        $usuario = Auth::id();
+        
 
         $comic->comentarios()->create([
             'contenido' => $validated['contenido'],
             'puntuacion' => $validated['puntuacion'],
-            'user_id' => $usuario,
+            'user_id' => Auth::id(),
         ]);
 
         return redirect()->back()->with('success', 'Comentario agregado exitosamente.');

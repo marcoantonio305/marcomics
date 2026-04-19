@@ -1,4 +1,4 @@
-import { Link, router } from "@inertiajs/react";
+import { Link, router, usePage } from "@inertiajs/react";
 
 interface Comentario {
     id: number;
@@ -23,6 +23,7 @@ interface Props {
 }
 
 export default function ComentariosPorComic({comentarios, comic}: Props) {
+    const { auth } = usePage().props as any; // Se obtiene el usuario logeado
     return (
         <div className="card bg-base-100 border p-4 mb-4 shadow-sm">
             <h2 className="text-xl font-bold mb-4">Comentarios</h2>
@@ -31,18 +32,24 @@ export default function ComentariosPorComic({comentarios, comic}: Props) {
                     <div key={comentario.id} className="card bg-base-100 border p-4 mb-4 shadow-sm">
                         <div className="flex items-start gap-3">
                         <div className="avatar w-10 h-10 rounded-full">
-                            <img className="w-full h-full object-cover" src={comentario.user.foto_perfil ? `/storage/${comentario.user.foto_perfil}` : '/img/default-profile.png'} alt="Foto de perfil" />
+                            <img className="w-full h-full object-cover rounded-full" src={comentario.user?.foto_perfil ? `/storage/${comentario.user.foto_perfil}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(comentario.user?.name || 'U')}&background=random`} alt="Foto de perfil" />
                         </div>
                         <div className="flex flex-col flex-1">
                         <div className="flex justify-between items-center">
-                            <span className="font-semibold text-blue-500 hover:text-blue-700"><Link href={`/users/${comentario.user.id}`}>{comentario.user.name}</Link></span>
-                            
-                            {comentario.puntuacion !== undefined && (
-                                <span className="text-lg font-bold text-yellow-500">Puntuación: {comentario.puntuacion}/5</span>
-                        )}
+                            <span className="font-semibold text-blue-500 hover:text-blue-700">
+                                        <Link href={comentario.user ? `/users/${comentario.user.id}` : '#'}>
+                                            {comentario.user ? comentario.user.name : 'Usuario Desconocido'}
+                                        </Link>
+                                    </span>
+                        {comentario.puntuacion !== undefined && (
+                                        <span className="text-lg font-bold text-yellow-500">
+                                            Puntuación: {comentario.puntuacion}/5
+                                        </span>
+                                    )}
                         </div>
                         <div className="bg-base-200 p-3 rounded-lg mt-2">{comentario.contenido}</div>
                         <div className="text-sm text-gray-500 mt-2">{new Date(comentario.created_at).toLocaleString()}</div>
+                        {auth.user && (auth.user.id === comentario.user?.id || auth.user.rol_id === 1) && (
                         <button 
                                 onClick={() => router.delete(`/comentarios/${comentario.id}`, {
                                     preserveScroll: true,
@@ -52,6 +59,7 @@ export default function ComentariosPorComic({comentarios, comic}: Props) {
                             >
                                 Eliminar comentario
                             </button>
+                        )}
                         </div>
                     </div>
                     </div>

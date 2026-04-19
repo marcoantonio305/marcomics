@@ -64,6 +64,7 @@ class HistorialCompraController extends Controller
      */
     public function destroy(HistorialCompra $historialCompra)
     {
-        //
+        $historialCompra->delete();
+        return back()->with('success', 'Historial de compra eliminado exitosamente.');
     }
 }
