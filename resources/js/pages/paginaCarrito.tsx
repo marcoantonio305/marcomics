@@ -1,6 +1,12 @@
 import AppLayout from "@/layouts/app-layout";
-import { usePage, router, Link, App } from "@inertiajs/react";
-import { Trash, Plus, Minus } from "lucide-react";
+import { usePage, router, Link, App} from "@inertiajs/react";
+import { Trash, Plus, Minus, Hourglass, Loader, Loader2, RefreshCw } from "lucide-react";
+import { loadStripe } from '@stripe/stripe-js';
+import { useState, useEffect } from "react";
+import Swal from "sweetalert2";
+
+//API clave pública
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 interface Comic {
     id: number;
@@ -14,9 +20,32 @@ interface Props {
 }
 
 export default function PaginaCarrito({comics = []}: Props) {
-    const { carrito = {}, carritoTotal = 0 } = usePage().props as any;
+    const { carrito = {}, carritoTotal = 0, flash = {} } = usePage().props as any;
+
+    useEffect(() => {
+        if (flash.success) {
+            Swal.fire({
+                icon: 'success',
+                title: '¡Pago realizado con éxito!',
+                text: flash.success,
+            }).then((result) => {
+            if (result.isConfirmed) {
+                // Esto es lo que te lleva a inicio manualmente
+                router.visit('/inicio');
+            }
+            });
+        } else if (flash.error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error en el pago',
+                text: flash.error,
+            });
+        }
+    }, [flash]);
 
     const items = Object.values(carrito) as any[];
+
+const [cargando, setCargando] = useState(false);
 
     const actualizarCantidad = (comicId: number, accion: 'anadir' | 'disminuir') => {
         const url = accion === 'anadir' ? '/carrito/anadir' : '/carrito/disminuir';
@@ -26,7 +55,33 @@ export default function PaginaCarrito({comics = []}: Props) {
             preserveScroll: true,
             only: ['carrito', 'carritoTotal', 'flash'],
         });
-    };
+        
+    }
+    
+    
+
+    
+
+const manejarPago = async () => {
+    setCargando(true);
+    
+    // Coge el token de la tarjeta
+    router.post('/compras/procesar-pago', {
+        stripeToken: 'tok_visa',
+        total_carrito: carritoTotal
+    }, {
+        onStart: () => setCargando(true),
+        onFinish: () => setCargando(false),
+        onSuccess: () => {
+        },
+        onError: (errors) => {
+            alert("Hubo un problema con el pago.");
+            console.error(errors);
+        }
+    });
+}
+
+
 
     return (
         <AppLayout>
@@ -81,7 +136,19 @@ export default function PaginaCarrito({comics = []}: Props) {
             {items.length > 0 && (
                 <div className="mt-6 p-4 bg-gray-100 rounded-lg">
                     <h2 className="text-xl font-bold mb-2">Total: ${carritoTotal}</h2>
-                    <button className="btn bg-green-500 text-white hover:bg-green-600">Proceder al pago</button>
+                    <button onClick={manejarPago} disabled={cargando} className={`btn bg-green-500 text-white hover:bg-green-600" ${
+                cargando 
+                ? 'bg-gray-400 cursor-not-allowed' 
+                : 'bg-green-500 hover:bg-green-600 shadow-lg hover:shadow-green-200'
+            }`}>
+                        {cargando ? (
+                <span className="flex items-center justify-center gap-2">
+                    <Loader className="animate-spin"></Loader> Procesando...
+                </span>
+            ) : (
+                "Confirmar y Pagar ahora"
+            )}
+        </button>
                 </div>
             )}
         </div>

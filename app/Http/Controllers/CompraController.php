@@ -7,6 +7,8 @@ use App\Models\Compra;
 use App\Models\HistorialCompra;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Stripe\Stripe;
+use Stripe\Charge;
 
 class CompraController extends Controller
 {
@@ -141,4 +143,29 @@ class CompraController extends Controller
         'comics' => Comic::all()
         ]);
     }
+
+    public function procesarPago(Request $request)
+    {
+        // Se configura la clave secreta
+        Stripe::setApiKey(env('STRIPE_SECRET'));
+
+        // Se crea el cargo
+        try {
+            $charge = Charge::create([
+                'amount' => $request->total_carrito * 100, 
+                'currency' => 'usd',
+                'source' => $request->stripeToken,
+                'description' => 'Compra de comics'
+            ]);
+
+            session()->forget('carrito');
+
+
+
+            return back()->with('success', 'Pago procesado exitosamente');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error al procesar el pago: ' . $e->getMessage());
+        }
+}
+
 }

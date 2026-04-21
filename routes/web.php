@@ -105,6 +105,7 @@ Route::delete('/coleccions/{coleccion}/quitar-inicio', [ColeccionController::cla
 Route::get('/comics/{comic}', [ComicController::class, 'show'])->name('comics.show');
 Route::get('/categorias/{categoria}', [CategoriaController::class, 'show'])->name('categorias.show'); //Ruta para mostrar todos los comics de una categoría
 Route::get('/coleccions/{coleccion}', [ColeccionController::class, 'show'])->name('coleccions.show');
+Route::post('/compras/procesar-pago', [CompraController::class, 'procesarPago'])->name('compras.procesar-pago');
 
 
 
