@@ -1,7 +1,6 @@
-import { User } from "lucide-react"
 import { usePage, Link } from "@inertiajs/react"
 import { useState } from "react";
-import { ChevronDown, Settings, LogOut } from "lucide-react";
+import { ChevronDown, Settings, LogOut, User } from "lucide-react";
 
 export default function ParteLogin() {
     const {auth} = usePage().props as any;
@@ -50,7 +49,7 @@ else {
                             href={`/users/${auth.user.id}`} 
                             className="flex items-center gap-2 px-4 py-2 text-sm text-white hover:bg-white hover:text-black"
                         >
-                            <Settings size={14} /> Configuración
+                            <User size={14} /> Tú perfil
                         </Link>
 
                         <Link 

@@ -7,12 +7,15 @@ interface HistorialCompra {
     id: number;
     user_id: number;
     compra_id: number;
+    created_at: string;
     user?: User;
     compra?: Compra;
 }
 
 interface Compra {
     id: number;
+    total: number;
+    created_at: string;
 }
 
 interface User {
@@ -26,60 +29,50 @@ interface Props {
     compras: Compra[];
 }
 
-export default function Index({ historialCompras}: Props) {
+export default function Index({ historialCompras, users, compras }: Props) {
     return (
             <AppLayout>
         <div className="div-8">
                 <h1 className="text-4xl font-bold mb-6 text-primary">Lista de historiales de compras</h1>
             <div className="card bg-base-100 shadow-xl border border-base-300">
                     <div className="overflow-x-auto">
-                        <table className="table table-zebra w-full">
-    
-                            <thead>
-                                <tr className="text-secondary text-sm">
-                                    <th>ID Historia Compra</th>
-                                    <th>ID Usuario</th>
-                                    <th>ID Compra</th>
-                                    <th className="text-center">Acciones</th>
-                                </tr>
-                            </thead>
-    
-                            <tbody>
-                                {historialCompras.length > 0 ? (
-                                    historialCompras.map((hisCom) => (
-                                        <tr key={hisCom.id} className="hover">
-                                            <td className="font-bold"><Link href={`/historialCompras/${hisCom}`} className="link link-primary no-underline hover:underline transition-colors"></Link></td>
-                                            <td className="font-mono">{hisCom.id}€</td>
-                                            <td>{hisCom.user?.name}</td>
-                                            <td>{hisCom.compra?.id}</td>
-                                            <td className="text-center">
-                                                <div className="flex justify-center gap-2">
-                                                    <Link href={`/historialCompras/${hisCom}/edit`} className="btn btn-ghost btn-xs text-info">Editar</Link>
-                                                    <button onClick={()=> {
-                                                        if (confirm('¿Estás seguro de querer eliminar este cómic?')) {
-                                                            router.delete(`/historialCompras/${hisCom}`)
-                                                        }
-                                                    }} className="btn btn-ghost btn-xs text-error">Eliminar</button>
-                                                </div>
-                                            </td>
+                        {users.map((user) => (
+                            <div key={user.id}>
+                                <h1 className='bg-blue-700 text-white p-4 text-xl w-fit ml-5 mt-5 rounded mb-3'> {user.name} </h1>
+                                <table className="table w-full border border-black">
+                                    <thead>
+                                        <tr className='text-pink-700 bg-pink-200'>
+                                            <th>ID Compras</th>
+                                            <th>Gasto</th>
+                                            <th>Fecha de compra</th>
+                                            <th>Acciones</th>
                                         </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan={7} className="text-center py-10 text-gray-400">
-                                            No hay ningúnhistorial de compras registrados actualmente.
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
+                                    </thead>
+                                    <tbody>
+                                        
+                                            {historialCompras.filter(historial => historial.user_id === user.id).map((historial) => (
+                                                <tr key={historial.id}>
+                                                    <td>{historial.compra_id}</td>
+                                                    <td>{historial.compra ? historial.compra.total : 'N/A'}</td>
+                                                    <td>{historial.compra ? new Date(historial.compra.created_at).toLocaleDateString() : 'N/A'}</td>
+                                                    <td>
+                                                        <Link href={`/compras/${historial.compra_id}`} className="btn btn-primary">
+                                                            Ver detalles
+                                                        </Link>
+                                                        <Link href={`/historialCompras/${historial.compra_id}/destroy`} className="btn btn-secondary ml-2">
+                                                            Eliminar
+                                                        </Link>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        ))}
                     </div>
                 </div>
-            <div>
-                <Link href="/historialCompras/create" className='btn btn-primary'>
-                Añadir Cómic
-                </Link>
-            </div>
+            
             <div className="mt-4">
                             <Link href="dashboard" className="btn btn-success">
                                 Volver al dashboard

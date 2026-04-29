@@ -25,15 +25,8 @@ use Laravel\Fortify\Features;
 //])->name('home');
 
 Route::get('/', function () {
-    return Inertia::render('inicio', [
-        'comics' => \App\Models\Comic::with(['autors', 'categorias'])->get(), 
-        'canRegister' => Laravel\Fortify\Features::enabled(Laravel\Fortify\Features::registration()),
-    ]);
-})->name('home');
-
-Route::get('/inicio', function () {
     $coleccionesInicio = Coleccion::where('mostrar_inicio', true)
-    ->orderBy('orden', 'asc')
+        ->orderBy('orden', 'asc')
         ->with('comics.autors', 'comics.categorias') 
         ->get();
 
@@ -45,8 +38,13 @@ Route::get('/inicio', function () {
         'postChats' => \App\Models\PostChat::with('user')->whereHas('chat', function($q){
             $q->where('nombre_clave', 'general');
         })->latest()->take(10)->get()->reverse()->values(),
+        'canRegister' => Laravel\Fortify\Features::enabled(Laravel\Fortify\Features::registration()),
     ]);
-})->name('inicio');
+})->name('home');
+
+Route::get('/inicio', function () {
+    return redirect()->route('home');
+});
 
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -100,6 +98,14 @@ Route::post('/coleccions/{coleccion}/comics/{comic}', [ColeccionController::clas
 Route::delete('/coleccions/{coleccion}/comics/{comic}', [ColeccionController::class, 'quitarComicDeColeccion'])->name('coleccions.quitar_comic');
 Route::post('/coleccions/{coleccion}/al-inicio', [ColeccionController::class, 'coleccionAlInicio'])->name('coleccions.al-inicio');
 Route::delete('/coleccions/{coleccion}/quitar-inicio', [ColeccionController::class, 'quitarColeccionDelInicio'])->name('coleccions.quitar-inicio');
+
+Route::get('/historialCompras', [HistorialCompraController::class, 'index'])->name('historialCompras.index');
+Route::post('/historialCompras', [HistorialCompraController::class, 'store'])->name('historialCompras.store');
+Route::delete('/historialCompras/{historialCompra}', [HistorialCompraController::class, 'destroy'])->name('historial_compras.destroy');
+Route::delete('/compras/{compra}', [CompraController::class, 'destroy'])->name('historialCompras.destroy');
+Route::get('/compras/{compra}', [CompraController::class, 'show'])->name('compras.show');
+Route::get('/compras/{id}/pdf', [CompraController::class, 'generarPdf'])->name('compras.pdf');
+
 });
 
 Route::get('/comics/{comic}', [ComicController::class, 'show'])->name('comics.show');
@@ -111,10 +117,7 @@ Route::post('/compras/procesar-pago', [CompraController::class, 'procesarPago'])
 
 
 
-Route::get('/historialCompras', [HistorialCompraController::class, 'index'])->name('historialCompras.index');
-Route::get('/historialCompras/create', [HistorialCompraController::class, 'create'])->name('historialCompras.create');
-Route::post('/historialCompras', [HistorialCompraController::class, 'store'])->name('historialCompras.store');
-Route::delete('/historialCompras/{historialCompra}', [HistorialCompraController::class, 'destroy'])->name('historialCompras.destroy');
+
 
 Route::get('/postChats', [PostChatController::class, 'index'])->name('chat.index');
 Route::post('/postChats/create', [PostChatController::class, 'store'])->name('post_chats.store');

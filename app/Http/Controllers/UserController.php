@@ -40,12 +40,22 @@ class UserController extends Controller
      * Display the specified resource.
      */
     public function show(User $user)
-    {
-        $user->load(['comics', 'rol']);
-        return Inertia::render('users/show', [
-            'user' => $user,
-        ]);
+{
+    $usuario = Auth::user();
+    $esAdmin = $usuario->rol_id == 1;
+
+    if ($esAdmin) {
+        $user->load(['compras' => function($query) {
+            $query->latest(); 
+        }]);
     }
+
+    return Inertia::render('users/show', [
+    'user' => $user->load('comics'), 
+    'compras' => $esAdmin ? $user->compras : [],
+    'esAdmin' => $esAdmin
+]);
+}
 
     /**
      * Show the form for editing the specified resource.

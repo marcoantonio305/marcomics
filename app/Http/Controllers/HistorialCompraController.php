@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\HistorialCompra;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -13,10 +14,10 @@ class HistorialCompraController extends Controller
      */
     public function index()
     {
-        $historialCompras = HistorialCompra::all();
         return Inertia::render('historialCompras/index', [
-            'historialCompras' => HistorialCompra::with('compras', 'users')->get()
-        ]);
+        'historialCompras' => HistorialCompra::with(['compra', 'user'])->get(),
+        'users' => \App\Models\User::all(),
+    ]);
     }
 
     /**

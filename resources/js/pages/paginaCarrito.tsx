@@ -68,7 +68,6 @@ const manejarPago = async () => {
     // Coge el token de la tarjeta
     router.post('/compras/procesar-pago', {
         stripeToken: 'tok_visa',
-        total_carrito: carritoTotal
     }, {
         onStart: () => setCargando(true),
         onFinish: () => setCargando(false),

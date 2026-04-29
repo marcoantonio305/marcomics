@@ -13,8 +13,8 @@ protected $fillable = [
         'user_id',
         'compra_id',
     ];
-        public function compras() {
-        return $this->hasMany(Compra::class);
+        public function compra() {
+        return $this->belongsTo(Compra::class);
     }
 
     public function user() {

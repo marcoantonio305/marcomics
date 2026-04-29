@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { BookOpen, FolderGit2, LayoutDashboard, LayoutGrid, LayoutIcon, Library, ListStartIcon, Pencil, Play, PlusSquare, SquareActivity, User, PlayIcon, Boxes } from 'lucide-react';
+import { BookOpen, FolderGit2, LayoutDashboard, LayoutGrid, LayoutIcon, Library, ListStartIcon, Pencil, Play, PlusSquare, SquareActivity, User, PlayIcon, Boxes, History } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -18,14 +18,14 @@ import type { NavItem } from '@/types';
 
 const mainNavItems: NavItem[] = [
     {
-        title: 'Inicio',
-        href: '/inicio',
-        icon: Play,
-    },
-    {
         title: 'Dashboard',
         href: dashboard(),
         icon: LayoutGrid,
+    },
+    {
+        title: 'Inicio',
+        href: '/inicio',
+        icon: Play,
     },
     {
         title: 'Comics',
@@ -56,6 +56,11 @@ const mainNavItems: NavItem[] = [
         title: 'Colecciones',
         href: '/coleccions',
         icon: Boxes,
+    },
+    {
+        title: 'Historial de compras',
+        href: '/historialCompras',
+        icon: History
     }
 ];
 

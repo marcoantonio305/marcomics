@@ -70,4 +70,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(PostChat::class);
     }
+
+    public function compras() {
+        return $this->belongsToMany(Compra::class, 'historial_compras', 'user_id', 'compra_id')->withTimestamps();
+    }
 }
