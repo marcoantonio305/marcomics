@@ -16,7 +16,7 @@ class UserController extends Controller
     public function index()
     {
         return Inertia::render('users/index', [
-            'users' => User::with('rol')->get(),
+            'users' => User::withTrashed()->with('rol')->get(),
         ]);
     }
 
@@ -27,6 +27,7 @@ class UserController extends Controller
     {
         //
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -43,8 +44,9 @@ class UserController extends Controller
 {
     $usuario = Auth::user();
     $esAdmin = $usuario->rol_id == 1;
+    $esDueño = $usuario->id === $user->id;
 
-    if ($esAdmin) {
+    if ($esAdmin || $esDueño) {
         $user->load(['compras' => function($query) {
             $query->latest(); 
         }]);
@@ -52,7 +54,7 @@ class UserController extends Controller
 
     return Inertia::render('users/show', [
     'user' => $user->load('comics'), 
-    'compras' => $esAdmin ? $user->compras : [],
+    'compras' => ($esAdmin || $esDueño) ? $user->compras : [],
     'esAdmin' => $esAdmin
 ]);
 }
@@ -120,6 +122,42 @@ class UserController extends Controller
 
         $user->delete();
 
-        return redirect()->route('inicio')->with('success', 'Cuenta eliminada correctamente.');
+        return redirect()->back()->with('success', 'Cuenta eliminada correctamente.');
     }
+
+    public function restore(string $id)
+{
+    $user = User::onlyTrashed()->findOrFail($id);
+
+    if (Auth::user()->rol_id != 1) {
+        abort(403, 'No tienes permiso para restaurar este usuario.');
+    }
+
+    $user->restore(); 
+
+    return redirect()->back()->with('success', 'Usuario reactivado correctamente.');
+}
+
+public function modificarRol(Request $request, string $id)
+{
+
+    if (Auth::user()->rol_id != 1) {
+        abort(403, 'No tienes permiso para modificar el rol de este usuario.');
+    }
+
+    $user = User::withTrashed()->findOrFail($id);
+
+    $request->validate([
+        'rol_id' => 'required|in:2,3',
+    ]);
+
+    $user->update([
+        'rol_id' => $request->rol_id,
+    ]);
+
+    $nombreRol = $request->rol_id == 2 ? 'Vendedor' : 'Usuario';
+
+    return redirect()->back()->with('success', 'Rol modificado correctamente.');
+}
+
 }

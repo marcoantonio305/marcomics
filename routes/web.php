@@ -49,6 +49,8 @@ Route::get('/inicio', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
+    Route::get('/compras/{compra}', [CompraController::class, 'show'])->name('compras.show');
+    Route::get('/compras/{id}/pdf', [CompraController::class, 'generarPdf'])->name('compras.pdf');
 });
 
 
@@ -86,6 +88,8 @@ Route::delete('/editoras/{editora}', [EditoraController::class, 'destroy'])->nam
 Route::middleware(['auth', SoloAdmin::class])->group(function () {
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+    Route::patch('/users/{user}/restore', [UserController::class, 'restore'])->name('users.restore');
+    Route::patch('/users/{user}/modificar-rol', [UserController::class, 'modificarRol'])->name('users.modificar_rol');
     Route::delete('/comentarios/{comentario}', [ComentarioController::class, 'destroy'])->name('comentarios.destroy');
 
     Route::get('/coleccions', [ColeccionController::class, 'index'])->name('coleccions.index');
@@ -103,8 +107,7 @@ Route::get('/historialCompras', [HistorialCompraController::class, 'index'])->na
 Route::post('/historialCompras', [HistorialCompraController::class, 'store'])->name('historialCompras.store');
 Route::delete('/historialCompras/{historialCompra}', [HistorialCompraController::class, 'destroy'])->name('historial_compras.destroy');
 Route::delete('/compras/{compra}', [CompraController::class, 'destroy'])->name('historialCompras.destroy');
-Route::get('/compras/{compra}', [CompraController::class, 'show'])->name('compras.show');
-Route::get('/compras/{id}/pdf', [CompraController::class, 'generarPdf'])->name('compras.pdf');
+
 
 });
 

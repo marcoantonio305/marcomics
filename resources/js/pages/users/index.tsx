@@ -7,10 +7,15 @@ interface User {
     id: number;
     name: string;
     email: string;
+    deleted_at: string | null;
+    rol_id: number | null;
     rol?: {
         id: number;
         rol: string;
     }
+    nombre: string;
+    apellido1: string;
+    apellido2: string;
 }
 
 
@@ -24,14 +29,15 @@ export default function Index({ users }: Props) {
     return (
         <AppLayout>
     <div className="div-8">
-            <h1 className="text-4xl font-bold mb-6 text-primary">Usuarios</h1>
+            <h1 className="text-4xl font-bold mb-6 mt-6 ml-6 text-green-700 w-40">Usuarios</h1>
         <div className="card bg-base-100 shadow-xl border border-base-300">
                 <div className="overflow-x-auto">
                     <table className="table table-zebra w-full">
 
                         <thead>
                             <tr className="text-secondary text-sm">
-                                <th>Nombre</th>
+                                <th>Nombre de usuario</th>
+                                <th>Nombre completo</th>
                                 <th>Email</th>
                                 <th>Rol</th>
                                 <th className="text-center">Acciones</th>
@@ -42,21 +48,51 @@ export default function Index({ users }: Props) {
                             {users.length > 0 ? (
                                 users.map((user) => (
                                     <tr key={user.id} className="hover">
-                                        <td className="font-bold"><Link href={`/users/${user.id}`} className="link link-primary no-underline hover:underline transition-colors">{user.name}</Link></td>
-                                        <td className="font-mono">{user.email}</td>
+                                        <td className="font-bold"><Link href={`/users/${user.id}`} className="text-blue-600 hover:text-blue-700 no-underline hover:underline transition-colors">{user.name}</Link></td>
+                                        <td className="font-mono">{user.nombre} {user.apellido1} {user.apellido2}</td>
+                                        <td>{user.email}</td>
                                         <td>{user.rol ? user.rol.rol : 'Sin rol asignado'}</td>
                                         <td className="text-center">
-                                            <div className="flex justify-center gap-2">
-                                                {/* <Link href={`/users/${user.id}/edit`} className="btn btn-ghost btn-xs text-info">Editar</Link> */}
-                                                {auth.user?.rol_id === 1 && (
-                                                    <button onClick={()=> {
-                                                        if (confirm('¿Estás seguro de querer eliminar este usuario?')) {
-                                                            router.delete(`/users/${user.id}`)
-                                                        }
-                                                    }} className="btn btn-ghost btn-xs text-error">Eliminar</button>
-                                                )}
-                                            </div>
-                                        </td>
+    <div className="flex justify-center gap-2">
+        {auth.user?.rol_id === 1 && (
+            <>
+                {!user.deleted_at && (
+                    <>
+                        {user.rol_id === 3 && (
+                            <button onClick={() => {
+                                if (confirm('¿Estás seguro de querer cambiar el rol de este usuario a Vendedor?')) {
+                                    router.patch(`/users/${user.id}/modificar-rol`, { rol_id: 2 })
+                                }
+                            }} className="btn btn-ghost btn-xs text-info">Cambiar a Vendedor</button>
+                        )}
+                        {user.rol_id === 2 && (
+                            <button onClick={() => {
+                                if (confirm('¿Estás seguro de querer cambiar el rol de este usuario a Usuario?')) {
+                                    router.patch(`/users/${user.id}/modificar-rol`, { rol_id: 3 })
+                                }
+                            }} className="btn btn-ghost btn-xs text-info">Cambiar a Usuario</button>
+                        )}
+                    </>
+                )}
+                {user.deleted_at ? (
+                    <button onClick={() => {
+                        if (confirm('¿Estás seguro de querer restaurar este usuario?')) {
+                            router.patch(`/users/${user.id}/restore`)
+                        }
+                    }} className="btn btn-ghost btn-xs text-success">Restaurar</button>
+                ) : (
+                    auth.user.id !== user.id && (
+                        <button onClick={() => {
+                            if (confirm('¿Estás seguro de querer eliminar este usuario?')) {
+                                router.delete(`/users/${user.id}`)
+                            }
+                        }} className="btn btn-ghost btn-xs text-error">Eliminar</button>
+                    )
+                )}
+            </>
+        )}
+    </div>
+</td>
                                     </tr>
                                 ))
                             ) : (

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, router, usePage } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
+import ComicIndividual from '@/components/ui/Cuerpo/ComicIndividual';
 
 interface Editora {
     id: number;
@@ -59,17 +60,7 @@ export default function Show({categoria}:Props) {
             <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6'>
                 {listaComics.length > 0 ? (
                     listaComics.map(comic => (
-                    <div key={comic.id} className='flex flex-col gap-2'>
-                        <Link href={`/comics/${comic.id}`}><img className="w-32 h-48" src={comic.imagen ? `/storage/${comic.imagen}` : ''} alt="Imagen" /></Link>
-                        <h2>{comic.titulo}</h2>
-                        {comic.autors?.length > 0 ? (
-                            <p>
-                            {comic.autors.map(autor => autor.nombre).join(', ')}
-                                </p>
-                        ) : (<p className="font-bold italic text-gray-400">Anónimo</p>)}
-                        <p>{comic.lanzamiento}</p>
-                        <p>{comic.precio}</p>
-                    </div>
+                    <ComicIndividual key={comic.id} comic={comic} />
                 ))
                 ) : (
                     <p className="text-xl font-bold italic text-gray-400">No hay comics en esta categoría.</p>

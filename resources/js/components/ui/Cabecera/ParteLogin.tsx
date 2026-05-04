@@ -29,21 +29,24 @@ else {
             <User size={35} className="text-white mt-4 mr-4 ml-4" strokeWidth={1.5} />
         </div>
             )}
-            <button onClick={() =>setMenuAbierto(!menuAbierto)} className="flex items-center gap-2 p-2 hover:bg-red-600  mt-3 rounded-lg transition-colors">
+            <button onClick={() =>setMenuAbierto(!menuAbierto)} className="flex items-center gap-2 p-2 hover:bg-white hover:text-red-500  mt-3 rounded-lg transition-colors">
                 <ChevronDown size={20} className={`transition-transform ${menuAbierto ? 'rotate-180' : ''} mt-5`} />
-                <h1 className="text-2xl font-bold hover:underline mr-8 ml-4 mt-4">{auth.user.name}</h1>
+                <h1 className="text-2xl font-bold  mr-8 ml-4 mt-4">{auth.user.name}</h1>
                 
             </button>
             {menuAbierto && (
-                <>
-                    
-                    <div className="fixed inset-0 z-10" onClick={() => setMenuAbierto(false)}></div>
+    <div className="fixed inset-0 z-10" onClick={() => setMenuAbierto(false)}></div>
+)}
 
-                    
-                    <div className="absolute right-0 mt-57 w-60 bg-red-600 rounded-md shadow-xl z-20 py-2 border border-black">
-                        <div className="px-4 py-2 text-xs text-white uppercase font-semibold border-b border-gray-100">
-                            {auth.user.name}
-                        </div>
+<div className={`
+                absolute right-0 mt-57 w-73 bg-red-600 rounded-md shadow-xl z-20 py-2 border border-black
+                transition-all duration-200 transform origin-top-right
+                ${menuAbierto ? 'opacity-100 scale-100 visible' : 'opacity-0 scale-95 invisible'}
+            `}>
+                {/* Cabecera con el nombre (ADMIN en tu imagen) */}
+                <div className="px-4 py-2 text-xs text-white uppercase font-bold border-b border-white/50">
+                    {auth.user.name}
+                </div>
                         
                         <Link 
                             href={`/users/${auth.user.id}`} 
@@ -61,8 +64,7 @@ else {
                             <LogOut size={14} /> Cerrar Sesión
                         </Link>
                     </div>
-                </>
-            )}
+                
         </div>
     )
 }

@@ -70,6 +70,18 @@ class CompraController extends Controller
      */
     public function show(Compra $compra)
 {
+    $usuario = Auth::user();
+    
+    $compra->load('historialCompra');
+
+    $esAdmin = $usuario->rol_id == 1;
+    
+    $esDueño = $usuario->id === ($compra->historialCompra->user_id ?? null);
+
+    if (!$esAdmin && !$esDueño) {
+        abort(403, 'No tienes permiso para ver esta compra.');
+    }
+
     $compra->load(['historialCompra.user', 'comics']);
 
     return Inertia::render('compras/show', [
@@ -194,7 +206,7 @@ class CompraController extends Controller
         try {
     $charge = Charge::create([
         'amount' => $totalReal * 100, 
-        'currency' => 'usd',
+        'currency' => 'eur',
         'source' => $request->stripeToken,
         'description' => 'Compra de comics'
     ]);
@@ -205,8 +217,16 @@ class CompraController extends Controller
 
     // Se carga los datos para el pdf
     $compraCargada = Compra::with(['comics', 'historialCompra.user'])->find($nuevaCompra->id);
-    $pdf = Pdf::loadView('pdf.compra', ['compra' => $compraCargada]);
-    $pdfContent = $pdf->output();
+    $total = $compraCargada->total;
+$baseImponible = $total / 1.21;
+$iva = $total - $baseImponible;
+
+$pdf = Pdf::loadView('pdf.compra', [
+    'compra' => $compraCargada,
+    'baseImponible' => $baseImponible,
+    'iva' => $iva
+]);
+$pdfContent = $pdf->output();
 
     // Se le envia el correo al usuario
     Mail::to($request->user()->email)->send(new FacturaCompra($compraCargada, $pdfContent));
@@ -221,12 +241,30 @@ class CompraController extends Controller
 
 public function generarPdf($id)
 {
-    $compra = Compra::with(['historialCompra.user', 'comics'])->findOrFail($id);
+    $compra = Compra::with('historialCompra')->findOrFail($id);
+    $usuario = Auth::user();
 
-    $pdf = Pdf::loadView('pdf.compra', ['compra' => $compra]);
+    $esAdmin = $usuario->rol_id == 1;
+    $esDueño = $usuario->id === ($compra->historialCompra->user_id ?? null);
 
-    return $pdf->download('compra_' . $compra->id . '.pdf');
+    if (!$esAdmin && !$esDueño) {
+        abort(403, 'No tienes permiso para descargar esta factura.');
+    }
 
+    $compra->load(['comics', 'historialCompra.user']);
+
+    $baseImponible = $compra->total / 1.21;
+    $iva = $compra->total - $baseImponible;
+
+    $pdf = Pdf::loadView('pdf.compra', [
+        'compra'        => $compra,
+        'user'          => $compra->historialCompra?->user,
+        'comics'        => $compra->comics,
+        'baseImponible' => $baseImponible,
+        'iva'           => $iva
+    ]);
+
+    return $pdf->download('factura_compra_' . $compra->id . '.pdf');
 }
 
 

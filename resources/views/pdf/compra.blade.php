@@ -18,7 +18,9 @@
     </div>
 
     <div style="margin-bottom: 20px;">
-        <p><strong>Cliente:</strong> {{ $compra->historialCompra->user->name ?? 'Usuario no encontrado' }}</p>
+        <p><strong>Cliente:</strong> {{ $compra->historialCompra->user->nombre }} {{ $compra->historialCompra->user->apellido1 }} {{ $compra->historialCompra->user->apellido2 }}</p>
+        <p><strong>DNI:</strong> {{ $compra->historialCompra->user->dni }}</p>
+        <p><strong>Dirección:</strong> {{ $compra->historialCompra->user->direccion }}</p>
         <p><strong>Fecha:</strong> {{ $compra->created_at->format('d/m/Y H:i') }}</p>
     </div>
 
@@ -35,16 +37,24 @@
             @foreach($compra->comics as $comic)
             <tr>
                 <td style="text-align: left;" class="text-blue">{{ $comic->titulo }}</td>
-                <td>${{ number_format($comic->pivot->precio_unitario, 2) }}</td>
-                <td>{{ $comic->pivot->cantidad }}</td> {{-- CORREGIDO AQUÍ --}}
-                <td>${{ number_format($comic->pivot->precio_unitario * $comic->pivot->cantidad, 2) }}</td>
+                <td>{{ number_format($comic->pivot->precio_unitario, 2) }}€</td>
+                <td>{{ $comic->pivot->cantidad }}</td> 
+                <td>{{ number_format($comic->pivot->precio_unitario * $comic->pivot->cantidad, 2) }}€</td>
             </tr>
             @endforeach
         </tbody>
         <tfoot>
+            <tr>
+                <td colspan="3" style="text-align: right; padding-right: 15px;">Base Imponible:</td>
+                <td>{{ number_format($baseImponible, 2) }}€</td>
+            </tr>
+            <tr>
+                <td colspan="3" style="text-align: right; padding-right: 15px;">IVA (21%):</td>
+                <td>{{ number_format($iva, 2) }}€</td>
+            </tr>
             <tr class="total-row">
-                <td colspan="3" style="text-align: right; padding-right: 15px;">Total a Pagar:</td>
-                <td>${{ number_format($compra->total, 2) }}</td>
+                <td colspan="3" style="text-align: right; padding-right: 15px;">Total a Pagar (IVA Incluido):</td>
+                <td>{{ number_format($compra->total, 2) }}€</td>
             </tr>
         </tfoot>
     </table>

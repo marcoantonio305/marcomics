@@ -108,7 +108,7 @@ const manejarPago = async () => {
                                 <img src={`/storage/${comic.imagen}`} alt={comic.titulo} className="w-32 h-48 object-cover" />
                                 <div className="flex flex-col ml-4">
                                     <h2 className="card-title">{comic.titulo}</h2>
-                                    <p>Precio: ${comic.precio}</p>
+                                    <p>Precio: {comic.precio}€</p>
                                     <p>Cantidad: {item.cantidad}</p>
                                     <div className="card-actions">
                                         <button onClick={() => actualizarCantidad(comic.id, 'anadir')} className="btn btn-sm bg-green-500 text-white hover:bg-green-600">
@@ -133,23 +133,48 @@ const manejarPago = async () => {
             )}
 
             {items.length > 0 && (
-                <div className="mt-6 p-4 bg-gray-100 rounded-lg">
-                    <h2 className="text-xl font-bold mb-2">Total: ${carritoTotal}</h2>
-                    <button onClick={manejarPago} disabled={cargando} className={`btn bg-green-500 text-white hover:bg-green-600" ${
-                cargando 
-                ? 'bg-gray-400 cursor-not-allowed' 
-                : 'bg-green-500 hover:bg-green-600 shadow-lg hover:shadow-green-200'
-            }`}>
-                        {cargando ? (
-                <span className="flex items-center justify-center gap-2">
-                    <Loader className="animate-spin"></Loader> Procesando...
-                </span>
-            ) : (
-                "Confirmar y Pagar ahora"
-            )}
-        </button>
-                </div>
-            )}
+    <div className="mt-6 p-6 bg-gray-100 rounded-lg border border-gray-200">
+        <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-4">
+            
+            <div className="space-y-1">
+                <p className="text-sm text-gray-600">
+                    Base Imponible: <span className="font-medium">{(carritoTotal / 1.21).toFixed(2)}€</span>
+                </p>
+                <p className="text-sm text-gray-600">
+                    IVA (21%): <span className="font-medium">{(carritoTotal - (carritoTotal / 1.21)).toFixed(2)}€</span>
+                </p>
+                <h2 className="text-3xl font-bold text-gray-900 mt-2">
+                    Total: <span className="text-3xl font-bold">{carritoTotal}€</span>
+                </h2>
+                {/* 
+                <p className="text-[10px] text-gray-400 italic mt-1">
+                    * El total incluye IVA del 21%
+                </p>*/}
+            </div>
+
+            <div className="w-full md:w-auto">
+                <button 
+                    onClick={manejarPago} 
+                    disabled={cargando} 
+                    className={`btn w-full md:w-64 py-3 px-6 rounded-md font-bold text-white transition-all duration-200 ${
+                        cargando 
+                        ? 'bg-gray-400 cursor-not-allowed' 
+                        : 'bg-green-500 hover:bg-green-600 shadow-md hover:shadow-green-200 active:scale-95'
+                    }`}
+                >
+                    {cargando ? (
+                        <span className="flex items-center justify-center gap-2">
+                            <Loader className="animate-spin" size={20} /> Procesando...
+                        </span>
+                    ) : (
+                        "Confirmar y Pagar ahora"
+                    )}
+                </button>
+            </div>
+            
+        </div>
+    </div>
+)}
         </div>
         </AppLayout>
     );

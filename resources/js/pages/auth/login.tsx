@@ -10,6 +10,7 @@ import AuthLayout from '@/layouts/auth-layout';
 import { register } from '@/routes';
 import { store } from '@/routes/login';
 import { request } from '@/routes/password';
+import { useState } from 'react';
 
 type Props = {
     status?: string;
@@ -22,6 +23,7 @@ export default function Login({
     canResetPassword,
     canRegister,
 }: Props) {
+    const [showPassword, setShowPassword] = useState(false);
     return (
         <AuthLayout
             title="Iniciar sesión"
@@ -67,7 +69,7 @@ export default function Login({
                                 </div>
                                 <Input
                                     id="password"
-                                    type="password"
+                                    type={showPassword ? 'text' : 'password'}
                                     name="password"
                                     required
                                     tabIndex={2}
@@ -75,6 +77,15 @@ export default function Login({
                                     placeholder="Password"
                                 />
                                 <InputError message={errors.password} />
+                            </div>
+                            <div className="flex items-center space-x-2">
+                                <Checkbox 
+                                    id="show-password" 
+                                    onCheckedChange={(checked) => setShowPassword(!!checked)}
+                                />
+                                <Label htmlFor="show-password" className="text-sm font-normal cursor-pointer">
+                                    Mostrar contraseña
+                                </Label>
                             </div>
 
                             <div className="flex items-center space-x-3">

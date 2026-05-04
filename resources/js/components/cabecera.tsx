@@ -27,7 +27,7 @@ export function Cabecera({categorias = []}:Props) {
                     <Icono></Icono>
                 </div>
                 <div className="ms-auto"><ParteLogin /></div>
-                <div className="mt-5 mr-5 ml-3"><BotonCarrito /></div>
+                <div className="mt-5 ml-3 mr-14 "><BotonCarrito /></div>
             </div>
             <div className="flex w-full h-12">
                 {marvel && (<BotonCategoriaCabecera nombre={marvel.nombre} href={`/categorias/${marvel.id}`} />)}
