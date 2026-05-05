@@ -31,6 +31,7 @@ interface Comic {
 interface Coleccion {
     id: number;
     nombre: string;
+    imagen?: string;
     mostrar_inicio: boolean;
     orden: number;
     comics: Comic[];
@@ -59,11 +60,14 @@ interface Props {
     chat: ChatData;
     postChats: PostChat[];
     coleccionesInicio: Coleccion[];
+    coleccionesDestacadas: Coleccion[];
 }
 
-export default function Inicio({ categorias = [], comics = [], chat, postChats = [], coleccionesInicio = [] }: Props) {
+export default function Inicio({ categorias = [], comics = [], chat, postChats = [], coleccionesInicio = [], coleccionesDestacadas = [] }: Props) {
     //const categoriaSuperheroes = categorias.find(categoria => categoria.nombre.toLocaleLowerCase() === 'superhéroes');
     //const categoriaManga = categorias.find(categoria => categoria.nombre.toLocaleLowerCase() === 'manga');
+    //const coleccionesDestacadas = categorias.filter(categoria => (categoria as any).es_destacado)
+    //    .sort((a, b) => (a as any).posicion_destacado - (b as any).posicion_destacado);
 
     const coleccion1 = categorias.find(categoria => categoria.nombre === 'Aventuras');
     const coleccion2 = categorias.find(categoria => categoria.nombre === 'Acción');
@@ -113,7 +117,7 @@ export default function Inicio({ categorias = [], comics = [], chat, postChats =
                         */}
                 </div>
                 <aside className="sticky top-4 w-80">
-                    <ColumnaDestacados coleccion1={coleccion1} coleccion2={coleccion2} coleccion3={coleccion3}></ColumnaDestacados>
+                    <ColumnaDestacados colecciones={coleccionesDestacadas}></ColumnaDestacados>
                     <div className="h-[500px] mt-6 flex flex-col">
                         {chat && <Chat chat={chat} postChats={postChats} />}
                     </div>

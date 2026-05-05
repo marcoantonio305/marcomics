@@ -42,10 +42,16 @@ export default function Show({categoria}:Props) {
     return (
         <AppLayout>
         <div className='p-8 flex flex-col'>
-            <h1 className='text-4xl font-black '>{categoria.nombre}</h1>
-            <img className="w-64 h-96 object-contain mt-4" src={categoria.imagen ? `/storage/${categoria.imagen}` : '/img/default-category.png'} alt="Imagen de categoría" />
+            <h1 className='text-4xl font-black text-blue-700'>{categoria.nombre}</h1>
+            {auth.user?.rol_id === 1 ? (
+    <img 
+        className="w-64 h-96 object-contain mt-4" 
+        src={categoria.imagen ? `/storage/${categoria.imagen}` : '/img/default-category.png'} 
+        alt="Imagen de categoría" 
+    />
+) : null}
             <div className="flex gap-4 mt-4">
-            {auth.user?.rol_id !== 3 && (
+            {auth.user?.rol_id === 1 && (
                         <Link href={`/categorias/${categoria.id}/edit`} className='btn btn-secondary mr-4'>Editar categoría</Link>
                         )}
             {auth.user?.rol_id === 1 && (

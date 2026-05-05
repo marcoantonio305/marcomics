@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link, router, usePage } from '@inertiajs/react';
-import appLayout from '@/layouts/app-layout';
 import AppLayout from '@/layouts/app-layout';
 
 interface Coleccion {
@@ -8,6 +7,8 @@ interface Coleccion {
     nombre: string;
     mostrar_inicio: boolean;
     orden: number;
+    es_destacado: boolean;
+    posicion_destacado: number | null;
 }
 
 interface Props {
@@ -26,6 +27,16 @@ export default function Index({ coleccions }: Props) {
     const quitarDeInicio = (coleccionId: number) => {
         router.delete(`/coleccions/${coleccionId}/quitar-inicio`, { preserveScroll: true });
     };
+
+    const gestionarDestacado = (coleccionId: number, posicionSeleccionada: number) => {
+        router.post(`/coleccions/${coleccionId}/destacado`, {
+            posicion: posicionSeleccionada 
+        }, { preserveScroll: true });
+    }
+
+    const quitarDestacado = (coleccionId: number) => {
+        router.delete(`/coleccions/${coleccionId}/quitar-destacado`, { preserveScroll: true });
+    }
     
     return (
         <AppLayout>
@@ -49,6 +60,25 @@ export default function Index({ coleccions }: Props) {
                         })}
                     </div>
                 </div>
+
+                <div className="bg-white p-4 border-2 border-black mb-10">
+    <h2 className="text-xl font-black uppercase mb-4 flex items-center gap-2">
+        <span className="text-green-600">Columnas Destacadas (Lateral)</span>
+    </h2>
+    <div className="grid grid-cols-3 gap-2">
+        {[1, 2, 3].map(pos => {
+            const ocupante = coleccions.find(c => c.es_destacado && c.posicion_destacado === pos);
+            return (
+                <div key={pos} className={`border-2 border-black p-2 text-center ${ocupante ? 'bg-green-50' : 'bg-gray-50 opacity-40'}`}>
+                    <p className="text-[10px] font-black text-gray-400">COLUMNA {pos}</p>
+                    <p className="font-bold text-[11px] truncate uppercase">
+                        {ocupante ? ocupante.nombre : 'Vacío'}
+                    </p>
+                </div>
+            );
+        })}
+    </div>
+</div>
 
             <div className="space-y-4">
                     {coleccions.map((coleccion) => (
@@ -94,11 +124,43 @@ export default function Index({ coleccions }: Props) {
                                 {coleccion.mostrar_inicio && (
                                     <button
                                         onClick={() => quitarDeInicio(coleccion.id)}
-                                        className="btn bg-blue-600 text-white font-bold uppercase text-xs px-3 py-2 border-2 hover:bg-blue-700"
+                                        className="btn bg-red-500 text-white font-bold text-xs px-3 py-2 border-2 hover:bg-red-600"
                                     >
                                         Quitar
                                     </button>
                                 )}
+
+                                <div className="flex items-center gap-2 border-l-2 border-gray-200 pl-4">
+    <label className="text-xs font-black uppercase">Columna:</label>
+    <select 
+        id={`select-destacado-${coleccion.id}`}
+        className="select select-bordered select-sm border-2 border-black font-bold h-10"
+        defaultValue={coleccion.posicion_destacado || 1}
+    >
+        {[1, 2, 3].map(n => (
+            <option key={n} value={n}>{n}</option>
+        ))}
+    </select>
+
+    <button
+        onClick={() => {
+            const select = document.getElementById(`select-destacado-${coleccion.id}`) as HTMLSelectElement;
+            gestionarDestacado(coleccion.id, Number(select.value));
+        }}
+        className="btn bg-green-600 text-white font-bold text-xs px-3 py-2 border-2 border-black hover:bg-green-700 "
+    >
+        {coleccion.es_destacado ? 'Mover' : 'Añadir a Destacados'}
+    </button>
+
+    {coleccion.es_destacado && (
+        <button
+            onClick={() => quitarDestacado(coleccion.id)}
+            className="btn bg-red-500 text-white font-bold text-xs px-3 py-2 border-2 border-black hover:bg-red-600 uppercase"
+        >
+            Quitar
+        </button>
+    )}
+</div>
 
                                 <div className="h-6 w-[2px] bg-black mx-2 hidden md:block"></div>
 

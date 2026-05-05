@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Coleccion extends Model
 {
     use SoftDeletes;
-    protected $fillable = ['nombre', 'mostrar_inicio', 'orden'];
+    protected $fillable = ['nombre', 'mostrar_inicio', 'orden', 'imagen', 'es_destacado', 'posicion_destacado'];
 
     public function comics()
     {

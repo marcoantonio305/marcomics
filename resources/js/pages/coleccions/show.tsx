@@ -9,6 +9,7 @@ interface Coleccion {
     nombre: string;
     mostrar_inicio: boolean;
     orden: number;
+    imagen?: string;
 }
 
 interface Comic {
@@ -80,7 +81,8 @@ export default function Show({coleccion, comicsColeccion, comicsDisponible}:Prop
     return (
         <AppLayout>
         <div className='p-8 flex flex-col'>
-            <h1 className='text-4xl font-black '>{coleccion.nombre}</h1>
+            <h1 className='text-4xl font-black text-blue-700'>{coleccion.nombre}</h1>
+            <img className="w-64 h-96 object-contain mt-4" src={coleccion.imagen ? `/storage/${coleccion.imagen}` : '/img/default-category.png'} alt="Imagen de colección" />
             <div className="flex gap-4 mt-4">
             {auth.user?.rol_id === 1 && (
                         <Link href={`/coleccions/${coleccion.id}/edit`} className='btn btn-secondary mr-4'>Editar colección</Link>

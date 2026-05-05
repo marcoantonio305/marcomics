@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Coleccion;
 use App\Models\Comic;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class ColeccionController extends Controller
@@ -34,7 +35,13 @@ class ColeccionController extends Controller
     {
         $validated = $request->validate([
             'nombre' => 'required|max:255',
+            'imagen' => 'nullable|image|max:2048'
         ]);
+
+        if ($request->hasFile('imagen')) {
+            $path = $request->file('imagen')->store('coleccion_images', 'public');
+            $validated['imagen'] = $path;
+        }
 
         Coleccion::create($validated);
 
@@ -76,7 +83,13 @@ class ColeccionController extends Controller
     {
         $validated = $request->validate([
             'nombre' => 'required|max:255',
+            'imagen' => 'nullable|image|max:2048'
         ]);
+
+        if ($request->hasFile('imagen')) {
+            $path = $request->file('imagen')->store('coleccion_images', 'public');
+            $validated['imagen'] = $path;
+        }
 
         $coleccion->update($validated);
 
@@ -88,6 +101,9 @@ class ColeccionController extends Controller
      */
     public function destroy(Coleccion $coleccion)
     {
+        if ($coleccion->imagen) {
+            Storage::disk('public')->delete($coleccion->imagen);
+        }
         $coleccion->delete();
         return back()->with('success', 'Colección eliminada exitosamente.');
     }
@@ -131,6 +147,32 @@ class ColeccionController extends Controller
         ]);
 
         return back()->with('success', 'Colección desmarcada para mostrar en el inicio exitosamente.');
+    }
+
+    public function coleccionAlDestacados(Request $request, Coleccion $coleccion)
+    {
+        $request->validate([
+        'posicion' => 'required|integer|between:1,3' 
+    ]);
+    Coleccion::where('posicion_destacado', $request->posicion)
+    ->update(['posicion_destacado' => null, 'es_destacado' => false]);
+
+    $coleccion->update([
+        'es_destacado' => true,
+        'posicion_destacado' => $request->posicion
+    ]);
+
+    return back()->with('success', 'Colección marcada como destacada exitosamente.');
+}
+
+    public function quitarColeccionDeDestacados(Request $request, Coleccion $coleccion)
+    {
+        $coleccion->update([
+            'es_destacado' => false,
+            'posicion_destacado' => null
+        ]);
+
+        return back()->with('success', 'Colección desmarcada como destacada exitosamente.');
     }
 
 }

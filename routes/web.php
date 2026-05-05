@@ -29,9 +29,14 @@ Route::get('/', function () {
         ->orderBy('orden', 'asc')
         ->with('comics.autors', 'comics.categorias') 
         ->get();
+    $coleccionesDestacadas = Coleccion::where('es_destacado', true)
+        ->orderBy('posicion_destacado', 'asc')
+        ->with('comics.autors', 'comics.categorias')
+        ->get();
 
     return Inertia::render('inicio', [
         'coleccionesInicio' => $coleccionesInicio,
+        'coleccionesDestacadas' => $coleccionesDestacadas,
         'categorias' => Categoria::all(),
         'comics' => Comic::with(['categorias', 'autors'])->latest()->take(12)->get(),
         'chat' => \App\Models\Chat::where('nombre_clave', 'general')->first(),
@@ -102,6 +107,10 @@ Route::post('/coleccions/{coleccion}/comics/{comic}', [ColeccionController::clas
 Route::delete('/coleccions/{coleccion}/comics/{comic}', [ColeccionController::class, 'quitarComicDeColeccion'])->name('coleccions.quitar_comic');
 Route::post('/coleccions/{coleccion}/al-inicio', [ColeccionController::class, 'coleccionAlInicio'])->name('coleccions.al-inicio');
 Route::delete('/coleccions/{coleccion}/quitar-inicio', [ColeccionController::class, 'quitarColeccionDelInicio'])->name('coleccions.quitar-inicio');
+Route::post('/coleccions/{coleccion}/destacado', [ColeccionController::class, 'coleccionAlDestacados'])
+    ->name('coleccions.destacado');
+Route::delete('/coleccions/{coleccion}/quitar-destacado', [ColeccionController::class, 'quitarColeccionDeDestacados'])
+    ->name('coleccions.quitar-destacado');
 
 Route::get('/historialCompras', [HistorialCompraController::class, 'index'])->name('historialCompras.index');
 Route::post('/historialCompras', [HistorialCompraController::class, 'store'])->name('historialCompras.store');
