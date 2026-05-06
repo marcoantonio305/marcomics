@@ -95,7 +95,7 @@ export default function Show({coleccion, comicsColeccion, comicsDisponible}:Prop
         Eliminar colección
     </button>
             )}
-            {auth.user?.rol_id === 1 && (
+            {/* {auth.user?.rol_id === 1 && (
                         <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg flex items-center gap-4">
                             <p className="font-bold text-sm text-blue-800">Escoger su posición en el Inicio:</p>
                             <div className="flex gap-1">
@@ -122,7 +122,7 @@ export default function Show({coleccion, comicsColeccion, comicsDisponible}:Prop
                                 </button>
                             )}
                         </div>
-                    )}
+                    )} */}
             </div>
             <div className='flex flex-col gap-6 mt-6'>
                 <h1 className='text-gray-600 text-3xl font-bold'>Comics en la colección</h1>

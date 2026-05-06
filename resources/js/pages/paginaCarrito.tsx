@@ -53,7 +53,7 @@ const [cargando, setCargando] = useState(false);
             comic_id: comicId
         }, {
             preserveScroll: true,
-            only: ['carrito', 'carritoTotal', 'flash'],
+            only: ['carrito', 'carritoTotal'],
         });
         
     }
@@ -120,7 +120,7 @@ const manejarPago = async () => {
                                         <button onClick={() => router.delete('/carrito/eliminar', {
                                             data: { comic_id: comic.id },
                                             preserveScroll: true,
-                                            only: ['carrito', 'carritoTotal', 'flash'],
+                                            only: ['carrito', 'carritoTotal'],
                                         })} className="btn btn-sm bg-red-500 text-white hover:bg-red-600">
                                             <Trash size={16} />
                                         </button>

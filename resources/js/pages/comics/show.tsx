@@ -8,6 +8,7 @@ import { fechaLarga } from '@/lib/utils';
 import ComentariosPorComic from '@/components/ui/Cuerpo/ComentariosPorComic';
 import CajaTextoComentario from '@/components/ui/Cuerpo/CajaTextoComentario';
 
+
 interface Editora {
     id: number;
     nombre: string;
@@ -98,8 +99,9 @@ export default function Show({ comic, comentarios } : Props) {
                 </span></p>
 
                 <p className='mb-2 border border-base-300 p-4'><span className='text-3xl font-bold mb-8 mt-8 text-blue-600'>Descripción: </span><span className='mb-6 ml-5 text-xl'>{comic.descripcion}</span></p>
-
+<div><BotonAnadirCarro comicId={comic.id}></BotonAnadirCarro></div>
             </div>
+
 
             <div className='flex flex-col gap-4'>
                 <ComentariosPorComic comentarios={comentarios} comic={comic}></ComentariosPorComic>
@@ -121,7 +123,6 @@ export default function Show({ comic, comentarios } : Props) {
             <Link href={`/comics`} className='btn btn-secondary mr-4 ml-4'>Volver al index</Link>
             )}
             <BotonBiblioteca comic_id={comic.id}></BotonBiblioteca>
-            <BotonAnadirCarro comicId={comic.id}></BotonAnadirCarro>
             
     </div>
     </AppLayout>

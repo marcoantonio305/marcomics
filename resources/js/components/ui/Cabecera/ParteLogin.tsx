@@ -8,7 +8,7 @@ export default function ParteLogin() {
     const [menuAbierto, setMenuAbierto] = useState(false);
     if (!user) {
     return (
-        <div className="flex bg-[#d00000] items-center gap-3 p-2 hover:bg-white/10 rounded-lg transition-colors group">
+        <div className="flex bg-red-600 items-center gap-3 p-2 hover:bg-white rounded-lg transition-colors group">
             <User size={35} className="text-white mt-4 mr-4 ml-4" />
             <Link href="/login"><h1 className="text-2xl hover:underline text-white font-bold mr-4 mt-4">Iniciar sesión</h1></Link>
         </div>
@@ -16,7 +16,7 @@ export default function ParteLogin() {
 }
 else {
     return (
-        <div className="w-full h-16 bg-[#d00000] text-white flex items-center justify-center">
+        <div className="w-full h-16 bg-red-600 text-white flex items-center justify-center">
             
             {(auth.user.foto_perfil) ? (
                 <img 
@@ -25,8 +25,8 @@ else {
             className="w-full h-full object-cover rounded-full mt-6 mr-4 ml-4" 
         />
     ) : (
-                <div className="w-full h-full bg-black/20 flex items-center justify-center">
-            <User size={35} className="text-white mt-4 mr-4 ml-4" strokeWidth={1.5} />
+                <div className="w-full h-full bg-transparent flex items-center justify-center">
+            <img className="w-full mt-6 ml-2 h-full object-cover rounded-full" src={ `https://ui-avatars.com/api/?name=${encodeURIComponent(auth.user.name || 'U')}&background=random`} alt="Foto de perfil" />
         </div>
             )}
             <button onClick={() =>setMenuAbierto(!menuAbierto)} className="flex items-center gap-2 p-2 hover:bg-white hover:text-red-500  mt-3 rounded-lg transition-colors">
@@ -43,7 +43,6 @@ else {
                 transition-all duration-200 transform origin-top-right
                 ${menuAbierto ? 'opacity-100 scale-100 visible' : 'opacity-0 scale-95 invisible'}
             `}>
-                {/* Cabecera con el nombre (ADMIN en tu imagen) */}
                 <div className="px-4 py-2 text-xs text-white uppercase font-bold border-b border-white/50">
                     {auth.user.name}
                 </div>

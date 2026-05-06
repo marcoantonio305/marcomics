@@ -21,7 +21,7 @@ export function Cabecera({categorias = []}:Props) {
     const europeo = categorias.find(cat => cat.nombre.toLocaleLowerCase() === 'europeo');
     const infantil = categorias.find(cat => cat.nombre.toLocaleLowerCase() === 'infantil');
     return (
-        <header className="bg-[#d00000] border-b-4 flex flex-col">
+        <header className="bg-red-600 border-b-4 flex flex-col">
             <div className="flex w-full border-b-2">
                 <div className="flex-[3] flex items-center border-r-2">
                     <Icono></Icono>

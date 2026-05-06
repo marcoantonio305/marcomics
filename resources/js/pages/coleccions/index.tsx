@@ -90,7 +90,7 @@ export default function Index({ coleccions }: Props) {
                                 </Link>
                                 {coleccion.mostrar_inicio && (
                                     <div className="mt-1">
-                                        <span className="bg-green-500 text-white text-[10px] font-black px-2 py-0.5 border border-black">
+                                        <span className="text-pink-500 text-[10px] font-black px-2 py-0.5 border border-black">
                                             En Inicio, en la posición {coleccion.orden}
                                         </span>
                                     </div>
@@ -124,7 +124,7 @@ export default function Index({ coleccions }: Props) {
                                 {coleccion.mostrar_inicio && (
                                     <button
                                         onClick={() => quitarDeInicio(coleccion.id)}
-                                        className="btn bg-red-500 text-white font-bold text-xs px-3 py-2 border-2 hover:bg-red-600"
+                                        className="btn bg-orange-400 text-black font-bold text-xs px-3 py-2 border-2 hover:bg-red-600"
                                     >
                                         Quitar
                                     </button>
@@ -147,7 +147,7 @@ export default function Index({ coleccions }: Props) {
             const select = document.getElementById(`select-destacado-${coleccion.id}`) as HTMLSelectElement;
             gestionarDestacado(coleccion.id, Number(select.value));
         }}
-        className="btn bg-green-600 text-white font-bold text-xs px-3 py-2 border-2 border-black hover:bg-green-700 "
+        className="btn bg-green-600 text-white font-bold text-xs px-3 py-2  hover:bg-green-700 "
     >
         {coleccion.es_destacado ? 'Mover' : 'Añadir a Destacados'}
     </button>
@@ -155,7 +155,7 @@ export default function Index({ coleccions }: Props) {
     {coleccion.es_destacado && (
         <button
             onClick={() => quitarDestacado(coleccion.id)}
-            className="btn bg-red-500 text-white font-bold text-xs px-3 py-2 border-2 border-black hover:bg-red-600 uppercase"
+            className="btn bg-red-500 text-white font-bold text-xs px-3 py-2  hover:bg-red-600"
         >
             Quitar
         </button>
@@ -164,7 +164,7 @@ export default function Index({ coleccions }: Props) {
 
                                 <div className="h-6 w-[2px] bg-black mx-2 hidden md:block"></div>
 
-                                <Link href={`/coleccions/${coleccion.id}/edit`} className="btn bg-green-600 text-white font-bold text-xs px-3 py-2 border-2 hover:bg-green-700">
+                                <Link href={`/coleccions/${coleccion.id}/edit`} className="btn bg-purple-700 text-white font-bold text-xs px-3 py-2 border-2 hover:bg-green-700">
                                     Editar
                                 </Link>
 

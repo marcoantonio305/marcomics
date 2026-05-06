@@ -1,4 +1,5 @@
 import { Link, router, usePage } from "@inertiajs/react";
+import { Star } from "lucide-react";
 
 interface Comentario {
     id: number;
@@ -36,14 +37,14 @@ export default function ComentariosPorComic({comentarios, comic}: Props) {
                         </div>
                         <div className="flex flex-col flex-1">
                         <div className="flex justify-between items-center">
-                            <span className="font-semibold text-blue-500 hover:text-blue-700">
+                            <span className="font-semibold text-blue-500 hover:text-blue-700 hover:underline">
                                         <Link href={comentario.user ? `/users/${comentario.user.id}` : '#'}>
                                             {comentario.user ? comentario.user.name : 'Usuario Desconocido'}
                                         </Link>
                                     </span>
                         {comentario.puntuacion !== undefined && (
-                                        <span className="text-lg font-bold text-yellow-500">
-                                            Puntuación: {comentario.puntuacion}/5
+                                        <span className="text-lg font-bold text-[#EAB308]">
+                                            Puntuación: {comentario.puntuacion} <Star size={25} className="inline-block mb-1" color="black" fill="#EAB308" />
                                         </span>
                                     )}
                         </div>
