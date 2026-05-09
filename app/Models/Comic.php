@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class Comic extends Model
 {
@@ -15,6 +16,8 @@ class Comic extends Model
         'descripcion',
         'editora_id',
         'imagen',
+        'codigo_comic',
+        'stock'
     ];
 
     //protected $casts = [
@@ -47,5 +50,23 @@ class Comic extends Model
 
     public function coleccions() {
         return $this->belongsToMany(Coleccion::class, 'coleccion_comic');
+    }
+
+    protected static function booted()
+    {
+        static::creating(function ($comic) {
+            $nuevoCodigo = '';
+            $existe = true;
+
+            while ($existe) {
+                $p1 = strtoupper(Str::random(4));
+                $p2 = strtoupper(Str::random(2));
+                $nuevoCodigo = "{$p1}-{$p2}";
+
+                $existe = \App\Models\Comic::query()->where('codigo_comic', $nuevoCodigo)->exists();
+            }
+
+            $comic->codigo_comic = $nuevoCodigo;
+        });
     }
 }

@@ -12,10 +12,11 @@ export default function BotonBiblioteca({ comic_id }: { comic_id: number }) {
             preserveScroll: true,
             onSuccess: () => {
                 alert('Comic añadido a tu favoritos');
-        }});
+            }
+        });
     }
     
     return (
-        <button className="btn bg-orange-500 text-white hover:bg-orange-600" onClick={anadir} disabled={processing}>{processing ? 'Cargando...' : 'Añadir a favoritos'}</button>
+        <button className="border-2 border-black rounded-lg w-55 h-10 ml-15 bg-yellow-600 text-white hover:bg-yellow-700" onClick={anadir} disabled={processing}>{processing ? 'Cargando...' : 'Añadir a favoritos'}</button>
     )
 }

@@ -78,6 +78,13 @@ class User extends Authenticatable
     }
 
     public function compras() {
-        return $this->belongsToMany(Compra::class, 'historial_compras', 'user_id', 'compra_id')->withTimestamps();
+        return $this->hasManyThrough(
+        Compra::class, 
+        HistorialCompra::class, 
+        'user_id',   
+        'id',        
+        'id',        
+        'compra_id'  
+    );
     }
 }

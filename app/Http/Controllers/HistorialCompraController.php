@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Compra;
 use App\Models\HistorialCompra;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class HistorialCompraController extends Controller
@@ -13,12 +15,15 @@ class HistorialCompraController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
-        return Inertia::render('historialCompras/index', [
-        'historialCompras' => HistorialCompra::with(['compra', 'user'])->get(),
-        'users' => \App\Models\User::all(),
+{
+    $historialCompras = HistorialCompra::with(['compra.comics', 'user'])->get();
+
+    return Inertia::render('historialCompras/index', [
+        'historialCompras' => $historialCompras,
+        'users' => User::all(),
+        'compras' => Compra::all(),
     ]);
-    }
+}
 
     /**
      * Show the form for creating a new resource.
@@ -68,4 +73,24 @@ class HistorialCompraController extends Controller
         $historialCompra->delete();
         return back()->with('success', 'Historial de compra eliminado exitosamente.');
     }
+
+    public function misComicsCompras(User $user)
+{
+    $usuarioAutenticado = Auth::user();
+
+    if ($usuarioAutenticado->id !== $user->id && $usuarioAutenticado->rol_id !== 1) {
+        abort(403);
+    }
+
+    return Inertia::render('historialCompras/miscomicsCompras', [ 
+        'user' => $user,
+        'compras' => $user->compras()
+            ->with(['comics' => function($query) {
+                $query->withPivot('cantidad', 'precio_unitario');
+            }])
+            ->latest()
+            ->get(),
+        'esAdmin' => $usuarioAutenticado->rol_id === 1,
+    ]);
+}
 }

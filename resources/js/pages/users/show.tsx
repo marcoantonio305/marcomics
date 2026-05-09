@@ -69,6 +69,7 @@ export default function Show({ user, compras, esAdmin }: {user: User, compras: C
                     </div>
                 )}
                 <Biblioteca user={user} />
+                {/*
                 {(auth.user?.id === user.id || esAdmin) && (
                 <div className="mt-10 p-6 bg-white border-2 border-black-500 rounded-lg shadow-lg mb-5 mt-5">
                     <h2 className="text-2xl font-bold text-pink-700 mb-4">
@@ -102,6 +103,7 @@ export default function Show({ user, compras, esAdmin }: {user: User, compras: C
                     </table>
                 </div>
             )}
+                */}
                 </div>
         </AppLayout>
     );

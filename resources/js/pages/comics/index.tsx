@@ -26,7 +26,9 @@ interface Comic {
     descripcion: string;
     autors: Autor[];
     categorias: Categoria[];
-    editora?: Editora
+    editora?: Editora,
+    stock: number,
+    codigo_comic: string,
 }
 
 interface Props {
@@ -39,7 +41,7 @@ export default function Index({ comics, titulo} : Props) {
     return (
         <AppLayout>
     <div className="div-8">
-            <h1 className="text-4xl font-bold mb-6 text-primary">{titulo}</h1>
+            <h1 className="text-4xl font-bold mb-6 mt-5 ml-3 text-blue-600">{titulo}</h1>
         <div className="card bg-base-100 shadow-xl border border-base-300">
                 <div className="overflow-x-auto">
                     <table className="table table-zebra w-full">
@@ -47,12 +49,13 @@ export default function Index({ comics, titulo} : Props) {
                         <thead>
                             <tr className="text-secondary text-sm">
                                 <th>Título</th>
+                                <th>Código</th>
                                 <th>Precio</th>
                                 <th>Lanzamiento</th>
                                 <th>Editora</th>
-                                <th>Descripción</th>
                                 <th>Autores</th>
                                 <th>Categorías</th>
+                                <th>Stock</th>
                                 <th className="text-center">Acciones</th>
                             </tr>
                         </thead>
@@ -61,11 +64,11 @@ export default function Index({ comics, titulo} : Props) {
                             {comics.length > 0 ? (
                                 comics.map((comic) => (
                                     <tr key={comic.id} className="hover">
-                                        <td className="font-bold"><Link href={`/comics/${comic.id}`} className="link link-primary no-underline hover:underline transition-colors">{comic.titulo}</Link></td>
+                                        <td className="font-bold text-blue-700"><Link href={`/comics/${comic.id}`} className="link no-underline hover:underline transition-colors">{comic.titulo}</Link></td>
+                                        <td>{comic.codigo_comic}</td>
                                         <td className="font-mono">{comic.precio}€</td>
                                         <td>{comic.lanzamiento}</td>
                                         <td>{comic.editora?.nombre || 'Sin editora'}</td>
-                                        <td className="max-w-xs truncate">{comic.descripcion}</td>
                                         <td>
     <div className='flex flex-wrap gap-1'>
         {comic.autors && comic.autors.length > 0 ? (
@@ -92,6 +95,7 @@ export default function Index({ comics, titulo} : Props) {
         )}
     </div>
 </td>
+<td>{comic.stock}</td>
                                         <td className="text-center">
                                             <div className="flex justify-center gap-2">
                                                 {auth.user?.rol_id !== 3 && (
@@ -102,6 +106,19 @@ export default function Index({ comics, titulo} : Props) {
                                                                 router.delete(`/comics/${comic.id}`)
                                                             }
                                                         }} className="btn btn-ghost btn-xs text-error">Eliminar</button>
+                                                        <div className='flex flex-col'>
+                                                            <button onClick={() => {
+                                                                const input = document.getElementById(`anadirCantidad-${comic.id}`) as HTMLInputElement;
+                                                                const stock = parseInt(input.value);
+                                                                if (!isNaN(stock) && stock > 0) {
+                                                                    router.post(`/comics/${comic.id}/anadir-stock`, { stock });
+                                                                    input.value = '';
+                                                                } else {
+                                                                    alert('Por favor, ingresa una cantidad válida.');
+                                                                }
+                                                            }} className="btn btn-ghost btn-xs text-success w-30 mb-3">Añadir al stock</button>
+                                                            <input type="number" min={1} className="border border-black input input-bordered input-sm ml-2 w-10 ml-11 mb-3" id={`anadirCantidad-${comic.id}`} />
+                                                        </div>
                                                     </>
                                                 )}
                                             </div>
@@ -119,14 +136,12 @@ export default function Index({ comics, titulo} : Props) {
                     </table>
                 </div>
             </div>
-        <div>
+        <div className='p-3'>
             {auth.user?.rol_id !== 3 && (
-                <Link href="/comics/create" className='btn btn-primary'>
+                <Link href="/comics/create" className='btn btn-primary mr-5'>
                     Añadir Cómic
                 </Link>
             )}
-        </div>
-        <div className="mt-4">
             {auth.user?.rol_id !== 3 && (
                         <Link href="dashboard" className="btn btn-success">
                             Volver al dashboard

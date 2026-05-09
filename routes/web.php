@@ -53,21 +53,26 @@ Route::get('/inicio', function () {
 
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::inertia('dashboard', 'dashboard')->name('dashboard');
+    
     Route::get('/compras/{compra}', [CompraController::class, 'show'])->name('compras.show');
     Route::get('/compras/{id}/pdf', [CompraController::class, 'generarPdf'])->name('compras.pdf');
+    Route::get('/mis-comics-compras/{user}', [HistorialCompraController::class, 'misComicsCompras'])->name('mis_comics_compras');
 });
 
 
 
 // Solo puede visitar estas rutas el admin y el vendedor
 Route::middleware(['auth', SoloAdminYVendedor::class])->group(function () {
+    
+Route::inertia('dashboard', 'dashboard')->name('dashboard');
+
     Route::get('/comics', [ComicController::class, 'index'])->name('comics.index');
     Route::get('/comics/create', [ComicController::class, 'create'])->name('comics.create');
     Route::post('/comics', [ComicController::class, 'store'])->name('comics.store');
     Route::get('/comics/{comic}/edit', [ComicController::class, 'edit'])->name('comics.edit');
     Route::put('/comics/{comic}', [ComicController::class, 'update'])->name('comics.update');
     Route::delete('/comics/{comic}', [ComicController::class, 'destroy'])->name('comics.destroy');
+    Route::post('/comics/{comic}/anadir-stock', [ComicController::class, 'anadirStock'])->name('comics.anadir_stock');
 
     Route::get('/autors', [AutorController::class, 'index'])->name('autors.index');
 Route::get('/autors/create', [AutorController::class, 'create'])->name('autors.create');

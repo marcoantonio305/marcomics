@@ -1,6 +1,7 @@
 import { usePage, Link } from "@inertiajs/react"
 import { useState } from "react";
-import { ChevronDown, Settings, LogOut, User } from "lucide-react";
+import { ChevronDown, Settings, LogOut, User, BookOpen } from "lucide-react";
+import { dashboard } from "@/routes";
 
 export default function ParteLogin() {
     const {auth} = usePage().props as any;
@@ -54,6 +55,23 @@ else {
                             <User size={14} /> Tú perfil
                         </Link>
 
+
+                        <Link 
+                            href={`/mis-comics-compras/${auth.user.id}`} 
+                            className="flex items-center gap-2 px-4 py-2 text-sm text-white hover:bg-white hover:text-black"
+                        >
+                            <BookOpen size={14} /> Mis cómics comprados
+                        </Link>
+
+                        {auth.user.rol_id === 1 || auth.user.rol_id === 2 ? (
+                            <Link 
+                                href={dashboard()}
+                                className="flex items-center gap-2 px-4 py-2 text-sm text-white hover:bg-white hover:text-black"
+                            >
+                                <Settings size={14} /> Panel de Administración
+                            </Link>
+                        ) : null}
+
                         <Link 
                             href='/logout' 
                             method="post" 
@@ -62,6 +80,7 @@ else {
                         >
                             <LogOut size={14} /> Cerrar Sesión
                         </Link>
+                        
                     </div>
                 
         </div>

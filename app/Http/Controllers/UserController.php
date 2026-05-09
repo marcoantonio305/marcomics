@@ -84,9 +84,13 @@ class UserController extends Controller
         }
 
         $data = $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:users,name,' . $user->id,  //Para que le deje cambiar su nombre de usuario sin que le diga que ya existe',
             'biografia' => 'nullable|string',
             'foto_perfil' => 'nullable|image|max:2048',
+            'nombre' => 'required|string|max:255',
+            'apellido1' => 'required|string|max:255',
+            'apellido2' => 'nullable|string|max:255',
+            'direccion' => 'required|string|max:255'
         ]);
 
         if ($request->hasFile('foto_perfil')) {

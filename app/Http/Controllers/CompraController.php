@@ -45,14 +45,16 @@ class CompraController extends Controller
 
         $usuario = Auth::user();
         if ($usuario) {
-            $usuario->compras()->attach($nuevaCompra->id);
+            \App\Models\HistorialCompra::create([
+                'user_id'   => $usuario->id,
+                'compra_id' => $nuevaCompra->id,
+            ]);
         }
 
         $itemsDelCarrito = session()->get('carrito', []);
 
         foreach ($itemsDelCarrito as $item) {
             $comicDb = Comic::find($item['id']);
-            
             if ($comicDb) {
                 $nuevaCompra->comics()->attach($item['id'], [
                     'cantidad'        => $item['cantidad'],
@@ -71,22 +73,20 @@ class CompraController extends Controller
     public function show(Compra $compra)
 {
     $usuario = Auth::user();
-    
-    $compra->load('historialCompra');
+    $compra->load(['historialCompra.user', 'comics' => function($query) {
+        $query->withPivot('cantidad', 'precio_unitario');
+    }]);
 
     $esAdmin = $usuario->rol_id == 1;
-    
     $esDueño = $usuario->id === ($compra->historialCompra->user_id ?? null);
 
     if (!$esAdmin && !$esDueño) {
-        abort(403, 'No tienes permiso para ver esta compra.');
+        abort(403);
     }
-
-    $compra->load(['historialCompra.user', 'comics']);
 
     return Inertia::render('compras/show', [
         'compra' => $compra,
-        'user' => $compra->historialCompra?->user,
+        'user' => $compra->historialCompra->user,
         'comics' => $compra->comics
     ]);
 }
@@ -190,11 +190,13 @@ class CompraController extends Controller
         $totalReal = 0;
     foreach ($carrito as $item) {
         // Se busca el comic en la base de datos por cuestiones de seguridad
+        /** @var \App\Models\Comic $comic */
         $comic = \App\Models\Comic::find($item['id']);
         
-        if ($comic) {
-            $totalReal += $comic->precio * $item['cantidad'];
-        }
+        if ($comic->stock < $item['cantidad']) {
+        return back()->with('error', "No hay stock suficiente de: " . $comic->titulo);
+    }
+    $totalReal += $comic->precio * $item['cantidad'];
     }
 
     // En caso de que el carrito esté vacío o el comic no exista
@@ -210,6 +212,14 @@ class CompraController extends Controller
         'source' => $request->stripeToken,
         'description' => 'Compra de comics'
     ]);
+
+    foreach ($carrito as $item) {
+    /** @var \App\Models\Comic $comic */
+    $comic = \App\Models\Comic::find($item['id']);
+    if ($comic) {
+        $comic->decrement('stock', (int)$item['cantidad']);
+    }
+}
 
     $request->merge(['total_carrito' => $totalReal, 'items' => array_values($carrito)]);
     

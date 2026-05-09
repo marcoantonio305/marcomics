@@ -168,4 +168,15 @@ class ComicController extends Controller
         ]);
     }
 
+    public function anadirStock(Request $request, Comic $comic)
+    {
+        $validated = $request->validate([
+            'stock' => 'required|integer|min:1'
+        ]);
+
+        $comic->increment('stock', $validated['stock']);
+
+        return redirect()->route('comics.index');
+    }
+
 }

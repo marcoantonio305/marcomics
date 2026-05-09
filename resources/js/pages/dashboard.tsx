@@ -13,7 +13,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Dashboard() {
+export default function Dashboard({auth}: { auth: any }) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
@@ -74,6 +74,8 @@ export default function Dashboard() {
                         <h3 className="text-md font-semibold text-gray-900 dark:text-white">Editoras</h3>
                         <p className="text-sm text-gray-500">Gestión de los editoras.</p>
                     </Link>
+                    {auth.user?.rol_id === 1 && (
+                        <>
                     <Link
                         href="/users"
                         className="group flex flex-col items-center text-center transition-transform hover:scale-105"
@@ -104,6 +106,8 @@ export default function Dashboard() {
     <h3 className="text-md font-semibold text-gray-900 dark:text-white">Historial de Compras</h3>
     <p className="text-sm text-gray-500">Ver el historial de compras.</p>
 </Link>
+</>
+)}
                 </div>
 
             </div>
