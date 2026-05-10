@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\FacturaCompra;
+use Stripe\Customer;
+use Stripe\PaymentMethod;
 
 class CompraController extends Controller
 {
@@ -178,25 +180,25 @@ class CompraController extends Controller
     }
 
     public function procesarPago(Request $request)
-    {
-        // Se configura la clave secreta
-        Stripe::setApiKey(env('STRIPE_SECRET'));
+{
+    // Se configura la clave secreta
+    Stripe::setApiKey(env('STRIPE_SECRET'));
 
-        
-        //Recuperar el carrito de la sesión
-        $carrito = session()->get('carrito', []);
-
-        //Se calcula el total real en el servidor
-        $totalReal = 0;
+    
+    //Recuperar el carrito de la sesión
+    $carrito = session()->get('carrito', []);
+    $user = Auth::user();
+    //Se calcula el total real en el servidor
+    $totalReal = 0;
     foreach ($carrito as $item) {
         // Se busca el comic en la base de datos por cuestiones de seguridad
         /** @var \App\Models\Comic $comic */
         $comic = \App\Models\Comic::find($item['id']);
         
         if ($comic->stock < $item['cantidad']) {
-        return back()->with('error', "No hay stock suficiente de: " . $comic->titulo);
-    }
-    $totalReal += $comic->precio * $item['cantidad'];
+            return back()->with('error', "No hay stock suficiente de: " . $comic->titulo);
+        }
+        $totalReal += $comic->precio * $item['cantidad'];
     }
 
     // En caso de que el carrito esté vacío o el comic no exista
@@ -204,49 +206,79 @@ class CompraController extends Controller
         return back()->with('error', 'No se pudo calcular el total de la compra.');
     }
 
-        // Se crea el cargo
-        try {
-    $charge = Charge::create([
-        'amount' => $totalReal * 100, 
-        'currency' => 'eur',
-        'source' => $request->stripeToken,
-        'description' => 'Compra de comics'
-    ]);
+    // Se crea el cargo
+    try {
 
-    foreach ($carrito as $item) {
-    /** @var \App\Models\Comic $comic */
-    $comic = \App\Models\Comic::find($item['id']);
-    if ($comic) {
-        $comic->decrement('stock', (int)$item['cantidad']);
-    }
-}
+        $sourceId = ($request->usar_guardada && $user->pm_id) 
+                    ? $user->pm_id 
+                    : $request->stripeToken;
 
-    $request->merge(['total_carrito' => $totalReal, 'items' => array_values($carrito)]);
-    
-    $nuevaCompra = $this->store($request);
-
-    // Se carga los datos para el pdf
-    $compraCargada = Compra::with(['comics', 'historialCompra.user'])->find($nuevaCompra->id);
-    $total = $compraCargada->total;
-$baseImponible = $total / 1.21;
-$iva = $total - $baseImponible;
-
-$pdf = Pdf::loadView('pdf.compra', [
-    'compra' => $compraCargada,
-    'baseImponible' => $baseImponible,
-    'iva' => $iva
-]);
-$pdfContent = $pdf->output();
-
-    // Se le envia el correo al usuario
-    Mail::to($request->user()->email)->send(new FacturaCompra($compraCargada, $pdfContent));
-
-    session()->forget('carrito');
-
-    return back()->with('success', 'Pago procesado y factura enviada a tu email');
-    } catch (\Exception $e) {
-            return back()->with('error', 'Error al procesar el pago: ' . $e->getMessage());
+        if (!$sourceId) {
+            return back()->with('error', 'No se seleccionó ningún método de pago válido.');
         }
+
+       
+        if (str_starts_with($sourceId, 'pm_')) {
+            
+            \Stripe\PaymentIntent::create([
+                'amount' => $totalReal * 100,
+                'currency' => 'eur',
+                'customer' => $user->stripe_id,
+                'payment_method' => $sourceId,
+                'off_session' => true,
+                'confirm' => true,
+                'description' => 'Compra de comics - Usuario ID: ' . $user->id,
+            ]);
+        } else {
+            
+            $chargeParams = [
+                'amount' => $totalReal * 100, 
+                'currency' => 'eur',
+                'description' => 'Compra de comics - Usuario ID: ' . $user->id,
+                'source' => $sourceId,
+            ];
+
+            if ($request->usar_guardada && $user->stripe_id) {
+                $chargeParams['customer'] = $user->stripe_id;
+            }
+
+            \Stripe\Charge::create($chargeParams);
+        }
+        
+
+        foreach ($carrito as $item) {
+            /** @var \App\Models\Comic $comic */
+            $comic = \App\Models\Comic::find($item['id']);
+            if ($comic) {
+                $comic->decrement('stock', (int)$item['cantidad']);
+            }
+        }
+
+        $request->merge(['total_carrito' => $totalReal, 'items' => array_values($carrito)]);
+        $nuevaCompra = $this->store($request);
+
+        // Se carga los datos para el pdf
+        $compraCargada = Compra::with(['comics', 'historialCompra.user'])->find($nuevaCompra->id);
+        $total = $compraCargada->total;
+        $baseImponible = $total / 1.21;
+        $iva = $total - $baseImponible;
+
+        $pdf = Pdf::loadView('pdf.compra', [
+            'compra' => $compraCargada,
+            'baseImponible' => $baseImponible,
+            'iva' => $iva
+        ]);
+        $pdfContent = $pdf->output();
+
+        // Se le envia el correo al usuario
+        Mail::to($request->user()->email)->send(new FacturaCompra($compraCargada, $pdfContent));
+
+        session()->forget('carrito');
+
+        return back()->with('success', 'Pago procesado y factura enviada a tu email');
+    } catch (\Exception $e) {
+        return back()->with('error', 'Error al procesar el pago: ' . $e->getMessage());
+    }
 }
 
 public function generarPdf($id)
@@ -275,6 +307,44 @@ public function generarPdf($id)
     ]);
 
     return $pdf->download('factura_compra_' . $compra->id . '.pdf');
+}
+
+public function guardarTarjeta(Request $request)
+{
+    $request->validate([
+        'payment_method_id' => 'required|string',
+        'last4' => 'required|string|size:4',
+    ]);
+
+    $user = Auth::user();
+    \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+
+    try {
+         // Se crea una stripe_id si el usuario no la tiene
+        if (!$user->stripe_id) {
+            $customer = Customer::create([
+                'email' => $user->email,
+                'name' => $user->name,
+            ]);
+            $user->stripe_id = $customer->id;
+            $user->save(); // Importante: Guardamos el stripe_id antes de seguir
+        }
+
+        $paymentMethod = PaymentMethod::retrieve($request->payment_method_id);
+        $paymentMethod->attach(['customer' => $user->stripe_id]);
+
+        // Se guarda la información en users
+        $user->update([
+            'pm_id' => $request->payment_method_id,
+            'tarjeta_4_ultimos' => $request->last4, // Cambiado de card_last4 a tarjeta_4_ultimos
+            'stripe_id' => $user->stripe_id,
+        ]);
+
+        return redirect()->route('carrito.mostrar')->with('success', 'Tarjeta guardada correctamente.');
+
+    } catch (\Exception $e) {
+        return back()->with('error', 'Error al guardar la tarjeta: ' . $e->getMessage());
+    }
 }
 
 

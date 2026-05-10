@@ -14,7 +14,8 @@
 </head>
 <body>
     <div class="header">
-        <h1>Factura de Compra</h1>
+        <h1>MARCOMICS</h1>
+        <p style="margin-top: -15px; color: #666;">Factura de compra</p>
     </div>
 
     <div style="margin-bottom: 20px;">
@@ -31,6 +32,7 @@
                 <th>Precio Unit.</th>
                 <th>Cantidad</th>
                 <th>Subtotal</th>
+                
             </tr>
         </thead>
         <tbody>
@@ -58,5 +60,12 @@
             </tr>
         </tfoot>
     </table>
+    <div style="margin-top: 30px; font-size: 12px; color: #555; border-top: 1px solid #eee; padding-top: 10px;">
+        <p><strong>Método de pago:</strong> Tarjeta bancaria (Pago Seguro Stripe)</p>
+        <p><strong>ID de Transacción:</strong> {{ strtoupper(bin2hex(random_bytes(4))) }}-{{ $compra->id }}</p>
+        <p><strong>DNI:</strong> {{ $compra->historialCompra->user->dni }}</p>
+<p><strong>Teléfono:</strong> {{ $request->telefono ?? 'N/A' }}</p>
+        <p style="text-align: center; margin-top: 20px;">Gracias por su compra. ¡Disfrute de la lectura!</p>
+    </div>
 </body>
 </html>

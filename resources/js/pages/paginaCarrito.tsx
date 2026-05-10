@@ -20,8 +20,7 @@ interface Props {
 }
 
 export default function PaginaCarrito({comics = []}: Props) {
-    const { carrito = {}, carritoTotal = 0, flash = {} } = usePage().props as any;
-
+    const { carrito = {}, carritoTotal = 0, flash = {}, auth } = usePage().props as any;
     useEffect(() => {
         if (flash.success) {
             Swal.fire({
@@ -63,18 +62,20 @@ const [cargando, setCargando] = useState(false);
     
 
 const manejarPago = async () => {
+    if (cargando) return;
     setCargando(true);
+
+    // Si el usuario tiene pm_id, se avisa al backend, sino, se le redirige a añadir una o usar el flujo de la nueva tarjeta
+    const datosPago = auth.user.pm_id 
+        ? { usar_guardada: true } 
+        : { stripeToken: 'tok_visa', usar_guardada: false }; // 'tok_visa' sirve para realizar pruebas rápidas
     
     // Coge el token de la tarjeta
-    router.post('/compras/procesar-pago', {
-        stripeToken: 'tok_visa',
-    }, {
+    router.post('/compras/procesar-pago', datosPago, {
         onStart: () => setCargando(true),
         onFinish: () => setCargando(false),
-        onSuccess: () => {
-        },
         onError: (errors) => {
-            alert("Hubo un problema con el pago.");
+            Swal.fire('Error', "Hubo un problema con el pago.", 'error');
             console.error(errors);
         }
     });
@@ -133,8 +134,8 @@ const manejarPago = async () => {
             )}
 
             {items.length > 0 && (
-    <div className="mt-6 p-6 bg-gray-100 rounded-lg border border-gray-200">
-        <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-4">
+    <div className="mt-6 p-6 bg-gray-100 rounded-lg border border-gray-200 ">
+        <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-4 ">
             
             <div className="space-y-1">
                 <p className="text-sm text-gray-600">
@@ -153,23 +154,64 @@ const manejarPago = async () => {
             </div>
 
             <div className="w-full md:w-auto">
+                <div className="mb-6 p-4 bg-blue-200 text-blue-700 rounded-lg border border-blue-800 shadow-sm">
+    <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
+        Metodo de Pago
+    </h3>
+    
+    {auth.user.tarjeta_4_ultimos ? (
+        <div className="flex items-start gap-3">
+        <div className="bg-blue-100 p-2 rounded">
+            <RefreshCw className="text-blue-600" size={20} />
+        </div>
+        
+        <div className="flex flex-col"> 
+            <p className="font-medium text-gray-800">
+                Visa terminada en **** {auth.user.tarjeta_4_ultimos}
+            </p>
+            <p className="text-xs text-gray-500">
+                Tarjeta guardada en tu cuenta
+            </p>
+            
+            <Link 
+                href={`/metodo-pago`} 
+                className="w-fit block text-xs bg-blue-600 text-white hover:bg-blue-700 font-medium mt-2 px-3 py-1.5 rounded-lg border-2 border-blue-700 transition-colors"
+            >
+                Cambiar tarjeta
+            </Link>
+        </div>
+    </div>
+    ) : (
+        <div className="flex flex-col items-center py-2">
+            <p className="text-sm mb-3 text-center">
+                No tienes ningún método de pago guardado para realizar la compra.
+            </p>
+            <Link 
+                href={`/metodo-pago`} 
+                className="btn btn-sm bg-blue-600 text-white hover:bg-blue-700 px-6"
+            >
+                Añadir Tarjeta
+            </Link>
+        </div>
+    )}
+</div>
                 <button 
-                    onClick={manejarPago} 
-                    disabled={cargando} 
-                    className={`btn w-full md:w-64 py-3 px-6 rounded-md font-bold text-white transition-all duration-200 ${
-                        cargando 
-                        ? 'bg-gray-400 cursor-not-allowed' 
-                        : 'bg-green-500 hover:bg-green-600 shadow-md hover:shadow-green-200 active:scale-95'
-                    }`}
-                >
-                    {cargando ? (
-                        <span className="flex items-center justify-center gap-2">
-                            <Loader className="animate-spin" size={20} /> Procesando...
-                        </span>
-                    ) : (
-                        "Confirmar y Pagar ahora"
-                    )}
-                </button>
+    onClick={manejarPago} 
+    disabled={cargando || !auth.user.pm_id} 
+    className={`btn w-full md:w-64 py-3 px-6 rounded-md font-bold text-white transition-all duration-200 ${
+        (cargando || !auth.user.pm_id) 
+        ? 'bg-gray-400 cursor-not-allowed' 
+        : 'bg-green-500 hover:bg-green-600 shadow-md hover:shadow-green-200 active:scale-95'
+    }`}
+>
+    {cargando ? (
+        <span className="flex items-center justify-center gap-2">
+            <Loader className="animate-spin" size={20} /> Procesando...
+        </span>
+    ) : (
+        "Confirmar y Pagar ahora"
+    )}
+</button>
             </div>
             
         </div>

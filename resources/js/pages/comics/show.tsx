@@ -68,7 +68,7 @@ export default function Show({ comic, comentarios } : Props) {
                 <ComentariosPorComic comentarios={comentarios} comic={comic}></ComentariosPorComic>
                 <CajaTextoComentario comicId={comic.id}></CajaTextoComentario>
             </div>
-
+            <div className='mb-3 ml-7'>
             {auth.user?.rol_id !== 3 && (
             <Link href={`/comics/${comic.id}/edit`} className='btn btn-secondary mr-4'>Editar comic</Link>
             )}
@@ -81,9 +81,9 @@ export default function Show({ comic, comentarios } : Props) {
     </button>
             )}
             {auth.user?.rol_id !== 3 && (
-            <Link href={`/comics`} className='btn btn-secondary mr-4 ml-4'>Volver al index</Link>
+            <Link href={`/comics`} className='btn btn-primary mr-4 ml-4'>Volver al index</Link>
             )}
-
+</div>
             
     </AppLayout>
     );

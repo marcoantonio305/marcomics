@@ -31,6 +31,9 @@ class User extends Authenticatable
         'apellido2',
         'dni',
         'direccion',
+        'stripe_id',
+        'pm_id',
+        'tarjeta_4_ultimos'
     ];
 
     /**

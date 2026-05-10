@@ -57,6 +57,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/compras/{compra}', [CompraController::class, 'show'])->name('compras.show');
     Route::get('/compras/{id}/pdf', [CompraController::class, 'generarPdf'])->name('compras.pdf');
     Route::get('/mis-comics-compras/{user}', [HistorialCompraController::class, 'misComicsCompras'])->name('mis_comics_compras');
+
+    Route::get('/metodo-pago', function () {
+        return Inertia::render('paginaMetodoPago');
+    })->name('metodo-pago.mostrar');
+
+    Route::post('/usuario/guardar-tarjeta', [CompraController::class, 'guardarTarjeta'])
+        ->name('tarjeta.guardar');
+
+    Route::post('/compras/procesar-pago', [CompraController::class, 'procesarPago'])
+        ->name('compras.procesar-pago');
 });
 
 
@@ -128,7 +138,6 @@ Route::delete('/compras/{compra}', [CompraController::class, 'destroy'])->name('
 Route::get('/comics/{comic}', [ComicController::class, 'show'])->name('comics.show');
 Route::get('/categorias/{categoria}', [CategoriaController::class, 'show'])->name('categorias.show'); //Ruta para mostrar todos los comics de una categoría
 Route::get('/coleccions/{coleccion}', [ColeccionController::class, 'show'])->name('coleccions.show');
-Route::post('/compras/procesar-pago', [CompraController::class, 'procesarPago'])->name('compras.procesar-pago');
 
 
 
