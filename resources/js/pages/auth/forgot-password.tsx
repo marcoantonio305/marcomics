@@ -19,10 +19,12 @@ export default function ForgotPassword({ status }: { status?: string }) {
             <Head title="Contraseña olvidada" />
 
             {status && (
-                <div className="mb-4 text-center text-sm font-medium text-green-600">
-                    {status}
-                </div>
-            )}
+    <div className="mb-4 text-center text-sm font-medium text-green-600">
+        {status === "We have emailed your password reset link." 
+            ? "Hemos enviado el enlace de recuperación a tu correo electrónico." 
+            : status}
+    </div>
+)}
 
             <div className="space-y-6">
                 <Form {...email.form()}>
