@@ -54,10 +54,18 @@ export default function Show({ user, compras, esAdmin }: {user: User, compras: C
                     )}
                         </div>
                 <div className="flex flex-cols gap-6 mb-8 mr-8">
-                    <img src={user.foto_perfil ? `/storage/${user.foto_perfil}` : ''} alt={`${user.name} foto de perfil`} className="w-48 h-48 rounded-full object-cover mb-4" />
+                    <img src={user.foto_perfil ? `/storage/${user.foto_perfil}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'U')}&background=random`} alt={`${user.name} foto de perfil`} className="w-48 h-48 rounded-full object-cover mb-4" />
                     <div className="flex flex-cols gap-4">
                         <h1 className="text-3xl text-red font-bold">{user.name}</h1>
-                        <div className="bg-gray-300 rounded-md border border-black p-4 w-200 h-40 ml-8">{user.biografia}</div>
+<div className="bg-gray-200 rounded-md border border-black p-4 w-[800px] h-40 ml-8">
+    {user.biografia ? (
+        user.biografia
+    ) : (
+        <span className="italic text-gray-700">
+            El usuario no tiene una biografía escrita.
+        </span>
+    )}
+</div>
                     </div>
                 </div>
                 {auth.user?.id === user.id && (

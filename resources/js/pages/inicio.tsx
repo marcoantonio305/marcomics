@@ -99,7 +99,7 @@ export default function Inicio({ categorias = [], comics = [], chat, postChats =
                         {coleccionesInicio.map(coleccion => (
                             <div key={coleccion.id}>
                                 <Novedades nombre={coleccion.nombre} id={coleccion.id} tipo="coleccion"></Novedades>
-                                <div className="flex flex-row gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                                     {coleccion.comics.map(comic => (
                                         <ComicIndividual key={comic.id} comic={comic} />
                                     ))}
