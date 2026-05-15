@@ -17,7 +17,9 @@ class Comic extends Model
         'editora_id',
         'imagen',
         'codigo_comic',
-        'stock'
+        'stock',
+        'preview1',
+        'preview2'
     ];
 
     //protected $casts = [

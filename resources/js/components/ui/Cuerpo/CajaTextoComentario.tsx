@@ -13,7 +13,6 @@ export default function CajaTextoComentario({comicId}: {comicId: number}) {
             preserveScroll: true,
             onSuccess: () => {
                 reset('contenido');
-                alert('Comentario publicado con éxito');
             }
         });
     }

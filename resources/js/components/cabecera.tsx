@@ -3,6 +3,7 @@ import { BotonCategoriaCabecera } from "./ui/Cabecera/botonCategoriaCabecera"
 import Buscador from "./ui/Cabecera/Buscador";
 import ParteLogin from "./ui/Cabecera/ParteLogin";
 import { BotonCarrito } from "./ui/Cabecera/BotonCarrito";
+import { Link } from "@inertiajs/react";
 
 interface Categoria {
     id: number;
@@ -36,6 +37,10 @@ export function Cabecera({categorias = []}:Props) {
     {indie && <BotonCategoriaCabecera nombre={indie.nombre} href={`/categorias/${indie.id}`} />}
     {europeo && <BotonCategoriaCabecera nombre={europeo.nombre} href={`/categorias/${europeo.id}`} />}
     {infantil && <BotonCategoriaCabecera nombre={infantil.nombre} href={`/categorias/${infantil.id}`} />}
+    <Link className="flex items-center justify-center border border-black border-4 bg-blue-500 text-white font-bold w-20 transition-all duration-200 transform
+                hover:bg-white hover:text-blue-500
+                hover:scale-110 hover:text-xl
+                h-full uppercase" href={`/hilos`}>Foro</Link>
     <Buscador />
             </div>
             

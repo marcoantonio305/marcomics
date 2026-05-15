@@ -85,9 +85,10 @@ useEcho(
     if (!chat) return <div className="p-4 text-gray-500">Cargando chat...</div>;
 
     return (
-        <div className="flex flex-col h-full border border-black bg-white overflow-hidden">
+        /* Cambiado: Borde 4 y sombra de cómic en el contenedor principal */
+        <div className="flex flex-col h-full border-4 border-black bg-white overflow-hidden shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
             <div className="flex-1 overflow-y-auto p-4" ref={scrollRef}>
-                <h2 className="text-2xl font-bold mb-4">
+                <h2 className="text-2xl font-mono font-black uppercase mb-4">
                     {chat.id === 1 ? "Chat General" : "Chat de Colección"}
                 </h2>
                 
@@ -98,13 +99,13 @@ useEcho(
                                 <div className="flex-shrink-0">
                                     <Link href={`/users/${postChat.user?.id}`}>
                                         <img 
-    src={postChat.user?.foto_perfil 
-        ? `/storage/${postChat.user.foto_perfil}` 
-        : `https://ui-avatars.com/api/?name=${encodeURIComponent(postChat.user?.name || 'U')}&background=random`
-    } 
-    alt={postChat.user?.name} 
-    className="w-10 h-10 rounded-full object-cover border border-gray-200 hover:opacity-80 transition-opacity"
-/>
+                                            src={postChat.user?.foto_perfil 
+                                                ? `/storage/${postChat.user.foto_perfil}` 
+                                                : `https://ui-avatars.com/api/?name=${encodeURIComponent(postChat.user?.name || 'U')}&background=random`
+                                            } 
+                                            alt={postChat.user?.name} 
+                                            className="w-10 h-10 rounded-full object-cover border border-gray-200 hover:opacity-80 transition-opacity"
+                                        />
                                     </Link>
                                 </div>
 
@@ -130,26 +131,28 @@ useEcho(
             </div>
 
             {auth?.user ? (
-                <form onSubmit={handleSubmit} className="p-4 bg-gray-100 border-t mt-auto">
+                /* Cambiado: Borde superior 4 */
+                <form onSubmit={handleSubmit} className="p-4 bg-gray-100 border-t-4 border-black mt-auto">
                     <div className="flex gap-2">
                         <input
                             type="text"
                             value={data.mensaje}
                             onChange={(e) => setData("mensaje", e.target.value)}
                             placeholder="Escribe un mensaje..."
-                            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            className="w-full p-2 border-2 border-black rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
                         />
                         <button
                             type="submit"
                             disabled={processing}
-                            className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-400 font-bold transition-colors"
+                            /* Cambiado: Borde 4, sombra de cómic y efecto hover en el botón */
+                            className="px-4 py-2 bg-blue-500 text-white border-4 border-black font-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all disabled:opacity-50"
                         >
                             {processing ? "..." : "Enviar"}
                         </button>
                     </div>
                 </form>
             ) : (
-                <div className="p-4 bg-gray-50 border-t text-center text-sm text-gray-500">
+                <div className="p-4 bg-gray-50 border-t-4 border-black text-center text-sm text-gray-500">
                     Inicia sesión para participar en el chat.
                 </div>
             )}

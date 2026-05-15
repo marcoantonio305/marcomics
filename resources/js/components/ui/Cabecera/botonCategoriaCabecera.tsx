@@ -16,7 +16,7 @@ export function BotonCategoriaCabecera({ nombre, href}: Props) {
             href={href} 
             className="py-2 px-4 
                 text-white font-black uppercase tracking-tighter
-                border-2 border-black 
+                border-4 border-black 
                 transition-all duration-200 transform
                 hover:bg-white hover:text-red-600 
                 hover:scale-110 hover:text-xl

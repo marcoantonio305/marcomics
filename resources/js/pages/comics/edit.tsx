@@ -27,7 +27,9 @@ interface Comic {
     autors: Autor[];      
     categorias: Categoria[];
     editora_id: number,
-    imagen: string | null
+    imagen: string | null,
+    preview1: File | null,
+    preview2: File | null
 }
 
 //representa lo que el formulario va a manejar
@@ -40,7 +42,9 @@ interface FormDataType {
     autors_ids: number[];
     categorias_ids: number[];
     editora_id: string | number,
-    imagen: File | null
+    imagen: File | null,
+    preview1: File | null,
+    preview2: File | null
 }
 
 interface Props {
@@ -63,7 +67,9 @@ export default function Edit({ comic, todos_los_autores, todas_las_categorias, t
         autors_ids: comic.autors ? comic.autors.map(a => a.id) : [],
         categorias_ids: comic.categorias ? comic.categorias.map(c => c.id) : [],
         editora_id: comic.editora_id || '',
-        imagen: null
+        imagen: null,
+        preview1: null,
+    preview2: null
     });
 
     //Se pone post porque el protocolo HTTP estándar no soporta el envío de archivos mediante el método PUT
@@ -173,15 +179,34 @@ export default function Edit({ comic, todos_los_autores, todas_las_categorias, t
                     </div>
 
                     <div className="flex flex-col gap-2">
-    <label htmlFor="imagen" className="font-bold">Portada del Cómic</label>
+    <label htmlFor="imagen" className="text-sm font-semibold">Portada del Cómic</label>
     <input 
         type="file" 
         id="imagen"
-        className="border p-2"
+        className="file-input file-input-sm file-input-bordered w-full"
         // 3. Así se captura el archivo en Inertia
         onChange={e => setData('imagen', e.target.files ? e.target.files[0] : null)} 
     />
     {errors.imagen && <div className="text-red-500">{errors.imagen}</div>}
+</div>
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-base-300 pt-4 mt-2">
+    <div className="flex flex-col gap-2">
+        <label className="text-sm font-semibold">Preview 1</label>
+        <input 
+            type="file" 
+            className="file-input file-input-sm file-input-bordered w-full"
+            onChange={e => setData('preview1', e.target.files ? e.target.files[0] : null)} 
+        />
+    </div>
+
+    <div className="flex flex-col gap-2">
+        <label className="text-sm font-semibold">Preview 2</label>
+        <input 
+            type="file" 
+            className="file-input file-input-sm file-input-bordered w-full"
+            onChange={e => setData('preview2', e.target.files ? e.target.files[0] : null)} 
+        />
+    </div>
 </div>
 
                     <button type='submit' className='btn btn-primary w-full mt-4'>Actualizar Cómic</button>

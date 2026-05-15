@@ -53,19 +53,36 @@ class ComicController extends Controller
             'precio' => 'required|numeric|min:0',
             'lanzamiento' => 'required|date',
             'descripcion' => 'required|max:2000',
-            // validar de que sean array si vamos a usar en sync
+            // validar que sean arrays si vamos a usar en sync
             'autors_ids' => 'array',
-        'categorias_ids' => 'array',
-        'editora_id' => 'exists:editoras,id'
+            'categorias_ids' => 'array',
+            'editora_id' => 'nullable|exists:editoras,id', 
+            'imagen' => 'required|image|max:2048',
+            'preview1' => 'nullable|image|max:2048',
+            'preview2' => 'nullable|image|max:2048',
         ]);
+
+
         if ($request->hasFile('imagen')) {
-            $rutaImagen = $request->file('imagen')->store('images', 'public');
-            $validated['imagen'] = $rutaImagen;
+            $validated['imagen'] = $request->file('imagen')->store('images', 'public');
+        }
+
+
+        if ($request->hasFile('preview1')) {
+            $validated['preview1'] = $request->file('preview1')->store('images', 'public');
+        } else {
+            unset($validated['preview1']); 
+        }
+
+
+        if ($request->hasFile('preview2')) {
+            $validated['preview2'] = $request->file('preview2')->store('images', 'public');
+        } else {
+            unset($validated['preview2']);
         }
 
         $comic = Comic::create($validated);
         
-
         $comic->categorias()->sync($request->categorias_ids);
         $comic->autors()->sync($request->autors_ids);
 
@@ -106,23 +123,45 @@ class ComicController extends Controller
             'precio' => 'required|numeric|min:0',
             'lanzamiento' => 'required|date',
             'descripcion' => 'required|max:2000',
-        'editora_id' => 'exists:editoras,id',
-        'autors_ids' => 'array',
-        'categorias_ids' => 'array'
+            'editora_id' => 'nullable|exists:editoras,id', // Cambiado a nullable
+            'autors_ids' => 'array',
+            'categorias_ids' => 'array',
+            'imagen' => 'nullable|image|max:2048',
+            'preview1' => 'nullable|image|max:2048',
+            'preview2' => 'nullable|image|max:2048',
         ]);
+
+
+        unset($validated['imagen'], $validated['preview1'], $validated['preview2']);
+
 
         if ($request->hasFile('imagen')) {
             if ($comic->imagen) {
-            Storage::disk('public')->delete($comic->imagen);
+                Storage::disk('public')->delete($comic->imagen);
+            }
+            $validated['imagen'] = $request->file('imagen')->store('images', 'public');
         }
-            $rutaImagen = $request->file('imagen')->store('images', 'public');
-            $validated['imagen'] = $rutaImagen;
+
+
+        if ($request->hasFile('preview1')) {
+            if ($comic->preview1) {
+                Storage::disk('public')->delete($comic->preview1);
+            }
+            $validated['preview1'] = $request->file('preview1')->store('images', 'public');
+        }
+
+
+        if ($request->hasFile('preview2')) {
+            if ($comic->preview2) {
+                Storage::disk('public')->delete($comic->preview2);
+            }
+            $validated['preview2'] = $request->file('preview2')->store('images', 'public');
         }
 
         $comic->update($validated);
 
         $comic->autors()->sync($request->autors_ids);
-    $comic->categorias()->sync($request->categorias_ids);
+        $comic->categorias()->sync($request->categorias_ids);
 
         return redirect()->route('comics.index');
     }

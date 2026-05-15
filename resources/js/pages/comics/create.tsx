@@ -41,7 +41,9 @@ interface FormDataType {
     autors_ids: number[];
     categorias_ids: number[];
     editora_id: string | number,
-    imagen: File | null
+    imagen: File | null,
+    preview1: File | null,
+    preview2: File | null
 }
 
 interface Props {
@@ -61,7 +63,9 @@ export default function Create({todos_los_autores, todas_las_categorias, todas_l
         autors_ids: [] as number[],
         categorias_ids: [] as number[],
         editora_id: '',
-        imagen: null
+        imagen: null,
+        preview1: null,
+    preview2: null  
     });
     const submit = (e: React.FormEvent) => {
         e.preventDefault()
@@ -155,15 +159,38 @@ export default function Create({todos_los_autores, todas_las_categorias, todas_l
                     </div>
 
                     <div className="flex flex-col gap-2">
-    <label htmlFor="imagen" className="font-bold">Portada del Cómic</label>
+    <label htmlFor="imagen" className="font-bold text-sm">Portada del Cómic</label>
     <input 
         type="file" 
         id="imagen"
-        className="border p-2"
-        // 3. Así se captura el archivo en Inertia
+        className="file-input file-input-sm file-input-bordered w-full"
+        // Así se captura el archivo en Inertia
         onChange={e => setData('imagen', e.target.files ? e.target.files[0] : null)} 
     />
     {errors.imagen && <div className="text-red-500">{errors.imagen}</div>}
+</div>
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="flex flex-col gap-2">
+        <label htmlFor="preview1" className="font-bold text-sm">Preview 1</label>
+        <input 
+            type="file" 
+            id="preview1"
+            className="file-input file-input-bordered w-full"
+            onChange={e => setData('preview1', e.target.files ? e.target.files[0] : null)} 
+        />
+        {errors.preview1 && <div className="text-red-500 text-xs">{errors.preview1}</div>}
+    </div>
+
+    <div className="flex flex-col gap-2">
+        <label htmlFor="preview2" className="font-bold text-sm">Preview 2</label>
+        <input 
+            type="file" 
+            id="preview2"
+            className="file-input file-input-bordered w-full"
+            onChange={e => setData('preview2', e.target.files ? e.target.files[0] : null)} 
+        />
+        {errors.preview2 && <div className="text-red-500 text-xs">{errors.preview2}</div>}
+    </div>
 </div>
 
                 <div className="md:col-span-2 mt-4">

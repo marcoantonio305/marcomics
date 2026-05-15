@@ -28,7 +28,7 @@ interface Categoria {
 interface Comentario {
     id: number;
     contenido: string;
-    punctuation?: number;
+    puntuacion?: number;
     created_at: string;
     user: {
         id: number;
@@ -48,7 +48,9 @@ interface Comic {
     categorias: Categoria[];
     editora?: Editora,
     imagen: string,
-    stock: number
+    stock: number,
+    preview1?: string; 
+    preview2?: string;
 }
 
 interface Props {
@@ -59,9 +61,29 @@ interface Props {
 
 export default function Show({ comic, comentarios } : Props) {
     const {auth} = usePage().props as any;
+    const imagenes = [
+    comic.imagen,
+    comic.preview1,
+    comic.preview2
+].filter(Boolean);
+    const comentariosConPuntos = comentarios.filter(c => 
+    c.puntuacion !== undefined && c.puntuacion !== null && Number(c.puntuacion) > 0
+);
+
+    const totalConPuntos = comentariosConPuntos.length;
+
+
+    const sumaPuntuaciones = comentariosConPuntos.reduce((acc, curr) => {
+    return acc + Number(curr.puntuacion || 0); 
+}, 0);
+
+
+    const mediaPuntuacion = totalConPuntos > 0 
+    ? (sumaPuntuaciones / totalConPuntos).toFixed(1) 
+    : null;
     return (
         <AppLayout>
-            <ComicShowComponente comic={comic}></ComicShowComponente>
+            <ComicShowComponente comic={comic} media={mediaPuntuacion} imagenes={imagenes}></ComicShowComponente>
             
 
             <div className='flex flex-col gap-4 ml-5'>

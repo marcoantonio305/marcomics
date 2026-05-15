@@ -19,6 +19,8 @@ use App\Models\Comic;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
+use App\Http\Controllers\HiloController;
+use App\Http\Controllers\HiloPostController;
 
 //Route::inertia('/', 'welcome', [
 //'canRegister' => Features::enabled(Features::registration()),
@@ -57,6 +59,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/compras/{compra}', [CompraController::class, 'show'])->name('compras.show');
     Route::get('/compras/{id}/pdf', [CompraController::class, 'generarPdf'])->name('compras.pdf');
     Route::get('/mis-comics-compras/{user}', [HistorialCompraController::class, 'misComicsCompras'])->name('mis_comics_compras');
+    Route::get('/hilos/create', [HiloController::class, 'create'])->name('hilos.create');
+    Route::post('/hilos', [HiloController::class, 'store'])->name('hilos.store');
+    Route::post('/hiloPosts', [HiloPostController::class, 'store'])->name('hilo_posts.store');
+    Route::delete('/hilos/{hilo}', [HiloController::class, 'destroy'])->name('hilos.destroy');
+    Route::delete('/hiloPosts/{hiloPost}', [HiloPostController::class, 'destroy'])->name('hilo_posts.destroy');
 
     Route::get('/metodo-pago', function () {
         return Inertia::render('paginaMetodoPago');
@@ -138,6 +145,8 @@ Route::delete('/compras/{compra}', [CompraController::class, 'destroy'])->name('
 Route::get('/comics/{comic}', [ComicController::class, 'show'])->name('comics.show');
 Route::get('/categorias/{categoria}', [CategoriaController::class, 'show'])->name('categorias.show'); //Ruta para mostrar todos los comics de una categoría
 Route::get('/coleccions/{coleccion}', [ColeccionController::class, 'show'])->name('coleccions.show');
+Route::get('/hilos', [HiloController::class, 'index'])->name('hilos.index');
+Route::get('/hilos/{hilo}', [HiloController::class, 'show'])->name('hilos.show');
 
 
 
