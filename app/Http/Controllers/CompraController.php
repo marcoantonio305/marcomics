@@ -149,6 +149,7 @@ class CompraController extends Controller
             if ($carrito[$id]['cantidad'] > 1) {
                 $carrito[$id]['cantidad'] -= 1;
             } else {
+                $carrito[$id]['cantidad'] -= 1;
                 unset($carrito[$id]);
             }
             session()->put('carrito', $carrito);
@@ -195,7 +196,8 @@ class CompraController extends Controller
         /** @var \App\Models\Comic $comic */
         $comic = \App\Models\Comic::find($item['id']);
         
-        if ($comic->stock < $item['cantidad']) {
+        $esPrecompra = $comic->lanzamiento > now();
+        if (!$esPrecompra && $comic->stock < $item['cantidad']) {
             return back()->with('error', "No hay stock suficiente de: " . $comic->titulo);
         }
         $totalReal += $comic->precio * $item['cantidad'];
@@ -250,7 +252,10 @@ class CompraController extends Controller
             /** @var \App\Models\Comic $comic */
             $comic = \App\Models\Comic::find($item['id']);
             if ($comic) {
-                $comic->decrement('stock', (int)$item['cantidad']);
+                $esPrecompra = $comic->lanzamiento > now();
+                if (!$esPrecompra) {
+                    $comic->decrement('stock', (int)$item['cantidad']);
+                }
             }
         }
 

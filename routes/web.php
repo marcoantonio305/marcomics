@@ -64,6 +64,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/hiloPosts', [HiloPostController::class, 'store'])->name('hilo_posts.store');
     Route::delete('/hilos/{hilo}', [HiloController::class, 'destroy'])->name('hilos.destroy');
     Route::delete('/hiloPosts/{hiloPost}', [HiloPostController::class, 'destroy'])->name('hilo_posts.destroy');
+    Route::post('/suscripciones', [ComicController::class, 'suscribir'])->middleware('auth');
+    Route::delete('/suscripciones', [ComicController::class, 'desuscribir'])->middleware('auth');
 
     Route::get('/metodo-pago', function () {
         return Inertia::render('paginaMetodoPago');

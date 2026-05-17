@@ -17,6 +17,6 @@ export default function BotonBiblioteca({ comic_id }: { comic_id: number }) {
     }
     
     return (
-        <button className="border-2 border-black rounded-lg w-55 h-10 ml-15 bg-yellow-600 text-white hover:bg-yellow-700" onClick={anadir} disabled={processing}>{processing ? 'Cargando...' : 'Añadir a favoritos'}</button>
+        <button className="border-2 border-black rounded-lg w-55 h-10 ml-15 bg-yellow-600 text-white hover:text-purple-600 hover:bg-yellow-100 hover:scale-110 hover:text-xl transition-all duration-200 transform " onClick={anadir} disabled={processing}>{processing ? 'Cargando...' : 'Añadir a favoritos'}</button>
     )
 }

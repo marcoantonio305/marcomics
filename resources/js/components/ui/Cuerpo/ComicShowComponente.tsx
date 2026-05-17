@@ -39,9 +39,10 @@ interface Comic {
 interface Props {
     comic: Comic;
     media: string | null;
+    imagenes: string[];
 }
 
-export default function ComicIndividual({ comic, media }: Props) {
+export default function ComicShowComponente({ comic, media, imagenes }: Props) {
     const {
         titulo,
         id,
@@ -53,13 +54,6 @@ export default function ComicIndividual({ comic, media }: Props) {
         lanzamiento
     } = comic;
 
-    // Calculamos el array aquí dentro de forma segura filtrando nulos/undefined
-    const imagenes = [
-        comic.imagen,
-        comic.preview1,
-        comic.preview2
-    ].filter(Boolean) as string[];
-
     const [currentIdx, setCurrentIdx] = useState(0);
 
     const siguiente = () => {
@@ -70,6 +64,8 @@ export default function ComicIndividual({ comic, media }: Props) {
         setCurrentIdx((prev) => (prev === 0 ? imagenes.length - 1 : prev - 1));
     };
 
+    const esPrecompra = new Date(lanzamiento) > new Date();
+
     return (
         <div className="div-8 ml-15 mb-7">
             <div className='bg-yellow-100 w-fit h-20 flex items-center mb-6 mt-5 border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] ml-40'>
@@ -79,7 +75,7 @@ export default function ComicIndividual({ comic, media }: Props) {
             </div>
             
             <div className="flex flex-col lg:flex-row gap-8 items-start">
-                {/* Carrusel de imágenes */}
+
                 <div className="relative w-full lg:w-[50%] group bg-white overflow-hidden mx-auto lg:mx-0">
                     <img 
                         src={`/storage/${imagenes[currentIdx]}`} 
@@ -115,7 +111,6 @@ export default function ComicIndividual({ comic, media }: Props) {
                     )}
                 </div>
 
-                {/* Detalles del Cómic */}
                 <div className=''>
                     <div className="mb-6 p-4 border-4 border-black bg-violet-200 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] w-fit">
                         {media && Number(media) > 0 ? (
@@ -159,7 +154,15 @@ export default function ComicIndividual({ comic, media }: Props) {
                         </span></p>
         
                     <p className='mb-2'><span className='text-3xl font-bold mb-8 mt-8 text-blue-600'>Descripción: </span><span className='mb-6 ml-5 text-xl'>{comic.descripcion}</span></p>
-                    {comic.stock > 0 ? (
+                    
+                    {esPrecompra ? (
+                        <div className='flex flex-col'>
+                            <div>
+                                <BotonAnadirCarro comicId={comic.id} texto="Precompra" esPrecompra={true}></BotonAnadirCarro>
+                                <BotonBiblioteca comic_id={comic.id}></BotonBiblioteca>
+                            </div>
+                        </div>
+                    ) : comic.stock > 0 ? (
                         <div className='flex flex-col'>
                             <p className='text-green-600 text-2xl uppercase font-bold mt-3'>En stock</p>
                             <div>

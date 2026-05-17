@@ -7,8 +7,13 @@ use App\Models\Categoria;
 use App\Models\Comic;
 use App\Models\Editora;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache; 
 use Inertia\Inertia;
+use App\Mail\NuevoComicNotification;
 
 class ComicController extends Controller
 {
@@ -81,10 +86,62 @@ class ComicController extends Controller
             unset($validated['preview2']);
         }
 
-        $comic = Comic::create($validated);
+        /** @var Comic $comic */
+        $comic = Comic::query()->create($validated);
         
-        $comic->categorias()->sync($request->categorias_ids);
+        $cambiosCategorias = $comic->categorias()->sync($request->categorias_ids);
         $comic->autors()->sync($request->autors_ids);
+
+        $userIdsParaNotificar = [];
+        $razonesSuscripcion = [];
+
+        $categoriasNuevas = isset($cambiosCategorias['attached']) ? (array)$cambiosCategorias['attached'] : [];
+        foreach ($categoriasNuevas as $catId) {
+            $categoria = Categoria::query()->where('id', '=', $catId)->first();
+            if ($categoria instanceof Categoria) {
+                $ids = DB::table('suscripciones')
+                    ->where('subscribable_type', '=', 'App\Models\Categoria')
+                    ->where('subscribable_id', '=', $catId)
+                    ->pluck('user_id')
+                    ->all();
+
+                foreach ($ids as $id) {
+                    $userIdsParaNotificar[] = $id;
+                    $razonesSuscripcion[$id] = "Categoría: " . $categoria->nombre;
+                }
+            }
+        }
+
+        $comic->load('coleccions');
+        foreach ($comic->coleccions as $coleccion) {
+            $ids = DB::table('suscripciones')
+                ->where('subscribable_type', '=', 'App\Models\Coleccion')
+                ->where('subscribable_id', '=', $coleccion->id)
+                ->pluck('user_id')
+                ->all();
+
+            foreach ($ids as $id) {
+                $userIdsParaNotificar[] = $id;
+                $razonesSuscripcion[$id] = "Colección: " . $coleccion->nombre;
+            }
+        }
+
+        $userIdsUnicos = array_unique($userIdsParaNotificar);
+
+        if (!empty($userIdsUnicos)) {
+            $usuarios = \App\Models\User::query()->whereIn('id', $userIdsUnicos)->get();
+            foreach ($usuarios as $usuario) {
+                $cacheKey = "notificado_user_{$usuario->id}_comic_{$comic->id}";
+
+                if (!Cache::has($cacheKey)) {
+                    Cache::put($cacheKey, true, now()->addDays(7));
+                    $textoOrigen = $razonesSuscripcion[$usuario->id] ?? 'Tus suscripciones';
+                    /** @var \Illuminate\Mail\PendingMail $mailer */
+                    $mailer = Mail::to($usuario->email);
+                    $mailer->queue(new NuevoComicNotification($comic, $textoOrigen));
+                }
+            }
+        }
 
         return redirect()->route('comics.index');
     }
@@ -94,9 +151,52 @@ class ComicController extends Controller
      */
     public function show(Comic $comic)
     {
+        $user = auth()->user();
+        $comicsRecomendados = collect();
+
+        if ($user) {
+            $categoriasDeInteres = collect();
+
+            if (method_exists($user, 'wishlist') || method_exists($user, 'deseados')) {
+                $relacionDeseados = method_exists($user, 'wishlist') ? 'wishlist' : 'deseados';
+                $categoriasDeInteres = $categoriasDeInteres->merge(
+                    $user->$relacionDeseados()->with('categorias')->get()->pluck('categorias.*.id')->flatten()
+                );
+            }
+
+            if (method_exists($user, 'biblioteca') || method_exists($user, 'comics')) {
+                $relacionBiblioteca = method_exists($user, 'biblioteca') ? 'biblioteca' : 'comics';
+                $categoriasDeInteres = $categoriasDeInteres->merge(
+                    $user->$relacionBiblioteca()->with('categorias')->get()->pluck('categorias.*.id')->flatten()
+                );
+            }
+
+            $categoriasDeInteres = $categoriasDeInteres->unique()->filter()->all();
+
+            if (!empty($categoriasDeInteres)) {
+                $comicsRecomendados = Comic::with(['autors', 'categorias'])
+                    ->where('id', '!=', $comic->id)
+                    ->whereHas('categorias', function ($query) use ($categoriasDeInteres) {
+                        $query->whereIn('categoria_id', $categoriasDeInteres);
+                    })
+                    ->inRandomOrder()
+                    ->take(7)
+                    ->get();
+            }
+        }
+
+        if ($comicsRecomendados->isEmpty()) {
+            $comicsRecomendados = Comic::with(['autors', 'categorias'])
+                ->where('id', '!=', $comic->id)
+                ->inRandomOrder()
+                ->take(7)
+                ->get();
+        }
+
         return Inertia::render('comics/show', [
-            'comic' => $comic->load('categorias', 'autors', 'editora'),
+            'comic' => $comic->load('categorias', 'autors', 'editora', 'coleccions'),
             'comentarios' => $comic->comentarios()->with('user')->get(),
+            'comicsRecomendados' => $comicsRecomendados,
         ]);
     }
 
@@ -161,7 +261,58 @@ class ComicController extends Controller
         $comic->update($validated);
 
         $comic->autors()->sync($request->autors_ids);
-        $comic->categorias()->sync($request->categorias_ids);
+        $cambiosCategorias = $comic->categorias()->sync($request->categorias_ids);
+
+        $userIdsParaNotificar = [];
+        $razonesSuscripcion = [];
+
+        $categoriasNuevas = isset($cambiosCategorias['attached']) ? (array)$cambiosCategorias['attached'] : [];
+        foreach ($categoriasNuevas as $catId) {
+            $categoria = Categoria::query()->where('id', '=', $catId)->first();
+            if ($categoria instanceof Categoria) {
+                $ids = DB::table('suscripciones')
+                    ->where('subscribable_type', '=', 'App\Models\Categoria')
+                    ->where('subscribable_id', '=', $catId)
+                    ->pluck('user_id')
+                    ->all();
+
+                foreach ($ids as $id) {
+                    $userIdsParaNotificar[] = $id;
+                    $razonesSuscripcion[$id] = "Categoría: " . $categoria->nombre;
+                }
+            }
+        }
+
+        $comic->load('coleccions');
+        foreach ($comic->coleccions as $coleccion) {
+            $ids = DB::table('suscripciones')
+                ->where('subscribable_type', '=', 'App\Models\Coleccion')
+                ->where('subscribable_id', '=', $coleccion->id)
+                ->pluck('user_id')
+                ->all();
+
+            foreach ($ids as $id) {
+                $userIdsParaNotificar[] = $id;
+                $razonesSuscripcion[$id] = "Colección: " . $coleccion->nombre;
+            }
+        }
+
+        $userIdsUnicos = array_unique($userIdsParaNotificar);
+
+        if (!empty($userIdsUnicos)) {
+            $usuarios = \App\Models\User::query()->whereIn('id', $userIdsUnicos)->get();
+            foreach ($usuarios as $usuario) {
+                $cacheKey = "notificado_user_{$usuario->id}_comic_{$comic->id}";
+
+                if (!Cache::has($cacheKey)) {
+                    Cache::put($cacheKey, true, now()->addDays(7));
+                    $textoOrigen = $razonesSuscripcion[$usuario->id] ?? 'Tus suscripciones';
+                    /** @var \Illuminate\Mail\PendingMail $mailer */
+                    $mailer = Mail::to($usuario->email);
+                    $mailer->queue(new NuevoComicNotification($comic, $textoOrigen));
+                }
+            }
+        }
 
         return redirect()->route('comics.index');
     }
@@ -193,11 +344,11 @@ class ComicController extends Controller
         return response()->json(['comics' => [], 'categorias' => []]);
     }
 
-        $comics = Comic::where('titulo', 'ILIKE', "%{$term}%")
+        $comics = Comic::query()->where('titulo', 'ILIKE', "%{$term}%")
             ->limit(7)
             ->get(['id', 'imagen', 'titulo']);
 
-        $categorias = Categoria::where('nombre', 'ILIKE', "%{$term}%")
+        $categorias = Categoria::query()->where('nombre', 'ILIKE', "%{$term}%")
             ->limit(3)
             ->get(['id', 'nombre', 'imagen']);
 
@@ -218,4 +369,44 @@ class ComicController extends Controller
         return redirect()->route('comics.index');
     }
 
+    public function suscribir(Request $request)
+    {
+        $validated = $request->validate([
+            'subscribable_type' => 'required|string',
+            'subscribable_id' => 'required|integer',
+        ]);
+
+        /** @var \Illuminate\Database\Query\Builder $queryBuilder */
+        $queryBuilder = DB::table('suscripciones');
+        $queryBuilder->updateOrInsert(
+            [
+                'user_id' => Auth::id(),
+                'subscribable_type' => $validated['subscribable_type'],
+                'subscribable_id' => $validated['subscribable_id'],
+            ],
+            [
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+
+
+        return back()->with('success', '¡Te has suscrito con éxito!');
+    }
+
+    public function desuscribir(Request $request)
+    {
+        $validated = $request->validate([
+            'subscribable_type' => 'required|string',
+            'subscribable_id'   => 'required|integer',
+        ]);
+
+        DB::table('suscripciones')
+            ->where('user_id', Auth::id())
+            ->where('subscribable_type', $validated['subscribable_type'])
+            ->where('subscribable_id', $validated['subscribable_id'])
+            ->delete();
+
+        return redirect()->back();
+    }
 }

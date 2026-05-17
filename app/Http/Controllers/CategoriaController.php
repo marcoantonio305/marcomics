@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Categoria;
+use App\Models\Comic;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -54,9 +55,54 @@ class CategoriaController extends Controller
      */
     public function show(Categoria $categoria)
     {
-        $categoria->load(['comics.autors']);
+        $categoria->load(['comics.autors', 'comics.categorias']);
+        
+        $comicsEnCategoriaIds = $categoria->comics->pluck('id')->all();
+        $user = auth()->user();
+        $comicsRecomendados = collect();
+
+        if ($user) {
+            $categoriasDeInteres = collect();
+
+            if (method_exists($user, 'wishlist') || method_exists($user, 'deseados')) {
+                $relacionDeseados = method_exists($user, 'wishlist') ? 'wishlist' : 'deseados';
+                $categoriasDeInteres = $categoriasDeInteres->merge(
+                    $user->$relacionDeseados()->with('categorias')->get()->pluck('categorias.*.id')->flatten()
+                );
+            }
+
+            if (method_exists($user, 'biblioteca') || method_exists($user, 'comics')) {
+                $relacionBiblioteca = method_exists($user, 'biblioteca') ? 'biblioteca' : 'comics';
+                $categoriasDeInteres = $categoriasDeInteres->merge(
+                    $user->$relacionBiblioteca()->with('categorias')->get()->pluck('categorias.*.id')->flatten()
+                );
+            }
+
+            $categoriasDeInteres = $categoriasDeInteres->unique()->filter()->all();
+
+            if (!empty($categoriasDeInteres)) {
+                $comicsRecomendados = Comic::with(['autors', 'categorias'])
+                    ->whereNotIn('id', $comicsEnCategoriaIds)
+                    ->whereHas('categorias', function ($query) use ($categoriasDeInteres) {
+                        $query->whereIn('categoria_id', $categoriasDeInteres);
+                    })
+                    ->inRandomOrder()
+                    ->take(7)
+                    ->get();
+            }
+        }
+
+        if ($comicsRecomendados->isEmpty()) {
+            $comicsRecomendados = Comic::with(['autors', 'categorias'])
+                ->whereNotIn('id', $comicsEnCategoriaIds)
+                ->inRandomOrder()
+                ->take(7)
+                ->get();
+        }
+
         return Inertia::render('categorias/show', [
             'categoria' => $categoria,
+            'comicsRecomendados' => $comicsRecomendados,
         ]);
     }
 
@@ -82,8 +128,8 @@ class CategoriaController extends Controller
 
         if ($request->hasFile('imagen')) {
             if ($categoria->imagen) {
-            Storage::disk('public')->delete($categoria->imagen);
-        }
+                Storage::disk('public')->delete($categoria->imagen);
+            }
             $rutaImagen = $request->file('imagen')->store('images', 'public');
             $validated['imagen'] = $rutaImagen;
         }

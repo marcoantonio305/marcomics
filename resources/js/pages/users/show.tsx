@@ -1,8 +1,8 @@
 import Biblioteca from "@/components/ui/Cuerpo/Biblioteca";
 import AppLayout from "@/layouts/app-layout";
 import React from "react";
-import { usePage, Link } from "@inertiajs/react"
-import { Settings } from "lucide-react";
+import { usePage, Link, useForm } from "@inertiajs/react"
+import { Settings, Cross } from "lucide-react";
 
 interface User {
     id: number;
@@ -34,14 +34,43 @@ interface Compra {
     created_at: string;
 }
 
+interface Suscripcion {
+    id: number;
+    subscribable_type: string;
+    subscribable_id: number;
+    subscribable?: {
+        id: number;
+        nombre: string;
+    };
+}
+
 interface Props {
     user: User;
     rol: Rol;
     comics: Comic[];
 }
 
-export default function Show({ user, compras, esAdmin }: {user: User, compras: Compra[], esAdmin: boolean}) {
+export default function Show({ user, compras, esAdmin, suscripciones = [] }: {user: User, compras: Compra[], esAdmin: boolean, suscripciones: Suscripcion[]}) {
     const { auth } = usePage().props as any;
+    const { data, setData, delete: destroy, processing, reset } = useForm({
+        subscribable_type: '',
+        subscribable_id: 0
+    });
+
+    const handleUnsubscribe = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!data.subscribable_type || !data.subscribable_id) return;
+
+
+        destroy('/suscripciones', {
+            preserveScroll: true,
+            onSuccess: () => {
+                reset();
+                alert('Te has desuscrito correctamente.');
+            }
+        });
+    };
+
     return (
         <AppLayout>
             <div className="div-8 ml-8">
@@ -68,6 +97,64 @@ export default function Show({ user, compras, esAdmin }: {user: User, compras: C
 </div>
                     </div>
                 </div>
+
+                {auth.user?.id === user.id && (
+                    <div className="mx-5 my-6 p-4 border-3 border-blue-500 rounded-lg bg-card text-card-foreground shadow-sm max-w-2xl">
+                        <h3 className="text-xl text-blue-700 font-semibold mb-2 flex items-center gap-2">
+                            Mis Suscripciones Activas
+                        </h3>
+                        <p className="text-xs text-muted-foreground mb-4">
+                            Selecciona una de tus suscripciones actuales si deseas dejar de recibir correos de sus novedades.
+                        </p>
+
+                        {suscripciones.length > 0 ? (
+                            <form onSubmit={handleUnsubscribe} className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+                                <div className="flex-1">
+                                    <select 
+                                        className="select select-bordered w-full text-sm h-10 px-3 rounded-md border bg-background text-black"
+                                        value={data.subscribable_type ? `${data.subscribable_type}:${data.subscribable_id}` : ''}
+                                        onChange={(e) => {
+                                            const value = e.target.value;
+                                            if (!value) {
+                                                setData({ subscribable_type: '', subscribable_id: 0 });
+                                                return;
+                                            }
+                                            const [type, id] = value.split(':');
+                                            setData({
+                                                subscribable_type: type,
+                                                subscribable_id: Number(id)
+                                            });
+                                        }}
+                                    >
+                                        <option value="">Selecciona una suscripción para eliminar</option>
+                                        
+                                        <optgroup label="Categorías / Colecciones">
+                                            {suscripciones.map((sub) => {
+                                                const tipoNombre = sub.subscribable_type.includes('Categoria') ? 'Categoría' : 'Colección';
+                                                return (
+                                                    <option key={sub.id} value={`${sub.subscribable_type}:${sub.subscribable_id}`}>
+                                                        {tipoNombre}: {sub.subscribable?.nombre || `ID: ${sub.subscribable_id}`}
+                                                    </option>
+                                                );
+                                            })}
+                                        </optgroup>
+                                    </select>
+                                </div>
+
+                                <button 
+                                    type="submit" 
+                                    className="btn bg-black text-white h-10 px-6 font-medium rounded-md transition-all duration-200 transform hover:bg-red-600 hover:scale-105 disabled:opacity-50"
+                                    disabled={processing || !data.subscribable_type}
+                                >
+                                    {processing ? 'Cancelando...' : 'Desuscribirse'}
+                                </button>
+                            </form>
+                        ) : (
+                            <p className="text-sm italic text-gray-500">No estás suscrito a ninguna categoría o colección actualmente.</p>
+                        )}
+                    </div>
+                )}
+
                 {auth.user?.id === user.id && (
                     <div className="flex mb-4">
                         {/* <Link href={`/users/${user.id}/edit`} className="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors">

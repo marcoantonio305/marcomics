@@ -5,9 +5,11 @@ import { useEffect } from "react";
 
 interface Props {
     comicId: number;
+    texto?: string;
+    esPrecompra?: boolean;
 }
 
-export function BotonAnadirCarro({comicId}: Props) {
+export function BotonAnadirCarro({comicId, texto, esPrecompra}: Props) {
     const { carritoTotal } = usePage().props as any;;
     const { flash } = usePage().props as any;
 
@@ -32,8 +34,12 @@ export function BotonAnadirCarro({comicId}: Props) {
 
     return (
         <button onClick={anadir}
-        className="btn mt-7 mb-5 bg-green-600 hover:bg-[#FDF5E6] hover:text-green-600  text-white font-bold text-2xl rounded transition-colors border-2 border-black w-65 h-20 hover:scale-110 hover:text-3xl transition-all duration-200 transform ">
-            Añadir al carrito
+        className={`btn mt-7 mb-5 font-bold text-2xl rounded transition-colors border-2 border-black w-65 h-20 hover:scale-110 hover:text-3xl transition-all duration-200 transform ${
+            esPrecompra 
+            ? "bg-blue-500 hover:bg-[#FDF5E6] hover:text-blue-600 text-white" 
+            : "bg-green-600 hover:bg-[#FDF5E6] hover:text-green-600 text-white"
+        }`}>
+            {texto || "Añadir al carrito"}
         </button>
     );
 }

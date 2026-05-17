@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, router, usePage } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import ComicIndividual from '@/components/ui/Cuerpo/ComicIndividual';
+import SeccionRecomendaciones from '@/components/ui/Cuerpo/SeccionRecomendaciones';
 
 interface Editora {
     id: number;
@@ -28,17 +29,19 @@ interface Comic {
     descripcion: string;
     autors: Autor[];
     categorias: Categoria[];
-    editora?: Editora,
-    imagen: string
+    editora?: Editora;
+    imagen: string;
+    stock: number;
 }
 
 interface Props {
-    categoria: Categoria
+    categoria: Categoria;
+    comicsRecomendados?: Comic[];
 }
 
-export default function Show({categoria}:Props) {
+export default function Show({categoria, comicsRecomendados = []}:Props) {
     const listaComics = categoria.comics || [];
-    const auth = usePage().props.auth;
+    const auth = usePage().props.auth as any;
     return (
         <AppLayout>
         <div className='p-8 flex flex-col'>
@@ -72,6 +75,10 @@ export default function Show({categoria}:Props) {
                     <p className="text-xl font-bold italic text-gray-400">No hay comics en esta categoría.</p>
                 )
             }
+            </div>
+
+            <div className="mt-12">
+                <SeccionRecomendaciones comics={comicsRecomendados} />
             </div>
         </div>
         </AppLayout>
