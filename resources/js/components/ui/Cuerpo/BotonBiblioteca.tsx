@@ -1,22 +1,32 @@
 import { useForm } from "@inertiajs/react";
-import { Button } from "../button";
+import { BotonBase } from "./BotonBase";
 
 export default function BotonBiblioteca({ comic_id }: { comic_id: number }) {
     const { post, processing } = useForm({
-        comic_id: comic_id
+        comic_id: comic_id,
     });
 
     const anadir = () => {
-        //se pone una ruta absoluta (poner la barra / al principio de la ruta) para evitar problemas. Sin ruta relativa, se haría la petición /comics/{comic_id}/comics/{comic_id}/biblioteca
         post(`/comics/${comic_id}/biblioteca`, {
             preserveScroll: true,
             onSuccess: () => {
-                alert('Comic añadido a tu favoritos');
-            }
+                alert("Comic añadido a tu favoritos");
+            },
         });
-    }
-    
+    };
+
     return (
-        <button className="border-3 border-yellow-800 rounded-lg w-50 h-11 ml-15 bg-yellow-600 text-white hover:text-purple-700 hover:bg-yellow-100 hover:scale-110 hover:text-xl transition-all duration-200 transform " onClick={anadir} disabled={processing}>{processing ? 'Cargando...' : 'Añadir a favoritos'}</button>
-    )
+        <BotonBase
+            texto="Añadir a favoritos"
+            tamano="sm"
+            className="ml-15" 
+            onClick={anadir}
+            processing={processing}
+            colorFondo="bg-yellow-600"
+            colorTexto="text-white"
+            hoverFondo="hover:bg-yellow-100"
+            hoverTexto="hover:text-purple-700"
+            borderClass="border-yellow-800"
+        />
+    );
 }

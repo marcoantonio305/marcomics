@@ -6,6 +6,7 @@ import { usePage } from "@inertiajs/react";
 import Swal from "sweetalert2";
 import { useEffect } from "react";
 import { ShoppingCart } from 'lucide-react';
+import { BotonBase } from './BotonBase';
 
 interface Editora {
     id: number;
@@ -52,7 +53,7 @@ export default function ComicIndividual({comic}:Props) {
     lanzamiento} = comic
     const { carritoTotal } = usePage().props as any;;
         const { flash, auth } = usePage().props as any;
-    
+
         useEffect(() => {
         if (flash?.success) {
             Swal.fire({
@@ -61,12 +62,12 @@ export default function ComicIndividual({comic}:Props) {
                 text: flash.success,
             });
         }
-    }, [flash]); 
-    
+    }, [flash]);
+
         const anadir = (e: React.MouseEvent) => {
-        e.preventDefault(); 
+        e.preventDefault();
         router.post('/carrito/anadir', {
-            comic_id: id 
+            comic_id: id
         }, {
             preserveScroll: true,
             only: ['carrito', 'carritoTotal', 'flash'],
@@ -89,21 +90,31 @@ export default function ComicIndividual({comic}:Props) {
                         <p>{precio}€</p>
                         {auth?.user && (
                             esPrecompra ? (
-                                <button 
+                                <BotonBase
+                                    texto="Precompra"
+                                    icono={<ShoppingCart size={20} />}
+                                    colorFondo="bg-blue-600"
+                                    hoverFondo="hover:bg-[#FDF5E6]"
+                                    hoverTexto="hover:text-blue-600"
+                                    colorTexto="text-white"
+                                    borderClass="border-black"
+                                    tamano="w-56 h-10 text-base"
+                                    className="gap-2"
                                     onClick={anadir}
-                                    className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-[#FDF5E6] hover:text-blue-600 text-white font-bold rounded transition-all duration-200 border-2 border-black w-56 h-10 hover:scale-110 transform"
-                                >
-                                    <ShoppingCart size={20} />
-                                    Precompra
-                                </button>
+                                />
                             ) : stock > 0 ? (
-                                <button 
+                                <BotonBase
+                                    texto="Añadir al carrito"
+                                    icono={<ShoppingCart size={20} />}
+                                    colorFondo="bg-green-600"
+                                    hoverFondo="hover:bg-[#FDF5E6]"
+                                    hoverTexto="hover:text-green-600"
+                                    colorTexto="text-white"
+                                    borderClass="border-black"
+                                    tamano="w-56 h-10 text-base"
+                                    className="gap-2"
                                     onClick={anadir}
-                                    className="flex items-center justify-center gap-2 bg-green-600 hover:bg-[#FDF5E6] hover:text-green-600 text-white font-bold rounded transition-all duration-200 border-2 border-black w-56 h-10 hover:scale-110 transform"
-                                >
-                                    <ShoppingCart size={20} />
-                                    Añadir al carrito
-                                </button>
+                                />
                             ) : (
                                 <div className="flex items-center justify-center text-red-600 font-bold w-56 h-10 italic">
                                     Sin stock disponible
