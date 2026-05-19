@@ -409,4 +409,41 @@ class ComicController extends Controller
 
         return redirect()->back();
     }
+
+    public function buscadorExtenso(Request $request)
+    {
+        $search = $request->input('search');
+        $categoriasIds = $request->input('categorias_ids', []);
+        $fechaInicio = $request->input('fecha_inicio');
+        $fechaFin = $request->input('fecha_fin');
+
+        $comics = Comic::query()
+            ->with(['categorias', 'autors', 'editora'])
+            ->when($search, function ($query, $search) {
+                $query->where('titulo', 'ILIKE', "%{$search}%");
+            })
+            ->when(!empty($categoriasIds), function ($query) use ($categoriasIds) {
+                $query->whereHas('categorias', function ($q) use ($categoriasIds) {
+                    $q->whereIn('categoria_id', $categoriasIds);
+                });
+            })
+            ->when($fechaInicio, function ($query, $fechaInicio) {
+                $query->where('lanzamiento', '>=', $fechaInicio);
+            })
+            ->when($fechaFin, function ($query, $fechaFin) {
+                $query->where('lanzamiento', '<=', $fechaFin);
+            })
+            ->get();
+
+        return Inertia::render('buscar', [
+            'comics' => $comics,
+            'todas_las_categorias' => Categoria::all(),
+            'filtros' => [
+                'search' => $search ?? '',
+                'categorias_ids' => array_map('intval', $categoriasIds),
+                'fecha_inicio' => $fechaInicio ?? '',
+                'fecha_fin' => $fechaFin ?? '',
+            ]
+        ]);
+    }
 }

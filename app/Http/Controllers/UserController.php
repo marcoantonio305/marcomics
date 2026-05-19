@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class UserController extends Controller
@@ -52,10 +53,27 @@ class UserController extends Controller
         }]);
     }
 
+    // Obtenemos las suscripciones directamente desde la tabla
+    $suscripciones = DB::table('suscripciones')
+        ->where('user_id', $user->id)
+        ->get()
+        ->map(function ($suscripcion) {
+            // Resolvemos la entidad usando su respectiva clase de modelo directamente
+            $claseModelo = $suscripcion->subscribable_type;
+            
+            // Si la clase existe, buscamos el registro correspondiente
+            $suscripcion->subscribable = class_exists($claseModelo) 
+                ? $claseModelo::find($suscripcion->subscribable_id) 
+                : null;
+                
+            return $suscripcion;
+        });
+
     return Inertia::render('users/show', [
     'user' => $user->load('comics'), 
     'compras' => ($esAdmin || $esDueño) ? $user->compras : [],
-    'esAdmin' => $esAdmin
+    'esAdmin' => $esAdmin,
+    'suscripciones' => $suscripciones
 ]);
 }
 

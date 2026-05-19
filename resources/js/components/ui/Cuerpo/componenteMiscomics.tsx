@@ -26,7 +26,7 @@ interface Props {
 
 export default function ComponenteMiscomics({ compra }: Props) {
     return (
-        <div className="bg-white overflow-hidden shadow-xl sm:rounded-lg border border-gray-200 mb-6">
+        <div className="w-full max-w-[90%] mx-auto bg-white overflow-hidden shadow-xl sm:rounded-lg border border-gray-200 mb-6">
             <div className="bg-gray-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
                 <div>
                     <p className="text-sm text-gray-500 uppercase font-bold">Compra #{compra.id}</p>

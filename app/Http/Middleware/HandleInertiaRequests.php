@@ -47,6 +47,7 @@ class HandleInertiaRequests extends Middleware
     'success' => fn () => $request->session()->get('success'),
     'error' => fn () => $request->session()->get('error'),
 ],
+'carrito' => $request->session()->get('carrito', []),
 'carritoTotal' => number_format(collect($request->session()->get('carrito', []))->sum(function($item) {
             return $item['precio'] * $item['cantidad'];
         }), 2),

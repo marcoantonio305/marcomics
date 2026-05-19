@@ -43,7 +43,7 @@ export default function Buscador() {
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         setShowDropdown(false);
-        router.get("/comics", { search: term });
+        router.get("/buscar", { search: term });
     };
 
     return (
@@ -85,10 +85,10 @@ export default function Buscador() {
                         className="block p-2 text-xs font-bold text-blue-700 hover:bg-blue-50 border-t-2 border-black italic"
                         onClick={() => setShowDropdown(false)}
                     >
-                                                <img src={`/storage/${cat.imagen}`} 
+                                                                <img src={`/storage/${cat.imagen}`} 
         alt={cat.nombre} 
         className="w-10 h-14 object-contain border border-black shadow-sm" />
-                                                <span>Categoria {cat.nombre}</span>
+                                                                <span>Categoria {cat.nombre}</span>
                     </Link>
                     ))}
                 </div>

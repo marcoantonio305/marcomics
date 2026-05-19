@@ -149,6 +149,7 @@ Route::get('/categorias/{categoria}', [CategoriaController::class, 'show'])->nam
 Route::get('/coleccions/{coleccion}', [ColeccionController::class, 'show'])->name('coleccions.show');
 Route::get('/hilos', [HiloController::class, 'index'])->name('hilos.index');
 Route::get('/hilos/{hilo}', [HiloController::class, 'show'])->name('hilos.show');
+Route::get('/buscar', [ComicController::class, 'buscadorExtenso'])->name('comics.buscador_extenso');
 
 
 

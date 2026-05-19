@@ -51,7 +51,7 @@ export default function ComicIndividual({comic}:Props) {
     stock,
     lanzamiento} = comic
     const { carritoTotal } = usePage().props as any;;
-        const { flash } = usePage().props as any;
+        const { flash, auth } = usePage().props as any;
     
         useEffect(() => {
         if (flash?.success) {
@@ -87,26 +87,28 @@ export default function ComicIndividual({comic}:Props) {
                         ) : (<p className="font-bold italic text-gray-400">Anónimo</p>)}
                         <p>{fechaLarga(lanzamiento)}</p>
                         <p>{precio}€</p>
-                        {esPrecompra ? (
-                            <button 
-                                onClick={anadir}
-                                className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-[#FDF5E6] hover:text-blue-600 text-white font-bold rounded transition-all duration-200 border-2 border-black w-56 h-10 hover:scale-110 transform"
-                            >
-                                <ShoppingCart size={20} />
-                                Precompra
-                            </button>
-                        ) : stock > 0 ? (
-                            <button 
-                                onClick={anadir}
-                                className="flex items-center justify-center gap-2 bg-green-600 hover:bg-[#FDF5E6] hover:text-green-600 text-white font-bold rounded transition-all duration-200 border-2 border-black w-56 h-10 hover:scale-110 transform"
-                            >
-                                <ShoppingCart size={20} />
-                                Añadir al carrito
-                            </button>
-                        ) : (
-                            <div className="flex items-center justify-center text-red-600 font-bold w-56 h-10 italic">
-                                Sin stock disponible
-                            </div>
+                        {auth?.user && (
+                            esPrecompra ? (
+                                <button 
+                                    onClick={anadir}
+                                    className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-[#FDF5E6] hover:text-blue-600 text-white font-bold rounded transition-all duration-200 border-2 border-black w-56 h-10 hover:scale-110 transform"
+                                >
+                                    <ShoppingCart size={20} />
+                                    Precompra
+                                </button>
+                            ) : stock > 0 ? (
+                                <button 
+                                    onClick={anadir}
+                                    className="flex items-center justify-center gap-2 bg-green-600 hover:bg-[#FDF5E6] hover:text-green-600 text-white font-bold rounded transition-all duration-200 border-2 border-black w-56 h-10 hover:scale-110 transform"
+                                >
+                                    <ShoppingCart size={20} />
+                                    Añadir al carrito
+                                </button>
+                            ) : (
+                                <div className="flex items-center justify-center text-red-600 font-bold w-56 h-10 italic">
+                                    Sin stock disponible
+                                </div>
+                            )
                         )}
             </div>
         </div>

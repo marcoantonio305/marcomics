@@ -34,7 +34,7 @@ export function BotonAnadirCarro({comicId, texto, esPrecompra}: Props) {
 
     return (
         <button onClick={anadir}
-        className={`btn mt-7 mb-5 font-bold text-2xl rounded transition-colors border-2 border-black w-65 h-20 hover:scale-110 hover:text-3xl transition-all duration-200 transform ${
+        className={`btn mt-7 mb-5 font-bold text-xl rounded transition-colors border-2 border-black w-55 h-15 hover:scale-110 hover:text-2xl transition-all duration-200 transform border-3 border-green-800 ${
             esPrecompra 
             ? "bg-blue-500 hover:bg-[#FDF5E6] hover:text-blue-600 text-white" 
             : "bg-green-600 hover:bg-[#FDF5E6] hover:text-green-600 text-white"

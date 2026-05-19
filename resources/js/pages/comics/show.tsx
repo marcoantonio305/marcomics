@@ -110,69 +110,70 @@ export default function Show({ comic, comentarios, comicsRecomendados } : Props)
     };
     return (
         <AppLayout>
-            <ComicShowComponente comic={comic} media={mediaPuntuacion} imagenes={imagenes}></ComicShowComponente>
-{auth.user && (
-            <div className='mx-5 my-6 p-4 border-3 border-red-500 rounded-lg bg-card text-card-foreground shadow-sm max-w-2xl ml-260'>
-                <h3 className='text-xl text-pink-700 font-semibold mb-2 flex items-center gap-2'>
-                    Suscribirte a la colección
-                </h3>
-                <p className='text-xs text-muted-foreground mb-4'>
-                    Selecciona una categoría o colección de este cómic para recibir un correo electrónico cada vez que se publique un nuevo producto asignado a ella.
-                </p>
+            <ComicShowComponente comic={comic} media={mediaPuntuacion} imagenes={imagenes}>
+                {auth.user && (
+                    <div className='p-4 border-3 border-red-500 rounded-lg bg-card text-card-foreground shadow-sm max-w-xl w-full'>
+                        <h3 className='text-xl text-pink-700 font-semibold mb-2 flex items-center gap-2'>
+                            Suscribirte a la colección
+                        </h3>
+                        <p className='text-xs text-muted-foreground mb-4'>
+                            Selecciona una categoría o colección de este cómic para recibir un correo electrónico cada vez que se publique un nuevo producto asignado a ella.
+                        </p>
 
-                <form onSubmit={handleSubscribe} className='flex flex-col sm:flex-row gap-3 items-stretch sm:items-center'>
-                    <div className='flex-1'>
-                        <select 
-                            className='select select-bordered w-full text-sm h-10 px-3 rounded-md border bg-background'
-                            value={data.subscribable_type ? `${data.subscribable_type}:${data.subscribable_id}` : ''}
-                            onChange={(e) => {
-                                const value = e.target.value;
-                                if (!value) {
-                                    setData({ subscribable_type: '', subscribable_id: '' });
-                                    return;
-                                }
-                                const [type, id] = value.split(':');
-                                setData({
-                                    subscribable_type: type,
-                                    subscribable_id: id
-                                });
-                            }}
-                        >
-                            <option value="">Escoge una opción</option>
-                            
-                            {comic.categorias && comic.categorias.length > 0 && (
-                                <optgroup label="Categorías">
-                                    {comic.categorias.map(cat => (
-                                        <option key={`cat-${cat.id}`} value={`App\\Models\\Categoria:${cat.id}`}>
-                                            Categoría: {cat.nombre}
-                                        </option>
-                                    ))}
-                                </optgroup>
-                            )}
+                        <form onSubmit={handleSubscribe} className='flex flex-col sm:flex-row gap-3 items-stretch sm:items-center'>
+                            <div className='flex-1'>
+                                <select 
+                                    className='select select-bordered w-full text-sm h-10 px-3 rounded-md border bg-background'
+                                    value={data.subscribable_type ? `${data.subscribable_type}:${data.subscribable_id}` : ''}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        if (!value) {
+                                            setData({ subscribable_type: '', subscribable_id: '' });
+                                            return;
+                                        }
+                                        const [type, id] = value.split(':');
+                                        setData({
+                                            subscribable_type: type,
+                                            subscribable_id: id
+                                        });
+                                    }}
+                                >
+                                    <option value="">Escoge una opción</option>
+                                    
+                                    {comic.categorias && comic.categorias.length > 0 && (
+                                        <optgroup label="Categorías">
+                                            {comic.categorias.map(cat => (
+                                                <option key={`cat-${cat.id}`} value={`App\\Models\\Categoria:${cat.id}`}>
+                                                    Categoría: {cat.nombre}
+                                                </option>
+                                            ))}
+                                        </optgroup>
+                                    )}
 
 
-                            {comic.coleccions && comic.coleccions.length > 0 && (
-                                <optgroup label="Colecciones / Franquicias">
-                                    {comic.coleccions.map(col => (
-                                        <option key={`col-${col.id}`} value={`App\\Models\\Coleccion:${col.id}`}>
-                                            Colección: {col.nombre}
-                                        </option>
-                                    ))}
-                                </optgroup>
-                            )}
-                        </select>
+                                    {comic.coleccions && comic.coleccions.length > 0 && (
+                                        <optgroup label="Colecciones / Franquicias">
+                                            {comic.coleccions.map(col => (
+                                                <option key={`col-${col.id}`} value={`App\\Models\\Coleccion:${col.id}`}>
+                                                    Colección: {col.nombre}
+                                                </option>
+                                            ))}
+                                        </optgroup>
+                                    )}
+                                </select>
+                            </div>
+
+                            <button 
+                                type="submit" 
+                                className='btn bg-black text-white h-10 px-6 font-medium rounded-md transition-colors hover:text-white hover:bg-red-500 hover:scale-110 transition-all duration-200 transform'
+                                disabled={processing || !data.subscribable_type}
+                            >
+                                {processing ? 'Uniendo...' : 'Suscribirse'}
+                            </button>
+                        </form>
                     </div>
-
-                    <button 
-                        type="submit" 
-                        className='btn bg-black text-white h-10 px-6 font-medium rounded-md transition-colors hover:text-white hover:bg-red-500 hover:scale-110 transition-all duration-200 transform'
-                        disabled={processing || !data.subscribable_type}
-                    >
-                        {processing ? 'Uniendo...' : 'Suscribirse'}
-                    </button>
-                </form>
-            </div>
-)}
+                )}
+            </ComicShowComponente>
             
 
             <div className='flex flex-col gap-4 ml-5'>
@@ -181,22 +182,21 @@ export default function Show({ comic, comentarios, comicsRecomendados } : Props)
             </div>
             <SeccionRecomendaciones comics={comicsRecomendados} />
             <div className='mb-3 ml-7'>
-            {auth.user?.rol_id !== 3 && (
-            <Link href={`/comics/${comic.id}/edit`} className='btn btn-secondary mr-4'>Editar comic</Link>
-            )}
-            {auth.user?.rol_id !== 3 && (
-            <button 
-        onClick={() => router.delete(`/comics/${comic.id}`)} 
-        className='btn btn-warning mr-4' 
-    >
-        Eliminar comic
-    </button>
-            )}
-            {auth.user?.rol_id !== 3 && (
-            <Link href={`/comics`} className='btn btn-primary mr-4 ml-4'>Volver al index</Link>
-            )}
-</div>
-            
-    </AppLayout>
+                {auth.user && auth.user.rol_id !== 3 && (
+                    <Link href={`/comics/${comic.id}/edit`} className='btn btn-secondary mr-4'>Editar comic</Link>
+                )}
+                {auth.user && auth.user.rol_id !== 3 && (
+                    <button 
+                        onClick={() => router.delete(`/comics/${comic.id}`)} 
+                        className='btn btn-warning mr-4' 
+                    >
+                        Eliminar comic
+                    </button>
+                )}
+                {auth.user && auth.user.rol_id !== 3 && (
+                    <Link href={`/comics`} className='btn btn-primary mr-4 ml-4'>Volver al index</Link>
+                )}
+            </div>
+        </AppLayout>
     );
 }

@@ -3,7 +3,7 @@ import { BotonCategoriaCabecera } from "./ui/Cabecera/botonCategoriaCabecera"
 import Buscador from "./ui/Cabecera/Buscador";
 import ParteLogin from "./ui/Cabecera/ParteLogin";
 import { BotonCarrito } from "./ui/Cabecera/BotonCarrito";
-import { Link } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 
 interface Categoria {
     id: number;
@@ -15,6 +15,7 @@ interface Props {
 }
 
 export function Cabecera({categorias = []}:Props) {
+    const { auth } = usePage().props as any;
     const marvel = categorias.find(cat => cat.nombre.toLocaleLowerCase() === 'marvel');
     const dc = categorias.find(cat => cat.nombre.toLocaleLowerCase() === 'dc');
     const manga = categorias.find(cat => cat.nombre.toLocaleLowerCase() === 'manga');
@@ -28,7 +29,9 @@ export function Cabecera({categorias = []}:Props) {
                     <Icono></Icono>
                 </div>
                 <div className="ms-auto"><ParteLogin /></div>
-                <div className="mt-5 ml-3 mr-14 "><BotonCarrito /></div>
+                {auth?.user && (
+                    <div className="mt-5 ml-3 mr-14 "><BotonCarrito /></div>
+                )}
             </div>
             <div className="flex w-full h-12">
                 {marvel && (<BotonCategoriaCabecera nombre={marvel.nombre} href={`/categorias/${marvel.id}`} />)}

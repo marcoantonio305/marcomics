@@ -52,7 +52,7 @@ export default function miscomicsCompras({ user, compras, esAdmin }: {user: User
 
     return (
         <AppLayout>
-            <div className="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+            <div className="max-w-[90%] mx-auto py-10 sm:px-6 lg:px-8">
                 {(auth.user?.id === user.id || esAdmin) && (
                     <div className="space-y-8">
                         <h2 className="text-3xl font-extrabold text-pink-700 border-b-2 border-pink-100 pb-4">
