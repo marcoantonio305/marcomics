@@ -3,6 +3,7 @@ import { Link, router, usePage } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import ComicIndividual from '@/components/ui/Cuerpo/ComicIndividual';
 import SeccionRecomendaciones from '@/components/ui/Cuerpo/SeccionRecomendaciones';
+import { BotonBase } from '@/components/ui/Cuerpo/BotonBase';
 
 interface Editora {
     id: number;
@@ -55,15 +56,31 @@ export default function Show({categoria, comicsRecomendados = []}:Props) {
 ) : null}
             <div className="flex gap-4 mt-4">
             {auth.user?.rol_id === 1 && (
-                        <Link href={`/categorias/${categoria.id}/edit`} className='btn btn-secondary mr-4'>Editar categoría</Link>
-                        )}
+                        <BotonBase
+        onClick={() => router.visit(`/categorias/${categoria.id}/edit`)}
+                                    texto="Editar categoría"
+                                    colorFondo="bg-blue-600"
+                                    hoverFondo="hover:bg-white"
+                                    hoverTexto="hover:text-blue-600"
+                                    colorTexto="text-white"
+                                    borderClass="border-blue-700"
+                                    tamano="sm"
+                                    className="gap-2"
+                                />
+            )}
             {auth.user?.rol_id === 1 && (
-                <button 
+        
+        <BotonBase
         onClick={() => router.delete(`/categorias/${categoria.id}`)} 
-        className='btn btn-warning mr-4' 
-    >
-        Eliminar
-    </button>
+                                    texto="Eliminar categoría"
+                                    colorFondo="bg-red-600"
+                                    hoverFondo="hover:bg-white"
+                                    hoverTexto="hover:text-red-600"
+                                    colorTexto="text-white"
+                                    borderClass="border-red-700"
+                                    tamano="sm"
+                                    className="gap-2"
+                                />
             )}
             </div>
             <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6'>

@@ -2,6 +2,7 @@ import { useForm } from '@inertiajs/react';
 import React from 'react';
 import { Breadcrumb } from '@/components/ui/breadcrumb';
 import AppLayout from '@/layouts/app-layout';
+import { BotonBase } from '@/components/ui/Cuerpo/BotonBase';
 
 interface Categoria {
     id: number,
@@ -36,7 +37,7 @@ export default function Create({categoria}:Props) {
             <form onSubmit={submit} className='space-y-4'>
                 <div className='flex flex-col gap-2'>
                     <label htmlFor='nombre' className='text-sm font-medium'>Nombre de la categoría</label>
-                    <input id="nombre" type="text" className='rounded-md border border-gray-300 p-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700'
+                    <input id="nombre" type="text" className='rounded-md border border-gray-300 p-2 text-sm focus:border-blue-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700'
                         value={data.nombre} onChange={e => setData('nombre', e.target.value)}></input>
                 </div>
                 <div className="flex flex-col gap-2">
@@ -52,9 +53,17 @@ export default function Create({categoria}:Props) {
 </div>
 
                 <div className="md:col-span-2 mt-4">
-                    <button type='submit' className='w-full md:w-auto rounded-md bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600'>
-                        Editar categoría
-                    </button>
+                    <BotonBase
+                        texto="Editar Categoría"
+                        colorFondo="bg-blue-600"
+                        hoverFondo="hover:bg-white"
+                        hoverTexto='hover:text-blue-600'
+                        colorTexto="text-white"
+                        borderClass="border-blue-700"
+                        tamano="sm"
+                        className="gap-2"
+                        onClick={submit}
+                    />
                 </div>
             </form>
         </div>

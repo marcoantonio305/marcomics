@@ -2,6 +2,7 @@ import { useForm } from '@inertiajs/react';
 import { Breadcrumb } from '@/components/ui/breadcrumb';
 import React from 'react';
 import AppLayout from '@/layouts/app-layout';
+import { BotonBase } from '@/components/ui/Cuerpo/BotonBase';
 
 interface Autor {
     id: number;
@@ -209,7 +210,17 @@ export default function Edit({ comic, todos_los_autores, todas_las_categorias, t
     </div>
 </div>
 
-                    <button type='submit' className='btn btn-primary w-full mt-4'>Actualizar Cómic</button>
+                    <BotonBase
+                                                                texto="Actualizar Cómic"
+                                                                colorFondo="bg-blue-600"
+                                                                hoverFondo="hover:bg-white"
+                                                                hoverTexto='hover:text-blue-600'
+                                                                colorTexto="text-white"
+                                                                borderClass="border-blue-700"
+                                                                tamano="sm"
+                                                                className="gap-2"
+                                                                onClick={submit}
+                                                            />
                 </form>
             </div>
         </AppLayout>

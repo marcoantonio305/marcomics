@@ -189,6 +189,17 @@ class CompraController extends Controller
     //Recuperar el carrito de la sesión
     $carrito = session()->get('carrito', []);
     $user = Auth::user();
+    
+    $precomprasPasadasActivas = DB::table('comic_compra')
+        ->join('comics', 'comic_compra.comic_id', '=', 'comics.id')
+        ->join('compras', 'comic_compra.compra_id', '=', 'compras.id')
+        ->join('historial_compras', 'compras.id', '=', 'historial_compras.compra_id')
+        ->where('historial_compras.user_id', $user->id)
+        ->where('comics.lanzamiento', '>', now())
+        ->sum('comic_compra.cantidad');
+
+    $nuevasPrecompras = 0;
+
     //Se calcula el total real en el servidor
     $totalReal = 0;
     foreach ($carrito as $item) {
@@ -197,10 +208,18 @@ class CompraController extends Controller
         $comic = \App\Models\Comic::find($item['id']);
         
         $esPrecompra = $comic->lanzamiento > now();
+        if ($esPrecompra) {
+            $nuevasPrecompras += $item['cantidad'];
+        }
+
         if (!$esPrecompra && $comic->stock < $item['cantidad']) {
             return back()->with('error', "No hay stock suficiente de: " . $comic->titulo);
         }
         $totalReal += $comic->precio * $item['cantidad'];
+    }
+
+    if (($precomprasPasadasActivas + $nuevasPrecompras) > 5) {
+        return back()->with('error', "No puedes tener más de 5 cómics en precompra activos simultáneamente. Actualmente tienes {$precomprasPasadasActivas} activos en tus lanzamientos futuros.");
     }
 
     // En caso de que el carrito esté vacío o el comic no exista

@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, router, usePage } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import SeccionRecomendaciones from '@/components/ui/Cuerpo/SeccionRecomendaciones';
+import { BotonBase } from '@/components/ui/Cuerpo/BotonBase';
 
 interface Coleccion {
     id: number;
@@ -82,19 +83,130 @@ export default function Show({coleccion, comicsColeccion, comicsDisponible, comi
         <div className='p-8 flex flex-col'>
             <h1 className='text-4xl font-black text-blue-700'>{coleccion.nombre}</h1>
             <img className="w-64 h-96 object-contain mt-4" src={coleccion.imagen ? `/storage/${coleccion.imagen}` : '/img/default-category.png'} alt="Imagen de colección" />
+            
             <div className="flex gap-4 mt-4">
-            {auth.user?.rol_id === 1 && (
-                        <Link href={`/coleccions/${coleccion.id}/edit`} className='btn btn-secondary mr-4'>Editar colección</Link>
+                {auth.user?.rol_id === 1 && (
+                    <>
+                        <BotonBase
+                            onClick={() => router.visit(`/coleccions/${coleccion.id}/edit`)}
+                            texto="Editar colección"
+                            colorFondo="bg-blue-600" 
+                            hoverFondo="hover:bg-white"
+                            colorTexto="text-white"
+                            hoverTexto="hover:text-blue-600"
+                            borderClass="border border-blue-700"
+                            tamano="sm"
+                            className="gap-2"
+                        />
+
+                        <BotonBase
+                            onClick={() => router.delete(`/coleccions/${coleccion.id}`)}
+                            texto="Eliminar colección"
+                            colorFondo="bg-red-600" 
+                            hoverFondo="hover:bg-white"
+                            colorTexto="text-white"
+                            hoverTexto="hover:text-red-600"
+                            borderClass="border border-red-700"
+                            tamano="sm"
+                            className="gap-2"
+                        />
+
+                        <BotonBase
+                            onClick={() => router.visit(`/dashboard`)}
+                            texto="Volver al dashboard"
+                            colorFondo="bg-zinc-800" 
+                            hoverFondo="hover:bg-white"
+                            colorTexto="text-white"
+                            hoverTexto="hover:text-zinc-800"
+                            borderClass="border border-zinc-900"
+                            tamano="sm"
+                            className="gap-2"
+                        />
+                    </>
+                )}
+            </div>
+
+            <div className='flex flex-col gap-6 mt-6'>
+                <h1 className='text-gray-600 text-3xl font-bold'>Comics en la colección</h1>
+                <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6'>
+                {ComicsColeccion.length > 0 ? (
+                    ComicsColeccion.map(comic => (
+                    <div key={comic.id} className='flex flex-col gap-2'>
+                        <Link href={`/comics/${comic.id}`}><img className="w-32 h-48" src={comic.imagen ? `/storage/${comic.imagen}` : ''} alt="Imagen" /></Link>
+                        <h2 className='font-bold'>{comic.titulo}</h2>
+                        {comic.autors?.length > 0 ? (
+                            <p>
+                                {comic.autors.map(autor => autor.nombre).join(', ')}
+                            </p>
+                        ) : (<p className="font-bold italic text-gray-400">Anónimo</p>)}
+                        <p>{comic.lanzamiento}</p>
+                        <p>{comic.precio}</p>
+                        {auth.user?.rol_id === 1 && (
+                            <BotonBase
+                                onClick={() => eliminar(comic.id)}
+                                texto="Eliminar de colección"
+                                colorFondo="bg-yellow-600"
+                                hoverFondo="hover:bg-white"
+                                colorTexto="text-white"
+                                hoverTexto="hover:text-yellow-600"
+                                borderClass="border border-yellow-700"
+                                tamano="sm"
+                                className="w-60"
+                            />
                         )}
-            {auth.user?.rol_id === 1 && (
-                <button 
-        onClick={() => router.delete(`/coleccions/${coleccion.id}`)} 
-        className='btn btn-warning mr-4' 
-    >
-        Eliminar colección
-    </button>
-            )}
-            {/* {auth.user?.rol_id === 1 && (
+                    </div>
+                ))
+                ) : (
+                    <p className="text-xl font-bold italic text-gray-400">No hay comics en esta categoría.</p>
+                )}
+                </div>
+
+                {auth.user?.rol_id === 1 && (
+                    <>
+                        <h1 className='text-gray-500 text-3xl font-bold mt-6'>Comics disponibles</h1>
+                        <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6'>
+                        {ComicsDisponible.length > 0 ? (
+                            ComicsDisponible.map(comic => (
+                                <div key={comic.id} className='flex flex-col gap-2'>
+                                    <Link href={`/comics/${comic.id}`}><img className="w-32 h-48" src={comic.imagen ? `/storage/${comic.imagen}` : ''} alt="Imagen" /></Link>
+                                    <h2 className='font-bold'>{comic.titulo}</h2>
+                                    {comic.autors?.length > 0 ? (
+                                        <p>
+                                            {comic.autors.map(autor => autor.nombre).join(', ')}
+                                        </p>
+                                    ) : (<p className="font-bold italic text-gray-400">Anónimo</p>)}
+                                    <p>{comic.lanzamiento}</p>
+                                    <p>{comic.precio}€</p>
+                                    <BotonBase
+                                        onClick={() => anadir(comic.id)}
+                                        texto="Añadir a colección"
+                                        colorFondo="bg-cyan-500"
+                                        hoverFondo="hover:bg-white"
+                                        colorTexto="text-white"
+                                        hoverTexto="hover:text-cyan-500"
+                                        borderClass="border border-cyan-700"
+                                        tamano="sm"
+                                        className="w-50"
+                                    />
+                                </div>
+                            ))
+                        ) : (
+                            <p className="text-xl font-bold italic text-gray-400">No hay comics disponibles.</p>
+                        )}
+                        </div>
+                    </>
+                )}
+            </div>
+
+            <div className="mt-12">
+                <SeccionRecomendaciones comics={comicsRecomendados} />
+            </div>
+        </div>
+        </AppLayout>
+    )
+}
+
+{/* {auth.user?.rol_id === 1 && (
                         <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg flex items-center gap-4">
                             <p className="font-bold text-sm text-blue-800">Escoger su posición en el Inicio:</p>
                             <div className="flex gap-1">
@@ -122,69 +234,3 @@ export default function Show({coleccion, comicsColeccion, comicsDisponible, comi
                             )}
                         </div>
                     )} */}
-            </div>
-            <div className='flex flex-col gap-6 mt-6'>
-                <h1 className='text-gray-600 text-3xl font-bold'>Comics en la colección</h1>
-                <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6'>
-                {ComicsColeccion.length > 0 ? (
-                    ComicsColeccion.map(comic => (
-                    <div key={comic.id} className='flex flex-col gap-2'>
-                        <Link href={`/comics/${comic.id}`}><img className="w-32 h-48" src={comic.imagen ? `/storage/${comic.imagen}` : ''} alt="Imagen" /></Link>
-                        <h2 className='font-bold'>{comic.titulo}</h2>
-                        {comic.autors?.length > 0 ? (
-                            <p>
-                            {comic.autors.map(autor => autor.nombre).join(', ')}
-                                </p>
-                        ) : (<p className="font-bold italic text-gray-400">Anónimo</p>)}
-                        <p>{comic.lanzamiento}</p>
-                        <p>{comic.precio}</p>
-                        {auth.user?.rol_id === 1 && (
-                            <button className='btn bg-yellow-500 text-black-500 w-50' onClick={() => eliminar(comic.id)}>
-                                Eliminar de colección
-                            </button>
-                        )}
-                    </div>
-                    
-                ))
-                ) : (
-                    <p className="text-xl font-bold italic text-gray-400">No hay comics en esta categoría.</p>
-                )
-            }
-            </div>
-
-            {auth.user?.rol_id === 1 && (
-                <>
-                    <h1 className='text-gray-500 text-3xl font-bold mt-6'>Comics disponibles</h1>
-                    <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6'>
-                    {ComicsDisponible.length > 0 ? (
-                        ComicsDisponible.map(comic => (
-                            <div key={comic.id} className='flex flex-col gap-2'>
-                                <Link href={`/comics/${comic.id}`}><img className="w-32 h-48" src={comic.imagen ? `/storage/${comic.imagen}` : ''} alt="Imagen" /></Link>
-                                <h2 className='font-bold'>{comic.titulo}</h2>
-                                {comic.autors?.length > 0 ? (
-                                    <p>
-                                    {comic.autors.map(autor => autor.nombre).join(', ')}
-                                        </p>
-                                ) : (<p className="font-bold italic text-gray-400">Anónimo</p>)}
-                                <p>{comic.lanzamiento}</p>
-                                <p>{comic.precio}€</p>
-                                <button className='btn bg-blue-400 text-black-500 w-50' onClick={() => anadir(comic.id)}>
-                                    Añadir a colección
-                                </button>
-                            </div>
-                        ))
-                    ) : (
-                        <p className="text-xl font-bold italic text-gray-400">No hay comics disponibles.</p>
-                    )}
-                    </div>
-                </>
-            )}
-            </div>
-
-            <div className="mt-12">
-                <SeccionRecomendaciones comics={comicsRecomendados} />
-            </div>
-        </div>
-        </AppLayout>
-    )
-}

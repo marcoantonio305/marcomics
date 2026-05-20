@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, router, usePage } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
+import { BotonBase } from '@/components/ui/Cuerpo/BotonBase';
 
 interface Coleccion {
     id: number;
@@ -164,7 +165,7 @@ export default function Index({ coleccions }: Props) {
 
                                 <div className="h-6 w-[2px] bg-black mx-2 hidden md:block"></div>
 
-                                <Link href={`/coleccions/${coleccion.id}/edit`} className="btn bg-purple-700 text-white font-bold text-xs px-3 py-2 border-2 hover:bg-green-700">
+                                <Link href={`/coleccions/${coleccion.id}/edit`} className="btn bg-purple-700 text-white font-bold text-xs px-3 py-2 border-2 hover:bg-purple-800">
                                     Editar
                                 </Link>
 
@@ -181,16 +182,31 @@ export default function Index({ coleccions }: Props) {
 <div className="flex flex-row mb-4">
             <div className="mt-4 ml-4 mr-2">
                 {auth.user?.rol_id === 1 && (
-                <Link href="/coleccions/create" className="btn btn-primary">
-                    Añadir Colección
-                </Link>
-                )}
-            </div>
+                <BotonBase
+                    texto="Añadir Colección"
+                                    colorFondo="bg-indigo-600" 
+                                                                hoverFondo="hover:bg-white"
+                                                                hoverTexto="hover:text-indigo-500"
+                                                                colorTexto="text-white"
+                                                                borderClass="border-indigo-700"
+                                                                tamano="sm"
+                                                                className="gap-2"
+                                                                onClick={() => router.visit(`/coleccions/create`)}
+                                                            />)}
+                                                            </div>
             <div className="mt-4 ml-4">
                 {auth.user?.rol_id === 1 && (
-                <Link href="dashboard" className="btn btn-success">
-                    Volver al dashboard
-                </Link>
+                <BotonBase
+                    onClick={() => router.visit(`/dashboard`)}
+                    texto="Volver al dashboard"
+                    colorFondo="bg-zinc-800" 
+                    hoverFondo="hover:bg-white"
+                    colorTexto="text-white"
+                    hoverTexto="hover:text-zinc-800"
+                    borderClass="border border-zinc-900"
+                    tamano="sm"
+                    className="gap-2"
+                />
                 )}
             </div>
             </div>

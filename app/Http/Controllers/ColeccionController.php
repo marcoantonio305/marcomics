@@ -155,7 +155,7 @@ class ColeccionController extends Controller
             Storage::disk('public')->delete($coleccion->imagen);
         }
         $coleccion->delete();
-        return back()->with('success', 'Colección Talkada exitosamente.');
+        return redirect()->route('coleccions.index')->with('success', 'Colección eliminada exitosamente.');
     }
 
     public function anadirComicAColeccion(Request $request, Coleccion $coleccion, Comic $comic)

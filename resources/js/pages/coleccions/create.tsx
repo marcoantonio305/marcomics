@@ -3,6 +3,7 @@ import React from 'react';
 import { Breadcrumb } from '@/components/ui/breadcrumb';
 import AppLayout from '@/layouts/app-layout';
 import InputError from '@/components/input-error';
+import { BotonBase } from '@/components/ui/Cuerpo/BotonBase';
 
 interface FormData {
     nombre: string;
@@ -45,9 +46,17 @@ export default function Create({coleccion}:Props) {
                         </div>
                 </div>
                 <div className="md:col-span-2 mt-4">
-                    <button type='submit' className='w-full md:w-auto rounded-md bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600'>
-                        {processing ? 'Guardando...' : 'Añadir colección'}
-                    </button>
+                    <BotonBase
+                                            texto={processing ? 'Guardando...' : 'Añadir colección'}
+                                            colorFondo="bg-blue-600"
+                                            hoverFondo="hover:bg-white"
+                                            hoverTexto='hover:text-blue-600'
+                                            colorTexto="text-white"
+                                            borderClass="border-blue-700"
+                                            tamano="sm"
+                                            className="gap-2"
+                                            onClick={submit}
+                                        />
                 </div>
             </form>
         </div>

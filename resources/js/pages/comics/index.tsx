@@ -117,7 +117,7 @@ export default function Index({ comics, titulo} : Props) {
                                                                     alert('Por favor, ingresa una cantidad válida.');
                                                                 }
                                                             }} className="btn btn-ghost btn-xs text-success w-30 mb-3">Añadir al stock</button>
-                                                            <input type="number" min={1} className="border border-black input input-bordered input-sm ml-2 w-10 ml-11 mb-3" id={`anadirCantidad-${comic.id}`} />
+                                                            <input type="number" min={1} className="border border-black input input-bordered input-sm ml-2 w-20 ml-11 mb-3" id={`anadirCantidad-${comic.id}`} />
                                                         </div>
                                                     </>
                                                 )}

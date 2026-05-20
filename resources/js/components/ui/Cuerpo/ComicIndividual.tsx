@@ -97,7 +97,7 @@ export default function ComicIndividual({comic}:Props) {
                                     hoverFondo="hover:bg-[#FDF5E6]"
                                     hoverTexto="hover:text-blue-600"
                                     colorTexto="text-white"
-                                    borderClass="border-black"
+                                    borderClass="border-blue-700"
                                     tamano="w-56 h-10 text-base"
                                     className="gap-2"
                                     onClick={anadir}
@@ -110,7 +110,7 @@ export default function ComicIndividual({comic}:Props) {
                                     hoverFondo="hover:bg-[#FDF5E6]"
                                     hoverTexto="hover:text-green-600"
                                     colorTexto="text-white"
-                                    borderClass="border-black"
+                                    borderClass="border-green-700"
                                     tamano="w-56 h-10 text-base"
                                     className="gap-2"
                                     onClick={anadir}

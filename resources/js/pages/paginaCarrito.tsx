@@ -147,8 +147,7 @@ const manejarPago = async () => {
                 <h2 className="text-3xl font-bold text-gray-900 mt-2">
                     Total: <span className="text-3xl font-bold">{carritoTotal}€</span>
                 </h2>
-                {/* 
-                <p className="text-[10px] text-gray-400 italic mt-1">
+                {/* <p className="text-[10px] text-gray-400 italic mt-1">
                     * El total incluye IVA del 21%
                 </p>*/}
             </div>
