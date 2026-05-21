@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, router, usePage } from '@inertiajs/react';
 
 import AppLayout from '@/layouts/app-layout';
+import { BotonBase } from '@/components/ui/Cuerpo/BotonBase';
 
 interface User {
     id: number;
@@ -59,34 +60,74 @@ export default function Index({ users }: Props) {
                 {!user.deleted_at && (
                     <>
                         {user.rol_id === 3 && (
-                            <button onClick={() => {
+                            <BotonBase
+                                                                                                onClick={() => {
                                 if (confirm('¿Estás seguro de querer cambiar el rol de este usuario a Vendedor?')) {
                                     router.patch(`/users/${user.id}/modificar-rol`, { rol_id: 2 })
                                 }
-                            }} className="btn btn-ghost btn-xs text-info">Cambiar a Vendedor</button>
+                            }}
+                                                                                                texto="Cambiar a Vendedor"
+                                                                                                colorFondo="bg-cyan-500" 
+                                                                                                hoverFondo="hover:bg-white"
+                                                                                                colorTexto="text-white"
+                                                                                                hoverTexto="hover:text-cyan-500"
+                                                                                                borderClass="border border-cyan-600"
+                                                                                                tamano="xs"
+                                                                                                className="gap-2"
+                                                                                            />
                         )}
                         {user.rol_id === 2 && (
-                            <button onClick={() => {
+                            <BotonBase
+                                                                                                onClick={() => {
                                 if (confirm('¿Estás seguro de querer cambiar el rol de este usuario a Usuario?')) {
                                     router.patch(`/users/${user.id}/modificar-rol`, { rol_id: 3 })
                                 }
-                            }} className="btn btn-ghost btn-xs text-info">Cambiar a Usuario</button>
+                            }}
+                                                                                                texto="Cambiar a Usuario"
+                                                                                                colorFondo="bg-orange-500" 
+                                                                                                hoverFondo="hover:bg-white"
+                                                                                                colorTexto="text-white"
+                                                                                                hoverTexto="hover:text-orange-500"
+                                                                                                borderClass="border border-orange-600"
+                                                                                                tamano="xs"
+                                                                                                className="gap-2"
+                                                                                            />
                         )}
                     </>
                 )}
                 {user.deleted_at ? (
-                    <button onClick={() => {
+                    <BotonBase
+                                                                                                onClick={() => {
                         if (confirm('¿Estás seguro de querer restaurar este usuario?')) {
                             router.patch(`/users/${user.id}/restore`)
                         }
-                    }} className="btn btn-ghost btn-xs text-success">Restaurar</button>
+                    }}
+                                                                                                texto="Restaurar"
+                                                                                                colorFondo="bg-green-500" 
+                                                                                                hoverFondo="hover:bg-white"
+                                                                                                colorTexto="text-white"
+                                                                                                hoverTexto="hover:text-green-500"
+                                                                                                borderClass="border border-green-600"
+                                                                                                tamano="xs"
+                                                                                                className="gap-2"
+                                                                                            />
                 ) : (
                     auth.user.id !== user.id && (
-                        <button onClick={() => {
+                        <BotonBase
+                                                                                                onClick={() => {
                             if (confirm('¿Estás seguro de querer eliminar este usuario?')) {
                                 router.delete(`/users/${user.id}`)
                             }
-                        }} className="btn btn-ghost btn-xs text-error">Eliminar</button>
+                        }}
+                                                                                                texto="Eliminar"
+                                                                                                colorFondo="bg-red-500" 
+                                                                                                hoverFondo="hover:bg-white"
+                                                                                                colorTexto="text-white"
+                                                                                                hoverTexto="hover:text-red-500"
+                                                                                                borderClass="border border-red-600"
+                                                                                                tamano="xs"
+                                                                                                className="gap-2"
+                                                                                            />
                     )
                 )}
             </>
@@ -111,11 +152,19 @@ export default function Index({ users }: Props) {
             Añadir Usuario
             </Link>
         </div>*/}
-        <div className="mt-4">
+        <div className="mt-4 ml-5 mt-3">
             {auth.user?.rol_id === 1 && (
-                        <Link href="dashboard" className="btn btn-success">
-                            Volver al dashboard
-                        </Link>
+                        <BotonBase
+                                                                                                onClick={() => router.visit(`/dashboard`)}
+                                                                                                texto="Volver al dashboard"
+                                                                                                colorFondo="bg-zinc-800" 
+                                                                                                hoverFondo="hover:bg-white"
+                                                                                                colorTexto="text-white"
+                                                                                                hoverTexto="hover:text-zinc-800"
+                                                                                                borderClass="border border-zinc-900"
+                                                                                                tamano="sm"
+                                                                                                className="gap-2"
+                                                                                            />
             )}
                     </div>
     </div>

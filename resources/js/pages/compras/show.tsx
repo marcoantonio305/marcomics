@@ -1,5 +1,6 @@
+import { BotonBase } from "@/components/ui/Cuerpo/BotonBase";
 import AppLayout from "@/layouts/app-layout";
-import { Link } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 
 interface HistorialCompra {
     id: number;
@@ -94,19 +95,37 @@ export default function Show({ compra, user, comics }: { compra: Compra; user: U
                         <p className="text-xl"><strong>Fecha de compra:</strong> {new Date(compra.created_at).toLocaleDateString()}</p>
                         <p className="text-xl"><strong>Fecha de eliminación:</strong> {compra.deleted_at ? new Date(compra.deleted_at).toLocaleDateString() : 'N/A'}</p>
                     </div>
-                    <div className="flex">
+                    <div className="flex items-center gap-7 mb-6 ml-6 flex-wrap"> 
                         <a 
-    href={`/compras/${compra.id}/pdf`} 
-    className="btn bg-red-500 hover:bg-red-600 text-white ml-4 mb-4 w-55 h-10 p-2 flex items-center justify-center"
->
-    Descargar PDF de la compra
-</a>
-                        <Link href="/compras" className="btn btn-primary ml-4 mb-4 w-55 h-10">
-                            Volver a la lista de compras
-                        </Link>
-                        <Link href="/dashboard" className="btn btn-secondary ml-4 mb-4 w-55 h-10">
-                            Volver al dashboard
-                    </Link>
+                            href={`/compras/${compra.id}/pdf`} 
+                            className="font-bold rounded transition-all duration-200 transform hover:scale-110 border-3 flex items-center justify-center w-55 h-11 text-sm bg-red-700 text-white hover:bg-white hover:text-red-700 border-red-800 shadow-sm"
+                        >
+                            <div className="flex items-center justify-center gap-2 w-full h-full">
+                                <span>Descargar PDF de la compra</span>
+                            </div>
+                        </a>
+                        <BotonBase
+                                                                onClick={() => router.visit(`/compras`)}
+                                                                texto="Regresar al historial de compras"
+                                                                colorFondo="bg-pink-700" 
+                                                                hoverFondo="hover:bg-white"
+                                                                colorTexto="text-white"
+                                                                hoverTexto="hover:text-pink-700"
+                                                                borderClass="border-3 border-pink-800"
+                                                                tamano="sm"
+                                                                className="!w-auto px-6 whitespace-nowrap" 
+                                                            />
+                        <BotonBase
+                                                                onClick={() => router.visit(`/dashboard`)}
+                                                                texto="Volver al dashboard"
+                                                                colorFondo="bg-zinc-800" 
+                                                                hoverFondo="hover:bg-white"
+                                                                colorTexto="text-white"
+                                                                hoverTexto="hover:text-zinc-800"
+                                                                borderClass="border-3 border-zinc-900"
+                                                                tamano="sm"
+                                                                className="gap-2"
+                                                            />
                     </div>
                 </div>
             </div>

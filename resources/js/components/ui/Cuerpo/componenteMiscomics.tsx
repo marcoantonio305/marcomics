@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from '@inertiajs/react';
 
 // Definimos las interfaces para que TypeScript no de errores
 interface Comic {
@@ -65,14 +66,18 @@ export default function ComponenteMiscomics({ compra }: Props) {
                             {compra.comics?.map((comic) => (
                                 <tr key={comic.id}>
                                     <td className="px-4 py-3">
-                                        <img 
-                                            src={`/storage/${comic.imagen}`} 
-                                            alt={comic.titulo} 
-                                            className="w-16 h-24 object-cover rounded shadow-sm"
-                                        />
+                                        <Link href={`/comics/${comic.id}`} className="hover:opacity-80 hover:scale-120 transition-opacity transition-transform inline-block">
+                                            <img 
+                                                src={`/storage/${comic.imagen}`} 
+                                                alt={comic.titulo} 
+                                                className="w-16 h-24 object-cover rounded shadow-sm"
+                                            />
+                                        </Link>
                                     </td>
                                     <td className="px-4 py-3">
-                                        <div className="text-sm font-bold text-gray-900">{comic.titulo}</div>
+                                        <Link href={`/comics/${comic.id}`} className="text-sm font-bold text-blue-600 hover:underline transition-colors block">
+                                            {comic.titulo}
+                                        </Link>
                                         <div className="text-xs text-gray-500">Cod: {comic.codigo_comic}</div>
                                         <div className="text-xs text-blue-600">{Number(comic.precio).toFixed(2)}€</div>
                                     </td>

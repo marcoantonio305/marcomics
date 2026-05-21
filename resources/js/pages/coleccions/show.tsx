@@ -82,7 +82,9 @@ export default function Show({coleccion, comicsColeccion, comicsDisponible, comi
         <AppLayout>
         <div className='p-8 flex flex-col'>
             <h1 className='text-4xl font-black text-blue-700'>{coleccion.nombre}</h1>
-            <img className="w-64 h-96 object-contain mt-4" src={coleccion.imagen ? `/storage/${coleccion.imagen}` : '/img/default-category.png'} alt="Imagen de colección" />
+            {coleccion.imagen ? (
+                <img className="w-64 h-96 object-contain mt-4" src={`/storage/${coleccion.imagen}`} alt="Imagen de colección" />
+            ) : null}
             
             <div className="flex gap-4 mt-4">
                 {auth.user?.rol_id === 1 && (
@@ -131,8 +133,8 @@ export default function Show({coleccion, comicsColeccion, comicsDisponible, comi
                 <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6'>
                 {ComicsColeccion.length > 0 ? (
                     ComicsColeccion.map(comic => (
-                    <div key={comic.id} className='flex flex-col gap-2'>
-                        <Link href={`/comics/${comic.id}`}><img className="w-32 h-48" src={comic.imagen ? `/storage/${comic.imagen}` : ''} alt="Imagen" /></Link>
+                    <div key={comic.id} className='flex flex-col items-center text-center gap-2'>
+                        <Link href={`/comics/${comic.id}`}><img className="w-32 h-48 object-cover rounded shadow-sm" src={comic.imagen ? `/storage/${comic.imagen}` : ''} alt="Imagen" /></Link>
                         <h2 className='font-bold'>{comic.titulo}</h2>
                         {comic.autors?.length > 0 ? (
                             <p>
@@ -149,7 +151,7 @@ export default function Show({coleccion, comicsColeccion, comicsDisponible, comi
                                 hoverFondo="hover:bg-white"
                                 colorTexto="text-white"
                                 hoverTexto="hover:text-yellow-600"
-                                borderClass="border border-yellow-700"
+                                borderClass="border-yellow-700"
                                 tamano="sm"
                                 className="w-60"
                             />
@@ -167,8 +169,8 @@ export default function Show({coleccion, comicsColeccion, comicsDisponible, comi
                         <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6'>
                         {ComicsDisponible.length > 0 ? (
                             ComicsDisponible.map(comic => (
-                                <div key={comic.id} className='flex flex-col gap-2'>
-                                    <Link href={`/comics/${comic.id}`}><img className="w-32 h-48" src={comic.imagen ? `/storage/${comic.imagen}` : ''} alt="Imagen" /></Link>
+                                <div key={comic.id} className='flex flex-col items-center text-center gap-2'>
+                                    <Link href={`/comics/${comic.id}`}><img className="w-32 h-48 object-cover rounded shadow-sm" src={comic.imagen ? `/storage/${comic.imagen}` : ''} alt="Imagen" /></Link>
                                     <h2 className='font-bold'>{comic.titulo}</h2>
                                     {comic.autors?.length > 0 ? (
                                         <p>
@@ -184,7 +186,7 @@ export default function Show({coleccion, comicsColeccion, comicsDisponible, comi
                                         hoverFondo="hover:bg-white"
                                         colorTexto="text-white"
                                         hoverTexto="hover:text-cyan-500"
-                                        borderClass="border border-cyan-700"
+                                        borderClass="border-cyan-600"
                                         tamano="sm"
                                         className="w-50"
                                     />

@@ -1,3 +1,4 @@
+import { BotonBase } from '@/components/ui/Cuerpo/BotonBase';
 import AppLayout from '@/layouts/app-layout';
 import appLayout from '@/layouts/app-layout';
 import {useForm}from '@inertiajs/react';
@@ -80,9 +81,17 @@ export default function Edit({user}: {user: User}) {
     />
     {errors.foto_perfil && <div className="text-red-500">{errors.foto_perfil}</div>}
                     </div>
-                    <button type="submit" disabled={processing} className="px-4 py-2 bg-blue-500 mt-3 text-white rounded">
-                        Guardar Cambios
-                    </button>
+                    <BotonBase
+                                                                                    texto="Guardar cambios"
+                                                                                    colorFondo="bg-blue-600"
+                                                                                    hoverFondo="hover:bg-white"
+                                                                                    hoverTexto='hover:text-blue-600'
+                                                                                    colorTexto="text-white"
+                                                                                    borderClass="border-blue-700"
+                                                                                    tamano="sm"
+                                                                                    className="gap-2"
+                                                                                    onClick={submit}
+                                                                                />
                 </form>
             </div>
         </AppLayout>

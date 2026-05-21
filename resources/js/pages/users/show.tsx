@@ -76,7 +76,7 @@ export default function Show({ user, compras, esAdmin, suscripciones = [] }: {us
             <div className="div-8 ml-8">
                 <div className="text-4xl font-bold mb-6 mt-5 text-blue-600">Perfil de {user.name} 
                     {auth.user?.id === user.id && (
-                    <Link href={`/users/${user.id}/edit`} className="ml-4 inline-flex items-center px-3 py-1.5 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors">
+                    <Link href={`/users/${user.id}/edit`} className="ml-4 inline-flex items-center px-3 py-1.5 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-white hover:text-blue-600 border-2 border-blue-600 transition-colors">
                             <Settings className="mr-2" />
                             Configurar perfil
                         </Link>

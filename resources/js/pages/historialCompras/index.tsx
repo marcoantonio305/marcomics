@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, router } from '@inertiajs/react';
 import appLayout from '@/layouts/app-layout';
 import AppLayout from '@/layouts/app-layout';
+import { BotonBase } from '@/components/ui/Cuerpo/BotonBase';
 
 interface HistorialCompra {
     id: number;
@@ -112,9 +113,29 @@ export default function Index({ historialCompras, users, compras, allComics, fil
                             </div>
                         </div>
 
-                        <div className="lg:col-span-3 flex gap-2 justify-end">
-                            <button onClick={handleFilter} className="btn bg-purple-600 hover:bg-purple-700 text-white px-8 border-none">Filtrar Resultados</button>
-                            <button onClick={handleReset} className="btn bg-gray-200 hover:bg-gray-300 text-gray-700 border-none">Limpiar Filtros</button>
+                        <div className="lg:col-span-3 flex gap-6 justify-end">
+                            <BotonBase
+                                onClick={handleFilter}
+                                texto="Filtrar Resultados"
+                                colorFondo="bg-purple-600"
+                                hoverFondo="hover:bg-white"
+                                colorTexto="text-white"
+                                hoverTexto="hover:text-purple-600"
+                                borderClass="border-3 border-purple-700"
+                                tamano="md"
+                                className="!w-auto px-8"
+                            />
+                            <BotonBase
+                                onClick={handleReset}
+                                texto="Limpiar Filtros"
+                                colorFondo="bg-gray-200"
+                                hoverFondo="hover:bg-gray-700"
+                                colorTexto="text-gray-700"
+                                hoverTexto="hover:text-gray-300"
+                                borderClass="border-3 border-gray-300"
+                                tamano="md"
+                                className="!w-auto px-6"
+                            />
                         </div>
                     </div>
                 </div>
@@ -164,25 +185,44 @@ export default function Index({ historialCompras, users, compras, allComics, fil
                                                         <td>{historial.compra ? `${Number(historial.compra.total).toFixed(2)}€` : 'N/A'}</td>
                                                         <td>{historial.compra ? new Date(historial.compra.created_at).toLocaleDateString() : 'N/A'}</td>
                                                         <td>
-                                                            <Link href={`/compras/${historial.compra_id}`} className="btn btn-sm bg-yellow-600 hover:bg-yellow-700 text-white">
-                                                                Detalles
-                                                            </Link>
-                                                            <Link 
-                                                                href={`/historialCompras/${historial.id}`} 
-                                                                method="delete" 
-                                                                as="button" 
-                                                                className="btn btn-sm bg-red-600 hover:bg-red-800 text-white ml-3"
-                                                            >
-                                                                Eliminar
-                                                            </Link>
-                                                            <a 
-        href={`/compras/${historial.compra_id}/pdf`}
-        target="_blank" 
-        rel="noopener noreferrer"
-        className="btn btn-sm bg-red-800 hover:bg-red-900 text-white ml-3"
-    >
-        Generar PDF
-    </a>
+                                                            <div className="flex items-center gap-2">
+                                                                <BotonBase
+                                                                    onClick={() => router.visit(`/compras/${historial.compra_id}`)}
+                                                                    texto="Detalles"
+                                                                    colorFondo="bg-yellow-600"
+                                                                    hoverFondo="hover:bg-white"
+                                                                    colorTexto="text-white"
+                                                                    hoverTexto="hover:text-yellow-600"
+                                                                    borderClass="border-3 border-yellow-700"
+                                                                    tamano="xs"
+                                                                    className="py-1 px-3 text-xs !w-auto !h-auto"
+                                                                />
+                                                                <BotonBase
+                                                                    onClick={() => {
+                                                                        if (confirm('¿Estás seguro de que deseas eliminar este historial?')) {
+                                                                            router.delete(`/historialCompras/${historial.id}`);
+                                                                        }
+                                                                    }}
+                                                                    texto="Eliminar"
+                                                                    colorFondo="bg-red-600"
+                                                                    hoverFondo="hover:bg-white"
+                                                                    colorTexto="text-white"
+                                                                    hoverTexto="hover:text-red-600"
+                                                                    borderClass="border-3 border-red-700"
+                                                                    tamano="xs"
+                                                                    className="py-1 px-3 text-xs !w-auto !h-auto"
+                                                                />
+                                                                <a 
+                                                                    href={`/compras/${historial.compra_id}/pdf`}
+                                                                    target="_blank" 
+                                                                    rel="noopener noreferrer"
+                                                                    className="font-bold rounded transition-all duration-200 transform hover:scale-110 border-3 flex items-center justify-center text-xs py-1 px-3 !w-auto !h-auto bg-red-800 text-white hover:bg-white hover:text-red-800 border-red-900 shadow-sm"
+                                                                >
+                                                                    <div className="flex items-center justify-center gap-2 w-full h-full">
+                                                                        <span>Generar PDF</span>
+                                                                    </div>
+                                                                </a>
+                                                            </div>
                                                             
                                                         </td>
                                                     </tr>

@@ -47,13 +47,13 @@ export default function Show({categoria, comicsRecomendados = []}:Props) {
         <AppLayout>
         <div className='p-8 flex flex-col'>
             <h1 className='text-4xl font-black text-blue-700'>{categoria.nombre}</h1>
-            {auth.user?.rol_id === 1 ? (
-    <img 
-        className="w-64 h-96 object-contain mt-4" 
-        src={categoria.imagen ? `/storage/${categoria.imagen}` : '/img/default-category.png'} 
-        alt="Imagen de categoría" 
-    />
-) : null}
+            {auth.user?.rol_id === 1 && categoria.imagen ? (
+                <img 
+                    className="w-64 h-96 object-contain mt-4" 
+                    src={`/storage/${categoria.imagen}`} 
+                    alt="Imagen de categoría" 
+                />
+            ) : null}
             <div className="flex gap-4 mt-4">
             {auth.user?.rol_id === 1 && (
                         <BotonBase

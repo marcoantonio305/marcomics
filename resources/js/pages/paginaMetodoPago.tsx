@@ -24,9 +24,53 @@ const [direccion, setDireccion] = useState(auth.user.direccion || '');
 const [ciudad, setCiudad] = useState('');
 const [cp, setCp] = useState('');
 
+    const [errores, setErrores] = useState<{ [key: string]: string }>({});
+
     const guardarTarjeta = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!stripe || !elements) return;
+
+
+        const nuevosErrores: { [key: string]: string } = {};
+
+        const regexNombre = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ']+(?:\s+[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ']+(?:\s+[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ']+)*)+$/;
+        if (!regexNombre.test(nombreTitular.trim())) {
+            nuevosErrores.nombreTitular = 'Introduce tu nombre y apellidos.';
+        }
+
+        const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!regexEmail.test(emailFacturacion.trim())) {
+            nuevosErrores.emailFacturacion = 'Introduce un correo electrónico válido.';
+        }
+
+        const regexTelefono = /^(?:\+|00)?(?:[0-9\s.-]){7,15}$/;
+        if (!regexTelefono.test(telefono.trim())) {
+            nuevosErrores.telefono = 'Número no válido. Debe contener entre 7 y 15 números.';
+        }
+
+        if (direccion.trim().length < 5) {
+            nuevosErrores.direccion = 'La dirección es demasiado corta.';
+        }
+
+        const regexCiudad = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s.-]{2,50}$/;
+        if (!regexCiudad.test(ciudad.trim())) {
+            nuevosErrores.ciudad = 'Introduce un nombre de ciudad válido.';
+        }
+
+        const regexCp = /^[0-9a-zA-Z\s-]{3,10}$/;
+        if (!regexCp.test(cp.trim())) {
+            nuevosErrores.cp = 'Código postal no válido.';
+        }
+
+
+        if (Object.keys(nuevosErrores).length > 0) {
+            setErrores(nuevosErrores);
+            return;
+        }
+
+        setErrores({});
+
+
         setProcesando(true);
 
         const cardElement = elements.getElement(CardElement);
@@ -70,40 +114,46 @@ const [cp, setCp] = useState('');
             <form onSubmit={guardarTarjeta} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-gray-700">Nombre completo del Titular</label>
-                    <input type="text" required className="w-full mt-1 p-2 border rounded-md" 
+                    <input type="text" required className={`w-full mt-1 p-2 border rounded-md ${errores.nombreTitular ? 'border-red-500 bg-red-50' : 'border-gray-300'}`} 
                            placeholder="Paco Sánchez Rivera"
                            value={nombreTitular} onChange={e => setNombreTitular(e.target.value)} />
+                    {errores.nombreTitular && <span className="text-xs font-semibold text-red-600 mt-1 block">{errores.nombreTitular}</span>}
                 </div>
 
                 <div className="md:col-span-1">
                     <label className="block text-sm font-medium text-gray-700">Email de Facturación</label>
-                    <input type="email" required className="w-full mt-1 p-2 border rounded-md" 
+                    <input type="email" required className={`w-full mt-1 p-2 border rounded-md ${errores.emailFacturacion ? 'border-red-500 bg-red-50' : 'border-gray-300'}`} 
                            placeholder="ejemplo@email.com"
                            value={emailFacturacion} onChange={e => setEmailFacturacion(e.target.value)} />
+                    {errores.emailFacturacion && <span className="text-xs font-semibold text-red-600 mt-1 block">{errores.emailFacturacion}</span>}
                 </div>
 
                 <div className="md:col-span-1">
                     <label className="block text-sm font-medium text-gray-700">Teléfono de contacto</label>
-                    <input type="text" placeholder='123 456 789' required className="w-full mt-1 p-2 border rounded-md" 
+                    <input type="text" placeholder='123 456 789' required className={`w-full mt-1 p-2 border rounded-md ${errores.telefono ? 'border-red-500 bg-red-50' : 'border-gray-300'}`} 
                            value={telefono} onChange={e => setTelefono(e.target.value)} />
+                    {errores.telefono && <span className="text-xs font-semibold text-red-600 mt-1 block">{errores.telefono}</span>}
                 </div>
 
                 <div className="md:col-span-2 mt-2">
                     <label className="block text-sm font-medium text-gray-700">Dirección de la Tarjeta</label>
-                    <input type="text" required className="w-full mt-1 p-2 border rounded-md" 
+                    <input type="text" required className={`w-full mt-1 p-2 border rounded-md ${errores.direccion ? 'border-red-500 bg-red-50' : 'border-gray-300'}`} 
                            placeholder="Calle patata S/N"
                            value={direccion} onChange={e => setDireccion(e.target.value)} />
+                    {errores.direccion && <span className="text-xs font-semibold text-red-600 mt-1 block">{errores.direccion}</span>}
                 </div>
 
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Ciudad</label>
-                    <input type="text" placeholder='Sanlúcar de Barrameda' required className="w-full mt-1 p-2 border rounded-md" 
+                    <input type="text" placeholder='Sanlúcar de Barrameda' required className={`w-full mt-1 p-2 border rounded-md ${errores.ciudad ? 'border-red-500 bg-red-50' : 'border-gray-300'}`} 
                            value={ciudad} onChange={e => setCiudad(e.target.value)} />
+                    {errores.ciudad && <span className="text-xs font-semibold text-red-600 mt-1 block">{errores.ciudad}</span>}
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Código Postal</label>
-                    <input type="text" placeholder='12345' required className="w-full mt-1 p-2 border rounded-md" 
+                    <input type="text" placeholder='12345' required className={`w-full mt-1 p-2 border rounded-md ${errores.cp ? 'border-red-500 bg-red-50' : 'border-gray-300'}`} 
                            value={cp} onChange={e => setCp(e.target.value)} />
+                    {errores.cp && <span className="text-xs font-semibold text-red-600 mt-1 block">{errores.cp}</span>}
                 </div>
 
                 <div className="md:col-span-2 mt-6 p-5 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">

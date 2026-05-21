@@ -28,7 +28,7 @@ export default function Dashboard({auth}: { auth: any }) {
                         href="/inicio"
                         className="group flex flex-col items-center text-center transition-transform hover:scale-105"
                     >
-                        <div className="mb-4 flex h-24 w-24 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 group-hover:bg-blue-50 dark:bg-neutral-800 dark:ring-neutral-700">
+                        <div className="mb-4 flex h-24 w-24 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 group-hover:bg-yellow-50 dark:bg-neutral-800 dark:ring-neutral-700">
                             <PlayIcon className="size-12 text-yellow-600" />
                         </div>
                         <h3 className="text-md font-semibold text-gray-900 dark:text-white">Inicio</h3>
@@ -58,7 +58,7 @@ export default function Dashboard({auth}: { auth: any }) {
                         href="/categorias"
                         className="group flex flex-col items-center text-center transition-transform hover:scale-105"
                     >
-                        <div className="mb-4 flex h-24 w-24 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 group-hover:bg-blue-50 dark:bg-neutral-800 dark:ring-neutral-700">
+                        <div className="mb-4 flex h-24 w-24 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 group-hover:bg-pink-50 dark:bg-neutral-800 dark:ring-neutral-700">
                             <PlusSquare className="size-12 text-pink-600" />
                         </div>
                         <h3 className="text-md font-semibold text-gray-900 dark:text-white">Categorías</h3>
@@ -68,7 +68,7 @@ export default function Dashboard({auth}: { auth: any }) {
                         href="/editoras"
                         className="group flex flex-col items-center text-center transition-transform hover:scale-105"
                     >
-                        <div className="mb-4 flex h-24 w-24 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 group-hover:bg-blue-50 dark:bg-neutral-800 dark:ring-neutral-700">
+                        <div className="mb-4 flex h-24 w-24 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 group-hover:bg-gray-50 dark:bg-neutral-800 dark:ring-neutral-700">
                             <Library className="size-12 text-gray-600" />
                         </div>
                         <h3 className="text-md font-semibold text-gray-900 dark:text-white">Editoras</h3>
@@ -80,7 +80,7 @@ export default function Dashboard({auth}: { auth: any }) {
                         href="/users"
                         className="group flex flex-col items-center text-center transition-transform hover:scale-105"
                     >
-                        <div className="mb-4 flex h-24 w-24 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 group-hover:bg-blue-50 dark:bg-neutral-800 dark:ring-neutral-700">
+                        <div className="mb-4 flex h-24 w-24 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 group-hover:bg-red-50 dark:bg-neutral-800 dark:ring-neutral-700">
                             <User className="size-12 text-red-600" />
                         </div>
                         <h3 className="text-md font-semibold text-gray-900 dark:text-white">Usuarios</h3>
@@ -90,7 +90,7 @@ export default function Dashboard({auth}: { auth: any }) {
                         href="/coleccions"
                         className="group flex flex-col items-center text-center transition-transform hover:scale-105"
                     >
-                        <div className="mb-4 flex h-24 w-24 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 group-hover:bg-blue-50 dark:bg-neutral-800 dark:ring-neutral-700">
+                        <div className="mb-4 flex h-24 w-24 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 group-hover:bg-orange-50 dark:bg-neutral-800 dark:ring-neutral-700">
                             <Boxes className="size-12 text-orange-600" />
                         </div>
                         <h3 className="text-md font-semibold text-gray-900 dark:text-white">Colecciones</h3>

@@ -9,6 +9,7 @@ import ComentariosPorComic from '@/components/ui/Cuerpo/ComentariosPorComic';
 import CajaTextoComentario from '@/components/ui/Cuerpo/CajaTextoComentario';
 import ComicShowComponente from '@/components/ui/Cuerpo/ComicShowComponente';
 import SeccionRecomendaciones from '@/components/ui/Cuerpo/SeccionRecomendaciones';
+import { BotonBase } from '@/components/ui/Cuerpo/BotonBase';
 
 
 interface Editora {
@@ -181,20 +182,45 @@ export default function Show({ comic, comentarios, comicsRecomendados } : Props)
                 <CajaTextoComentario comicId={comic.id}></CajaTextoComentario>
             </div>
             <SeccionRecomendaciones comics={comicsRecomendados} />
-            <div className='mb-3 ml-7'>
+            <div className='mb-3 ml-7 flex flex-cols gap-5'>
                 {auth.user && auth.user.rol_id !== 3 && (
-                    <Link href={`/comics/${comic.id}/edit`} className='btn btn-secondary mr-4'>Editar comic</Link>
+                    <BotonBase
+                                        onClick={href=> router.visit(`/comics/${comic.id}/edit`)}
+                                        texto="Editar Cómic"
+                                        colorFondo="bg-blue-600"
+                                    hoverFondo="hover:bg-white"
+                                    hoverTexto="hover:text-blue-600"
+                                    colorTexto="text-white"
+                                    borderClass="border-blue-700"
+                                    tamano="sm"
+                                    className="gap-2"
+                                    />
                 )}
                 {auth.user && auth.user.rol_id !== 3 && (
-                    <button 
-                        onClick={() => router.delete(`/comics/${comic.id}`)} 
-                        className='btn btn-warning mr-4' 
-                    >
-                        Eliminar comic
-                    </button>
+                    <BotonBase
+                                        onClick={href=> router.delete(`/comics/${comic.id}`)}
+                                        texto="Eliminar Cómic"
+                                        colorFondo="bg-red-600"
+                                    hoverFondo="hover:bg-white"
+                                    hoverTexto="hover:text-red-600"
+                                    colorTexto="text-white"
+                                    borderClass="border-red-700"
+                                    tamano="sm"
+                                    className="gap-2"
+                                    />
                 )}
                 {auth.user && auth.user.rol_id !== 3 && (
-                    <Link href={`/comics`} className='btn btn-primary mr-4 ml-4'>Volver al index</Link>
+                    <BotonBase
+                                                                onClick={() => router.visit(`/dashboard`)}
+                                                                texto="Volver al dashboard"
+                                                                colorFondo="bg-zinc-800" 
+                                                                hoverFondo="hover:bg-white"
+                                                                colorTexto="text-white"
+                                                                hoverTexto="hover:text-zinc-800"
+                                                                borderClass="border border-zinc-900"
+                                                                tamano="sm"
+                                                                className="gap-2"
+                                                            />
                 )}
             </div>
         </AppLayout>

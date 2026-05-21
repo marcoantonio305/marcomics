@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, router, usePage } from '@inertiajs/react';
 import appLayout from '@/layouts/app-layout';
 import AppLayout from '@/layouts/app-layout';
+import { BotonBase } from '@/components/ui/Cuerpo/BotonBase';
 
 interface Editora {
     id: number;
@@ -17,7 +18,7 @@ export default function Index({ editoras }: Props) {
     return (
         <AppLayout>
         <div className="div-8">
-            <h1 className="text-4xl font-bold mb-6 text-primary">Editoras</h1>
+            <h1 className="text-4xl font-bold mb-6 text-primary">Editorial</h1>
 
             <div className="card bg-base-100 shadow-xl border border-base-300 p-4">
                 {editoras.length > 0 ? (
@@ -25,16 +26,21 @@ export default function Index({ editoras }: Props) {
                         {editoras.map((editora) => (
                             <div key={editora.id} className="flex items-center justify-between gap-2">
                                 <span className="text-xl font-bold text-primary">{editora.nombre}</span>
-                                <button
-                                    onClick={() => {
-                                        if (confirm('¿Estás seguro de querer eliminar este editora?')) {
-                                            router.delete(`/editoras/${editora.id}`);
-                                        }
-                                    }}
-                                    className="btn btn-ghost btn-xs text-error"
-                                >
-                                    Eliminar
-                                </button>
+                                <BotonBase
+                                                                                                onClick={()=> {
+                                                                                            if (confirm('¿Estás seguro de querer eliminar este editora?')) {
+                                                                                                router.delete(`/editoras/${editora.id}`)
+                                                                                            }
+                                                                                        }}
+                                                                                                texto="Eliminar Editorial"
+                                                                                                colorFondo="bg-red-600"
+                                                                                                hoverFondo="hover:bg-white"
+                                                                                                hoverTexto="hover:text-red-600"
+                                                                                                colorTexto="text-white"
+                                                                                                borderClass="border border-red-700"
+                                                                                                tamano="xs"
+                                                                                                className="py-1 px-2 text-xs"
+                                                                                                />
                             </div>
                         ))}
                     </div>
@@ -43,17 +49,31 @@ export default function Index({ editoras }: Props) {
                 )}
             </div>
 
-            <div className="mt-4">
+            <div className="mt-4 flex flex-cols gap-5 ml-5">
                 {auth.user?.rol_id !== 3 && (
-                <Link href="/editoras/create" className="btn btn-primary">
-                    Añadir Editora
-                </Link>
+                <BotonBase
+                                                                texto="Añadir Editorial"
+                                                                colorFondo="bg-indigo-600"
+                                                                hoverFondo="hover:bg-white"
+                                                                hoverTexto='hover:text-indigo-600'
+                                                                colorTexto="text-white"
+                                                                borderClass="border border-indigo-700"
+                                                                tamano="sm"
+                                                                className="gap-2"
+                                                                onClick={() => router.visit('/editoras/create')}
+                                                            />
                 )}
-            </div>
-            <div className="mt-4">
-                            <Link href="dashboard" className="btn btn-success">
-                                Volver al dashboard
-                            </Link>
+                            <BotonBase
+                                                                        onClick={() => router.visit(`/dashboard`)}
+                                                                        texto="Volver al dashboard"
+                                                                        colorFondo="bg-zinc-800" 
+                                                                        hoverFondo="hover:bg-white"
+                                                                        colorTexto="text-white"
+                                                                        hoverTexto="hover:text-zinc-800"
+                                                                        borderClass="border border-zinc-900"
+                                                                        tamano="sm"
+                                                                        className="gap-2"
+                                                                    />
                         </div>
         </div>
         </AppLayout>
