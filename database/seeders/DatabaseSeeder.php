@@ -17,6 +17,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RolSeeder::class,
             UserSeeder::class,
+            EditoraSeeder::class,
+    AutorSeeder::class,
+    CategoriaSeeder::class, 
+    ComicSeeder::class,
         ]);
         // User::factory(10)->create();
 
